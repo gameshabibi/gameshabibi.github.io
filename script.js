@@ -69,7 +69,16 @@ function clearCart() {
 
 function showCartModal() {
   renderCart();
-  document.getElementById("cartModal").style.display = "flex";
+  const modal = document.getElementById("cartModal");
+  if (modal) {
+    modal.style.display = "flex";
+    modal.style.zIndex = "10000";
+    modal.style.visibility = "visible";
+    modal.style.opacity = "1";
+    console.log("Cart modal shown");
+  } else {
+    console.error("Cart modal not found in DOM");
+  }
 }
 
 function hideCartModal() {
@@ -89,7 +98,12 @@ document.addEventListener("DOMContentLoaded", function () {
   const cartModal = document.getElementById("cartModal");
   const closeCart = document.getElementById("closeCart");
   const clearCartBtn = document.getElementById("clearCartBtn");
-  if (cartBtn) cartBtn.addEventListener("click", showCartModal);
+  if (cartBtn) {
+    cartBtn.addEventListener("click", function () {
+      console.log("Cart button clicked");
+      showCartModal();
+    });
+  }
   if (closeCart) closeCart.addEventListener("click", hideCartModal);
   if (cartModal)
     cartModal.addEventListener("click", function (e) {
