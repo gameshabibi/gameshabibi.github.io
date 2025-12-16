@@ -298,7 +298,7 @@ function addToCart(game, price) {
     cart.push({ game, price, qty: 1 });
   }
   updateCartCount();
-  showCartToast(`${game} added to cart!`);
+  // Removed alert toast
 }
 
 function updateCartCount() {

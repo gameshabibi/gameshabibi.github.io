@@ -421,8 +421,18 @@ footer {
     flex-direction: column;
     padding: 0 10px;
   }
+  nav ul {
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+  }
   .games-grid {
     grid-template-columns: 1fr;
+  }
+  .contain {
+    flex-direction: column;
+    gap: 20px;
+    align-items: stretch;
   }
   .hero h2 {
     font-size: 2rem;
@@ -474,4 +484,23 @@ footer {
 /* youtube */
 .youtube {
   max-width: 20rem;
+}
+
+/* QR Code Styling */
+#qrCode {
+  text-align: center;
+  margin: 20px 0;
+}
+
+#qrCode img {
+  border: 3px solid #00bfff;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0, 191, 255, 0.3);
+  max-width: 220px;
+  height: auto;
+  transition: transform 0.3s ease;
+}
+
+#qrCode img:hover {
+  transform: scale(1.05);
 }
