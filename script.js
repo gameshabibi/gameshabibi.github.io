@@ -8,6 +8,25 @@ const services = [
       price: 59,
     },
   },
+
+  {
+    link: "netflix.png",
+    img: "netflix.png",
+    name: "Netflix Premium",
+    p: {
+      genre: "4k , 1 month",
+      price: 59,
+    },
+  },
+  {
+    link: "finding.png",
+    img: "finding.png",
+    name: "Test Case (for dev)",
+    p: {
+      genre: "Testing",
+      price: 2,
+    },
+  },
 ];
 
 const games = [
@@ -44,6 +63,15 @@ const games = [
     name: "God of War",
     p: {
       genre: "Adventure",
+      price: 149,
+    },
+  },
+  {
+    link: "https://www.igdb.com/games/god-of-war-ragnarok",
+    img: "https://images.igdb.com/igdb/image/upload/t_cover_big/co5s5v.webp",
+    name: "God of War Ragnarök",
+    p: {
+      genre: " Role-playing (RPG), Adventure",
       price: 149,
     },
   },
@@ -258,8 +286,10 @@ const games = [
 
 //mine upwards ;
 let cart = [];
+let tip = 0;
 
 function addToCart(game, price) {
+  console.log("addToCart called with", game, price);
   // Check if game already in cart, increment quantity
   const found = cart.find((item) => item.game === game);
   if (found) {
@@ -278,6 +308,7 @@ function updateCartCount() {
 }
 
 function renderCart() {
+  console.log("renderCart called, cart:", cart);
   const cartItems = document.getElementById("cartItems");
   const cartTotal = document.getElementById("cartTotal");
   const imButton = document.querySelector('a[rel="im-checkout"]');
@@ -304,13 +335,15 @@ function renderCart() {
     )}</span> <button class="remove-btn" onclick="removeFromCart(${idx})">Remove</button></div>`;
   });
   cartItems.innerHTML = html;
-  cartTotal.textContent = `Total: ₹${total.toFixed(2)}`;
+  cartTotal.textContent = `Total: ₹${(total + tip).toFixed(2)}`;
   // Enable Instamojo button and update label with total
   if (imButton) {
     imButton.style.pointerEvents = "auto";
     imButton.style.opacity = "1";
-    imButton.setAttribute("data-text", `Pay ₹${total.toFixed(2)}`);
+    imButton.setAttribute("data-text", `Pay ₹${(total + tip).toFixed(2)}`);
   }
+  // Generate QR Code for payment
+  generateQRCode(total + tip);
 }
 
 function removeFromCart(idx) {
@@ -321,16 +354,24 @@ function removeFromCart(idx) {
 
 function clearCart() {
   cart = [];
+  tip = 0;
   renderCart();
   updateCartCount();
 }
 
+function applyTip() {
+  const tipInput = document.getElementById("tipAmount");
+  if (tipInput) {
+    tip = parseFloat(tipInput.value) || 0;
+    renderCart();
+  }
+}
+
 function showCartModal() {
+  console.log("showCartModal called, cart length:", cart.length);
   renderCart();
   const modal = document.getElementById("cartModal");
   if (modal) {
-    modal.style.display = "flex";
-    modal.style.zIndex = "10000";
     modal.style.visibility = "visible";
     modal.style.opacity = "1";
     console.log("Cart modal shown");
@@ -340,7 +381,11 @@ function showCartModal() {
 }
 
 function hideCartModal() {
-  document.getElementById("cartModal").style.display = "none";
+  const modal = document.getElementById("cartModal");
+  if (modal) {
+    modal.style.visibility = "hidden";
+    modal.style.opacity = "0";
+  }
 }
 
 function showCartToast(msg) {
@@ -387,15 +432,15 @@ document.addEventListener("DOMContentLoaded", function () {
             </div>`;
   });
 
-  const otherGrid = document.querySelector(".game-car");
+  const otherGrid = document.querySelector(".contain");
   otherGrid.innerHTML = serviceHTML;
 
   // Contact form (no JS handler, handled by Formspree)
-  // Cart modal events
   const cartBtn = document.getElementById("cartBtn");
   const cartModal = document.getElementById("cartModal");
   const closeCart = document.getElementById("closeCart");
   const clearCartBtn = document.getElementById("clearCartBtn");
+  const applyTipBtn = document.getElementById("applyTipBtn");
   if (cartBtn) {
     cartBtn.addEventListener("click", function () {
       console.log("Cart button clicked");
@@ -408,6 +453,7 @@ document.addEventListener("DOMContentLoaded", function () {
       if (e.target === cartModal) hideCartModal();
     });
   if (clearCartBtn) clearCartBtn.addEventListener("click", clearCart);
+  if (applyTipBtn) applyTipBtn.addEventListener("click", applyTip);
   updateCartCount();
 
   // Animate fade-in sections on scroll

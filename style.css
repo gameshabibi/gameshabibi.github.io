@@ -131,10 +131,6 @@ header {
   animation: fadeInUp 1.2s cubic-bezier(0.4, 2, 0.3, 1);
 }
 
-.cart-modal-content {
-  animation: fadeInUp 0.7s cubic-bezier(0.4, 2, 0.3, 1);
-}
-
 .cart-modal-content .close {
   transition: color 0.2s, transform 0.2s;
 }
@@ -161,7 +157,9 @@ footer {
   transform: none;
 }
 .cart-modal {
-  display: none;
+  display: flex;
+  visibility: hidden;
+  opacity: 0;
   position: fixed;
   z-index: 10000;
   left: 0;
@@ -234,6 +232,15 @@ header {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 header .container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.contain {
   display: flex;
   justify-content: space-between;
   align-items: center;

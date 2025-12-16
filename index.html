@@ -72,18 +72,14 @@
       <section id="games" class="games-section fade-in">
         <div class="container">
           <h2>Other Services</h2>
-          <div class="container">
+          <div class="contain">
             <div class="game-card game-car">
               <!-- other services -->
             </div> 
           </div>
           <div class="container">
             <h2>Featured Games</h2>
-             <div class="games-grid">
-              
-                    <!-- games -->
-
-            </div>
+            <div class="games-grid"></div>
           <h1>For other games , contact me</h1>
         </div>
       </section>
@@ -122,16 +118,25 @@
       </section>
     </main>
     <!-- Cart Modal -->
-    <div id="cartModal" class="cart-modal fade-in" style="display: none">
-      <div class="cart-modal-content fade-in">
+    <div id="cartModal" class="cart-modal">
+      <div class="cart-modal-content">
         <span class="close" id="closeCart">&times;</span>
         <h2>Your Cart</h2>
         <div id="cartItems"></div>
+        <!-- <div class="tip">
+          working
+        </div> -->
         <div id="cartTotal" style="margin: 15px 0"></div>
+        <div id="tipSection" style="margin: 15px 0; text-align: center">
+          <label for="tipAmount" style="color: #f3f3f3; margin-right: 10px">Add Tip (₹):</label>
+          <input type="number" id="tipAmount" min="0" step="1" value="0" style="width: 80px; padding: 5px; border-radius: 5px; border: none;">
+          <button id="applyTipBtn" class="btn" style="padding: 5px 15px; font-size: 0.9rem">Apply Tip</button>
+        </div>
         <button id="clearCartBtn" class="btn" style="background: #ff4d4d">
           Clear Cart
         </button>
-        <a class="btn" href="qr.jpg">QR</a>
+        <div id="qrCode"></div>
+        <div id="payButton" style="margin-top: 20px; text-align: center"></div>
         <!-- <div style="margin-top: 20px; text-align: center">
           Instamojo Payment Button (UPDATED)
           <a
@@ -154,5 +159,6 @@
       </div>
     </footer>
     <script src="script.js"></script>
+    <script src="payment.js"></script>
   </body>
 </html>
