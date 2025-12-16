@@ -17,7 +17,16 @@ const games = [
     name: "The last of us",
     p: {
       genre: "Shooter, Adventure",
-      price: 119,
+      price: 149,
+    },
+  },
+  {
+    link: "https://www.igdb.com/games/marvels-spider-man-miles-morales",
+    img: "https://images.igdb.com/igdb/image/upload/t_cover_big/co2dwe.webp",
+    name: "Spider Man Miles Morals",
+    p: {
+      genre: "Shooter, Adventure",
+      price: 149,
     },
   },
   {
@@ -26,7 +35,7 @@ const games = [
     name: "The Witcher 3: Wild Hunt",
     p: {
       genre: "Role-playing (RPG), Adventure",
-      price: 119,
+      price: 149,
     },
   },
   {
@@ -35,7 +44,7 @@ const games = [
     name: "God of War",
     p: {
       genre: "Adventure",
-      price: 119,
+      price: 149,
     },
   },
   {
@@ -44,7 +53,7 @@ const games = [
     name: "Assassin's Creed Shadows",
     p: {
       genre: "Role-playing (RPG), Adventure",
-      price: 119,
+      price: 149,
     },
   },
   {
@@ -62,7 +71,7 @@ const games = [
     name: "Wuchang: Fallen Feathers",
     p: {
       genre: "Adventure",
-      price: 119,
+      price: 149,
     },
   },
   {
@@ -71,7 +80,7 @@ const games = [
     name: "Marvel's Spider-Man 2",
     p: {
       genre: "Hack and slash/Beat 'em up, Adventure",
-      price: 119,
+      price: 149,
     },
   },
   {
@@ -93,12 +102,12 @@ const games = [
     },
   },
   {
-    link: "#",
-    img: "https://images.igdb.com/igdb/image/upload/t_cover_big/co9m78.webp",
-    name: "Mario Kart World",
+    link: "https://www.igdb.com/games/stellar-blade",
+    img: "https://images.igdb.com/igdb/image/upload/t_cover_big/co9s0t.webp",
+    name: "Stellar Blade",
     p: {
-      genre: "Racing",
-      price: 59,
+      genre: "Role-playing (RPG)",
+      price: 149,
     },
   },
   {
@@ -107,7 +116,7 @@ const games = [
     name: "Sekiro: Shadows Die Twice",
     p: {
       genre: "Action-Adventure",
-      price: 119,
+      price: 149,
     },
   },
   {
@@ -116,7 +125,7 @@ const games = [
     name: "Tekken 8",
     p: {
       genre: "Fighting",
-      price: 119,
+      price: 149,
     },
   },
   {
@@ -125,7 +134,7 @@ const games = [
     name: "Elden Ring",
     p: {
       genre: "Action RPG",
-      price: 119,
+      price: 149,
     },
   },
   {
@@ -134,7 +143,7 @@ const games = [
     name: "Far Cry 5",
     p: {
       genre: "Adventure, Action",
-      price: 119,
+      price: 149,
     },
   },
   {
@@ -152,7 +161,7 @@ const games = [
     name: "Clair Obscur: Expedition 33",
     p: {
       genre: "Role-playing (RPG), (TBS)",
-      price: 119,
+      price: 149,
     },
   },
   {
@@ -161,7 +170,7 @@ const games = [
     name: "Resident all variant",
     p: {
       genre: "Companion",
-      price: 119,
+      price: 149,
     },
   },
   {
@@ -170,7 +179,7 @@ const games = [
     name: "Mortal Kombat 11",
     p: {
       genre: "Companion",
-      price: 119,
+      price: 149,
     },
   },
   {
@@ -179,7 +188,7 @@ const games = [
     name: "Hogwarts Legacy",
     p: {
       genre: "Role-playing (RPG), Adventure",
-      price: 119,
+      price: 149,
     },
   },
   {
@@ -188,7 +197,7 @@ const games = [
     name: "WatchDogs 2",
     p: {
       genre: "Shooter, Adventure",
-      price: 119,
+      price: 149,
     },
   },
   {
@@ -197,7 +206,7 @@ const games = [
     name: "Cyberpunk 2077",
     p: {
       genre: "Shooter, Role-playing (RPG), Adventure",
-      price: 119,
+      price: 149,
     },
   },
   {
@@ -224,7 +233,7 @@ const games = [
     name: "The Last of Us Part II",
     p: {
       genre: "Action-Adventure",
-      price: 119,
+      price: 149,
     },
   },
   {
@@ -233,7 +242,7 @@ const games = [
     name: "Forza horizon 5",
     p: {
       genre: "Racing",
-      price: 119,
+      price: 149,
     },
   },
   {
@@ -242,7 +251,7 @@ const games = [
     name: "Black Myth: Wukong",
     p: {
       genre: "Action RPG",
-      price: 119,
+      price: 149,
     },
   },
 ];
@@ -356,7 +365,7 @@ document.addEventListener("DOMContentLoaded", function () {
         </a>
         <h3>${element.name}</h3>
         <p>${element.p.genre} | &#8377;${element.p.price}</p>
-        <button onclick="addToCart(${element.name}, ${element.p.price})">
+        <button onclick="addToCart('${element.name}', ${element.p.price})">
           Add to Cart
         </button>
       </div>`;
