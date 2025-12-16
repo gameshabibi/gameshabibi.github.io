@@ -1,4 +1,253 @@
-// Cart logic with UI
+const services = [
+  {
+    link: "youtube.png",
+    img: "youtube.png",
+    name: "Youtube Premium",
+    p: {
+      genre: "background play,PIP",
+      price: 59,
+    },
+  },
+];
+
+const games = [
+  {
+    link: "https://www.igdb.com/games/the-last-of-us",
+    img: "https://images.igdb.com/igdb/image/upload/t_cover_big/co1r7f.webp",
+    name: "The last of us",
+    p: {
+      genre: "Shooter, Adventure",
+      price: 119,
+    },
+  },
+  {
+    link: "https://www.igdb.com/games/the-witcher-3-wild-hunt",
+    img: "https://images.igdb.com/igdb/image/upload/t_cover_big/co1wyy.webp",
+    name: "The Witcher 3: Wild Hunt",
+    p: {
+      genre: "Role-playing (RPG), Adventure",
+      price: 119,
+    },
+  },
+  {
+    link: "https://www.igdb.com/games/god-of-war--1",
+    img: "https://images.igdb.com/igdb/image/upload/t_cover_big/co1tmu.png",
+    name: "God of War",
+    p: {
+      genre: "Adventure",
+      price: 119,
+    },
+  },
+  {
+    link: "https://www.igdb.com/games/assassins-creed-shadows",
+    img: "https://images.igdb.com/igdb/image/upload/t_cover_big/co87cu.webp",
+    name: "Assassin's Creed Shadows",
+    p: {
+      genre: "Role-playing (RPG), Adventure",
+      price: 119,
+    },
+  },
+  {
+    link: "https://www.igdb.com/games/mafia-the-old-country",
+    img: "https://images.igdb.com/igdb/image/upload/t_cover_big/co9s2c.webp",
+    name: "Mafia: The Old Country",
+    p: {
+      genre: "Shooter, Adventure",
+      price: 169,
+    },
+  },
+  {
+    link: "https://www.igdb.com/games/wuchang-fallen-feathers",
+    img: "https://images.igdb.com/igdb/image/upload/t_cover_big/co9xif.webp",
+    name: "Wuchang: Fallen Feathers",
+    p: {
+      genre: "Adventure",
+      price: 119,
+    },
+  },
+  {
+    link: "https://www.igdb.com/games/marvels-spider-man-2",
+    img: "https://images.igdb.com/igdb/image/upload/t_cover_big/co79vq.webp",
+    name: "Marvel's Spider-Man 2",
+    p: {
+      genre: "Hack and slash/Beat 'em up, Adventure",
+      price: 119,
+    },
+  },
+  {
+    link: "#",
+    img: "https://images.igdb.com/igdb/image/upload/t_cover_big/co9751.webp",
+    name: "Grand Theft Auto V",
+    p: {
+      genre: "offline only",
+      price: 109,
+    },
+  },
+  {
+    link: "#",
+    img: "https://images.igdb.com/igdb/image/upload/t_cover_big/co1q1f.webp",
+    name: "Red Dead Redemption",
+    p: {
+      genre: "Adventure, Action",
+      price: 99,
+    },
+  },
+  {
+    link: "#",
+    img: "https://images.igdb.com/igdb/image/upload/t_cover_big/co9m78.webp",
+    name: "Mario Kart World",
+    p: {
+      genre: "Racing",
+      price: 59,
+    },
+  },
+  {
+    link: "#",
+    img: "https://images.igdb.com/igdb/image/upload/t_cover_big/co2a23.webp",
+    name: "Sekiro: Shadows Die Twice",
+    p: {
+      genre: "Action-Adventure",
+      price: 119,
+    },
+  },
+  {
+    link: "#",
+    img: "https://images.igdb.com/igdb/image/upload/t_cover_big/co7lbb.webp",
+    name: "Tekken 8",
+    p: {
+      genre: "Fighting",
+      price: 119,
+    },
+  },
+  {
+    link: "#",
+    img: "https://images.igdb.com/igdb/image/upload/t_cover_big/co4jni.webp",
+    name: "Elden Ring",
+    p: {
+      genre: "Action RPG",
+      price: 119,
+    },
+  },
+  {
+    link: "#",
+    img: "https://images.igdb.com/igdb/image/upload/t_cover_big/co21a6.webp",
+    name: "Far Cry 5",
+    p: {
+      genre: "Adventure, Action",
+      price: 119,
+    },
+  },
+  {
+    link: "#",
+    img: "https://images.igdb.com/igdb/image/upload/t_cover_big/co7n02.webp",
+    name: "Palworld",
+    p: {
+      genre: "Shooter, Role-playing (RPG)",
+      price: 80,
+    },
+  },
+  {
+    link: "#",
+    img: "https://images.igdb.com/igdb/image/upload/t_cover_big/co9gam.webp",
+    name: "Clair Obscur: Expedition 33",
+    p: {
+      genre: "Role-playing (RPG), (TBS)",
+      price: 119,
+    },
+  },
+  {
+    link: "#",
+    img: "https://images.igdb.com/igdb/image/upload/t_cover_big/co8uu1.webp",
+    name: "Resident all variant",
+    p: {
+      genre: "Companion",
+      price: 119,
+    },
+  },
+  {
+    link: "#",
+    img: "https://images.igdb.com/igdb/image/upload/t_cover_big/co20mh.webp",
+    name: "Mortal Kombat 11",
+    p: {
+      genre: "Companion",
+      price: 119,
+    },
+  },
+  {
+    link: "#",
+    img: "https://images.igdb.com/igdb/image/upload/t_cover_big/co2gn3.webp",
+    name: "Hogwarts Legacy",
+    p: {
+      genre: "Role-playing (RPG), Adventure",
+      price: 119,
+    },
+  },
+  {
+    link: "#",
+    img: "https://images.igdb.com/igdb/image/upload/t_cover_big/co2p3j.webp",
+    name: "WatchDogs 2",
+    p: {
+      genre: "Shooter, Adventure",
+      price: 119,
+    },
+  },
+  {
+    link: "#",
+    img: "https://images.igdb.com/igdb/image/upload/t_cover_big/co7497.webp",
+    name: "Cyberpunk 2077",
+    p: {
+      genre: "Shooter, Role-playing (RPG), Adventure",
+      price: 119,
+    },
+  },
+  {
+    link: "#",
+    img: "https://images.igdb.com/igdb/image/upload/t_cover_big/co1wkl.webp",
+    name: "Call of Duty: Black Ops",
+    p: {
+      genre: "First-person shooter",
+      price: 139,
+    },
+  },
+  {
+    link: "#",
+    img: "https://images.igdb.com/igdb/image/upload/t_cover_big/co3cwt.webp",
+    name: "Call of Duty: Modern Warfare 2",
+    p: {
+      genre: "First-person shooter",
+      price: 129,
+    },
+  },
+  {
+    link: "#",
+    img: "https://images.igdb.com/igdb/image/upload/t_cover_big/co5ziw.webp",
+    name: "The Last of Us Part II",
+    p: {
+      genre: "Action-Adventure",
+      price: 119,
+    },
+  },
+  {
+    link: "#",
+    img: "https://images.igdb.com/igdb/image/upload/t_cover_big/co3ofx.webp",
+    name: "Forza horizon 5",
+    p: {
+      genre: "Racing",
+      price: 119,
+    },
+  },
+  {
+    link: "#",
+    img: "https://images.igdb.com/igdb/image/upload/t_cover_big/co8h3y.webp",
+    name: "Black Myth: Wukong",
+    p: {
+      genre: "Action RPG",
+      price: 119,
+    },
+  },
+];
+
+//mine upwards ;
 let cart = [];
 
 function addToCart(game, price) {
@@ -92,6 +341,46 @@ function showCartToast(msg) {
 
 // Contact form handler and cart modal events
 document.addEventListener("DOMContentLoaded", function () {
+  let productHTML = "";
+
+  games.forEach((element) => {
+    productHTML += `<div class="game-card">
+        <a
+          target="_blank"
+          href= ${element.link}
+        >
+          <img
+            src= ${element.img}
+            alt= ${element.name}
+          />
+        </a>
+        <h3>${element.name}</h3>
+        <p>${element.p.genre} | &#8377;${element.p.price}</p>
+        <button onclick="addToCart(${element.name}, ${element.p.price})">
+          Add to Cart
+        </button>
+      </div>`;
+  });
+
+  const htmlGrid = document.querySelector(".games-grid");
+  htmlGrid.innerHTML = productHTML;
+
+  let serviceHTML = "";
+
+  services.forEach((element) => {
+    serviceHTML += `<div class="game-card">
+              <a href="${element.link}"><img src="${element.img}" alt="${element.name}" /></a>
+              <h3>${element.name}</h3>
+              <p>${element.p.genre} | &#8377;${element.p.price}</p>
+              <button onclick="addToCart('${element.name}', ${element.p.price})">
+                Add to Cart
+              </button>
+            </div>`;
+  });
+
+  const otherGrid = document.querySelector(".game-car");
+  otherGrid.innerHTML = serviceHTML;
+
   // Contact form (no JS handler, handled by Formspree)
   // Cart modal events
   const cartBtn = document.getElementById("cartBtn");
