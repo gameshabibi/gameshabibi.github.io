@@ -504,3 +504,21 @@ footer {
 #qrCode img:hover {
   transform: scale(1.05);
 }
+
+/* Toast Notifications */
+.toast {
+  background: #00bfff;
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  opacity: 0;
+  transform: translateY(100px);
+  transition: opacity 0.3s, transform 0.3s;
+  box-shadow: 0 4px 16px rgba(0, 191, 255, 0.3);
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translateY(0);
+}

@@ -298,7 +298,7 @@ function addToCart(game, price) {
     cart.push({ game, price, qty: 1 });
   }
   updateCartCount();
-  // Removed alert toast
+  showCartToast(`${game} added to cart!`);
 }
 
 function updateCartCount() {
@@ -389,8 +389,18 @@ function hideCartModal() {
 }
 
 function showCartToast(msg) {
-  // Simple toast using alert, can be improved
-  alert(msg);
+  const container = document.getElementById("toastContainer");
+  const toast = document.createElement("div");
+  toast.className = "toast";
+  toast.textContent = msg;
+  container.appendChild(toast);
+  setTimeout(() => toast.classList.add("show"), 10);
+  setTimeout(() => {
+    toast.classList.remove("show");
+    setTimeout(() => {
+      if (container.contains(toast)) container.removeChild(toast);
+    }, 300);
+  }, 3000);
 }
 
 // Contact form handler and cart modal events
