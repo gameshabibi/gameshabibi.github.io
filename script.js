@@ -117,7 +117,7 @@ const games = [
     name: "Grand Theft Auto V",
     p: {
       genre: "offline only",
-      price: 109,
+      price: 149,
     },
   },
   {
@@ -196,15 +196,6 @@ const games = [
     link: "#",
     img: "https://images.igdb.com/igdb/image/upload/t_cover_big/co8uu1.webp",
     name: "Resident all variant",
-    p: {
-      genre: "Companion",
-      price: 149,
-    },
-  },
-  {
-    link: "#",
-    img: "https://images.igdb.com/igdb/image/upload/t_cover_big/co20mh.webp",
-    name: "Mortal Kombat 11",
     p: {
       genre: "Companion",
       price: 149,
