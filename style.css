@@ -336,6 +336,8 @@ nav a:hover {
   max-width: 180px;
   border-radius: 10px;
   margin-bottom: 15px;
+  height: 180px;
+  object-fit: cover;
 }
 .game-card h3 {
   margin: 10px 0 5px 0;
