@@ -1,5 +1,5 @@
 // Your payment UPI ID or wallet address (customize this)
-const PAYMENT_ID = "prashant89@fam";
+const PAYMENT_ID = "prashantsingh896@ybl";
 
 // Generate QR Code
 function generateQRCode(amount) {
