@@ -427,7 +427,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const otherGrid = document.querySelector(".contain");
   let donateHTML = `<div class="game-card">
     <img src="donate2.png" alt="Donate" />
-    <h3>Donate</h3>
+    <h3>Donate | Pay</h3>
     <p>Support us | <input type="number" id="donateAmount" min="1" value="10" style="width: 60px; padding: 2px; border-radius: 4px; border: 1px solid #00bfff; background: #23272a; color: #f3f3f3;"> ₹</p>
     <button onclick="addToCart('Donation', parseFloat(document.getElementById('donateAmount').value) || 10)">
       Donate
