@@ -524,3 +524,32 @@ footer {
   opacity: 1;
   transform: translateY(0);
 }
+
+/* Cart Form Styling */
+.form {
+  margin: 20px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.form input {
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #333;
+  background: #23272a;
+  color: #f3f3f3;
+  font-size: 1rem;
+  transition: border-color 0.2s;
+}
+
+.form input:focus {
+  outline: none;
+  border-color: #00bfff;
+}
+
+.form label {
+  color: #f3f3f3;
+  font-weight: 500;
+  margin-bottom: 5px;
+}
