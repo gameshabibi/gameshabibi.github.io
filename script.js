@@ -15,7 +15,7 @@ const services = [
     name: "Netflix Premium",
     p: {
       genre: "4k , 1 month",
-      price: 59,
+      price: 149,
     },
   },
 ];
