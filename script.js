@@ -344,7 +344,14 @@ function clearCart() {
 function applyTip() {
   const tipInput = document.getElementById("tipAmount");
   if (tipInput) {
-    tip = parseFloat(tipInput.value) || 0;
+    const newTip = parseFloat(tipInput.value) || 0;
+    if (newTip < 0) {
+      tip = 0;
+      tipInput.value = 0;
+      showCartToast("Tip cannot be negative!");
+    } else {
+      tip = newTip;
+    }
     renderCart();
   }
 }
