@@ -555,3 +555,64 @@ footer {
   font-weight: 500;
   margin-bottom: 5px;
 }
+
+/* Search Input Styling */
+#searchInput {
+  padding: 6px 12px;
+  border-radius: 20px;
+  border: 1px solid #333;
+  background: #23272a;
+  color: #f3f3f3;
+  font-size: 0.9rem;
+  transition: border-color 0.2s;
+  width: 200px;
+}
+
+#searchInput:focus {
+  outline: none;
+  border-color: #00bfff;
+}
+
+/* Search Results Styling */
+#searchResults {
+  color: #f3f3f3;
+}
+
+#searchResults ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+#searchResults li {
+  padding: 8px 0;
+  border-bottom: 1px solid #333;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+#searchResults li:hover {
+  background: rgba(0, 191, 255, 0.1);
+}
+
+#searchResults li:last-child {
+  border-bottom: none;
+}
+
+/* Highlight for searched games */
+.game-card.highlight {
+  box-shadow: 0 0 20px #00bfff, 0 4px 16px rgba(0, 191, 255, 0.3);
+  animation: highlightPulse 2s ease-in-out;
+}
+
+@keyframes highlightPulse {
+  0% {
+    box-shadow: 0 0 20px #00bfff, 0 4px 16px rgba(0, 191, 255, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 30px #00bfff, 0 8px 24px rgba(0, 191, 255, 0.5);
+  }
+  100% {
+    box-shadow: 0 0 20px #00bfff, 0 4px 16px rgba(0, 191, 255, 0.3);
+  }
+}

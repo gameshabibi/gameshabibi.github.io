@@ -279,6 +279,65 @@ const games = [
 let cart = [];
 let tip = 0;
 
+function renderGames(gameList) {
+  let productHTML = "";
+  gameList.forEach((element) => {
+    productHTML += `<div class="game-card" data-name="${element.name}">
+        <a
+          target="_blank"
+          href= ${element.link}
+        >
+          <img
+            src= ${element.img}
+            alt= ${element.name}
+          />
+        </a>
+        <h3>${element.name}</h3>
+        <p>${element.p.genre} | &#8377;${element.p.price}</p>
+        <button onclick="addToCart('${element.name}', ${element.p.price})">
+          Add to Cart
+        </button>
+      </div>`;
+  });
+  const htmlGrid = document.querySelector(".games-grid");
+  htmlGrid.innerHTML = productHTML;
+}
+
+function renderServices(serviceList) {
+  let serviceHTML = "";
+  serviceList.forEach((element) => {
+    serviceHTML += `<div class="game-card" data-name="${element.name}">
+              <a href="${element.link}"><img src="${element.img}" alt="${element.name}" /></a>
+              <h3>${element.name}</h3>
+              <p>${element.p.genre} | &#8377;${element.p.price}</p>
+              <button onclick="addToCart('${element.name}', ${element.p.price})">
+                Add to Cart
+              </button>
+            </div>`;
+  });
+  const otherGrid = document.querySelector(".contain");
+  let donateHTML = `<div class="game-card" data-name="Donation">
+    <img src="donate2.png" alt="Donate" />
+    <h3>Donate | Pay</h3>
+    <p> <b>Amount</b> | <input type="number" id="donateAmount" min="1" value="10" style="width: 60px; padding: 2px; border-radius: 4px; border: 1px solid #00bfff; background: #23272a; color: #f3f3f3;"> ₹</p>
+    <button onclick="addToCart('Donation', parseFloat(document.getElementById('donateAmount').value) || 10)">
+      Donate
+    </button>
+  </div>`;
+  otherGrid.innerHTML = donateHTML + serviceHTML;
+}
+
+function highlightGame(name) {
+  const element = document.querySelector(`[data-name="${name}"]`);
+  if (element) {
+    element.scrollIntoView({ behavior: "smooth", block: "center" });
+    element.classList.add("highlight");
+    setTimeout(() => {
+      element.classList.remove("highlight");
+    }, 3000);
+  }
+}
+
 function addToCart(game, price) {
   console.log("addToCart called with", game, price);
   // Check if game already in cart, increment quantity
@@ -403,53 +462,8 @@ function showCartToast(msg) {
 
 // Contact form handler and cart modal events
 document.addEventListener("DOMContentLoaded", function () {
-  let productHTML = "";
-
-  games.forEach((element) => {
-    productHTML += `<div class="game-card">
-        <a
-          target="_blank"
-          href= ${element.link}
-        >
-          <img
-            src= ${element.img}
-            alt= ${element.name}
-          />
-        </a>
-        <h3>${element.name}</h3>
-        <p>${element.p.genre} | &#8377;${element.p.price}</p>
-        <button onclick="addToCart('${element.name}', ${element.p.price})">
-          Add to Cart
-        </button>
-      </div>`;
-  });
-
-  const htmlGrid = document.querySelector(".games-grid");
-  htmlGrid.innerHTML = productHTML;
-
-  let serviceHTML = "";
-
-  services.forEach((element) => {
-    serviceHTML += `<div class="game-card">
-              <a href="${element.link}"><img src="${element.img}" alt="${element.name}" /></a>
-              <h3>${element.name}</h3>
-              <p>${element.p.genre} | &#8377;${element.p.price}</p>
-              <button onclick="addToCart('${element.name}', ${element.p.price})">
-                Add to Cart
-              </button>
-            </div>`;
-  });
-
-  const otherGrid = document.querySelector(".contain");
-  let donateHTML = `<div class="game-card">
-    <img src="donate2.png" alt="Donate" />
-    <h3>Donate | Pay</h3>
-    <p> <b>Amount</b> | <input type="number" id="donateAmount" min="1" value="10" style="width: 60px; padding: 2px; border-radius: 4px; border: 1px solid #00bfff; background: #23272a; color: #f3f3f3;"> ₹</p>
-    <button onclick="addToCart('Donation', parseFloat(document.getElementById('donateAmount').value) || 10)">
-      Donate
-    </button>
-  </div>`;
-  otherGrid.innerHTML = donateHTML + serviceHTML;
+  renderGames(games);
+  renderServices(services);
 
   // Contact form (no JS handler, handled by Formspree)
   const cartBtn = document.getElementById("cartBtn");
@@ -457,6 +471,8 @@ document.addEventListener("DOMContentLoaded", function () {
   const closeCart = document.getElementById("closeCart");
   const clearCartBtn = document.getElementById("clearCartBtn");
   const applyTipBtn = document.getElementById("applyTipBtn");
+  const searchBtn = document.getElementById("searchBtn");
+  const searchResults = document.getElementById("searchResults");
   if (cartBtn) {
     cartBtn.addEventListener("click", function () {
       console.log("Cart button clicked");
@@ -470,6 +486,40 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   if (clearCartBtn) clearCartBtn.addEventListener("click", clearCart);
   if (applyTipBtn) applyTipBtn.addEventListener("click", applyTip);
+  if (searchBtn) {
+    searchBtn.addEventListener("click", function () {
+      const query = document
+        .getElementById("searchInput")
+        .value.toLowerCase()
+        .trim();
+      if (query === "") {
+        searchResults.style.display = "none";
+        return;
+      }
+      const filteredGames = games.filter((game) =>
+        game.name.toLowerCase().includes(query)
+      );
+      const filteredServices = services.filter((service) =>
+        service.name.toLowerCase().includes(query)
+      );
+      const allMatches = [...filteredGames, ...filteredServices];
+      if ("donation".toLowerCase().includes(query)) {
+        allMatches.push({ name: "Donation" });
+      }
+      if (allMatches.length === 0) {
+        searchResults.innerHTML = "<p>No matches found.</p>";
+        searchResults.style.display = "block";
+        return;
+      }
+      let html = "<ul>";
+      allMatches.forEach((item) => {
+        html += `<li onclick="highlightGame('${item.name}')">${item.name}</li>`;
+      });
+      html += "</ul>";
+      searchResults.innerHTML = html;
+      searchResults.style.display = "block";
+    });
+  }
   updateCartCount();
 
   // Animate fade-in sections on scroll

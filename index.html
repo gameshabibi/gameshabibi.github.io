@@ -34,15 +34,11 @@
             <li><a href="#games">Games</a></li>
             <li><a href="#about">About</a></li>
             <li><a href="#contact">Contact</a></li>
-            <li>
-              <button
-                id="cartBtn"
-                class="btn"
-                style="padding: 6px 18px; font-size: 1rem"
-              >
-                Cart (<span id="cartCount">0</span>)
-              </button>
+            <li style="display: flex; align-items: center; gap: 10px;">
+              <input type="text" id="searchInput" placeholder="Search games & services..." style="padding: 6px 12px; border-radius: 20px; border: 1px solid #333; background: #23272a; color: #f3f3f3; font-size: 0.9rem; width: 200px;">
+              <button id="searchBtn" class="btn" style="padding: 6px 18px; font-size: 0.9rem;">Search</button>
             </li>
+            <li>
             <!-- <li> -->
             <!-- <button 
                 id="profileBtn"
@@ -56,6 +52,7 @@
         </nav>
       </div>
     </header>
+    <div id="searchResults" style="display: none; max-height: 200px; overflow-y: auto; background: #23272a; padding: 10px; margin: 10px auto; max-width: 1200px; border-radius: 8px; box-shadow: 0 4px 16px rgba(0, 191, 255, 0.1);"></div>
     <main>
       <section class="hero fade-in">
         <div class="container">
