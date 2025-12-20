@@ -148,6 +148,15 @@ const games = [
     },
   },
   {
+    link: "https://www.igdb.com/games/life-is-strange-remastered",
+    img: "https://images.igdb.com/igdb/image/upload/t_cover_big/co2vfw.webp",
+    name: "Life is Strange Remastered",
+    p: {
+      genre: " Role-playing (RPG), Adventure",
+      price: 129,
+    },
+  },
+  {
     link: "#",
     img: "https://images.igdb.com/igdb/image/upload/t_cover_big/co4jni.webp",
     name: "Elden Ring",
