@@ -486,12 +486,11 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   if (clearCartBtn) clearCartBtn.addEventListener("click", clearCart);
   if (applyTipBtn) applyTipBtn.addEventListener("click", applyTip);
-  if (searchBtn) {
-    searchBtn.addEventListener("click", function () {
-      const query = document
-        .getElementById("searchInput")
-        .value.toLowerCase()
-        .trim();
+
+  const searchInput = document.getElementById("searchInput");
+  if (searchInput) {
+    searchInput.addEventListener("input", function () {
+      const query = searchInput.value.toLowerCase().trim();
       if (query === "") {
         searchResults.style.display = "none";
         return;
@@ -513,7 +512,7 @@ document.addEventListener("DOMContentLoaded", function () {
       }
       let html = "<ul>";
       allMatches.forEach((item) => {
-        html += `<li onclick="highlightGame('${item.name}')">${item.name}</li>`;
+        html += `<li onclick="highlightGame('${item.name}'); document.getElementById('searchResults').style.display='none';">${item.name}</li>`;
       });
       html += "</ul>";
       searchResults.innerHTML = html;
