@@ -339,7 +339,7 @@ function highlightGame(name) {
 }
 
 function addToCart(game, price) {
-  console.log("addToCart called with", game, price);
+  // console.log("addToCart called with", game, price);
   // Check if game already in cart, increment quantity
   const found = cart.find((item) => item.game === game);
   if (found) {
@@ -358,9 +358,8 @@ function updateCartCount() {
 }
 
 function renderCart() {
-  console.log("renderCart called, cart:", cart);
+  // console.log("renderCart called, cart:", cart);
   const cartItems = document.getElementById("cartItems");
-  const gameform = document.getElementById("gameInput");
   const cartTotal = document.getElementById("cartTotal");
   const imButton = document.querySelector('a[rel="im-checkout"]');
   if (!cartItems || !cartTotal) return;
@@ -426,13 +425,13 @@ function applyTip() {
 }
 
 function showCartModal() {
-  console.log("showCartModal called, cart length:", cart.length);
+  // console.log("showCartModal called, cart length:", cart.length);
   renderCart();
   const modal = document.getElementById("cartModal");
   if (modal) {
     modal.style.visibility = "visible";
     modal.style.opacity = "1";
-    console.log("Cart modal shown");
+    // console.log("Cart modal shown");
   } else {
     console.error("Cart modal not found in DOM");
   }
@@ -476,7 +475,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const searchResults = document.getElementById("searchResults");
   if (cartBtn) {
     cartBtn.addEventListener("click", function () {
-      console.log("Cart button clicked");
+      // console.log("Cart button clicked");
       showCartModal();
     });
   }

@@ -176,15 +176,19 @@ footer {
   border-radius: 16px;
   min-width: 320px;
   max-width: 95vw;
+  width: 100%;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
   position: relative;
   max-height: 80vh;
   overflow-y: auto;
 }
+
 .cart-modal-content h2 {
   margin-top: 0;
   text-align: center;
+  font-size: clamp(1.2rem, 4vw, 1.5rem);
 }
+
 .cart-modal-content .close {
   position: absolute;
   right: 18px;
@@ -192,6 +196,12 @@ footer {
   font-size: 2rem;
   color: #fff;
   cursor: pointer;
+  touch-action: manipulation;
+  min-width: 44px;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 #cartItems {
   margin: 18px 0 10px 0;
@@ -212,11 +222,13 @@ footer {
   color: #fff;
   border: none;
   border-radius: 12px;
-  padding: 4px 12px;
+  padding: 6px 12px;
   cursor: pointer;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   margin-left: 10px;
   transition: background 0.2s;
+  min-height: 36px;
+  touch-action: manipulation;
 }
 #cartItems .remove-btn:hover {
   background: #d11a2a;
@@ -226,51 +238,26 @@ body {
   font-family: "Segoe UI", Arial, sans-serif;
   background: #181a1b;
   color: #f3f3f3;
+  font-size: 16px;
 }
 
 header {
   background: #23272a;
   padding: 20px 0;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  top: 0;
+  z-index: 100;
 }
+
 header .container {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 20px;
-}
-
-.contain {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 20px;
-}
-header h1 {
-  margin: 0;
-  font-size: 2rem;
-  color: #00bfff;
-  letter-spacing: 2px;
-}
-nav ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  gap: 30px;
-}
-nav a {
-  color: #f3f3f3;
-  text-decoration: none;
-  font-weight: 500;
-  transition: color 0.2s;
-}
-nav a:hover {
-  color: #00bfff;
+  gap: 20px;
 }
 
 .container {
@@ -279,18 +266,78 @@ nav a:hover {
   padding: 0 20px;
 }
 
+header h1 {
+  margin: 0;
+  font-size: 2rem;
+  color: #00bfff;
+  letter-spacing: 2px;
+  white-space: nowrap;
+}
+
+nav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  gap: 30px;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+}
+
+nav li {
+  display: flex;
+  align-items: center;
+}
+
+nav a {
+  color: #f3f3f3;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s;
+  font-size: 1rem;
+}
+
+nav a:hover {
+  color: #00bfff;
+}
+
+#searchInput {
+  padding: 8px 12px;
+  border-radius: 20px;
+  border: 1px solid #333;
+  background: #23272a;
+  color: #f3f3f3;
+  font-size: 0.95rem;
+  transition: border-color 0.2s;
+  width: 220px;
+  min-height: 38px;
+}
+
+#searchInput:focus {
+  outline: none;
+  border-color: #00bfff;
+}
+
 .hero {
   background: linear-gradient(120deg, #23272a 60%, #00bfff 100%);
-  padding: 60px 0 40px 0;
+  padding: 80px 20px 50px;
   text-align: center;
 }
+
 .hero h2 {
-  font-size: 2.5rem;
-  margin-bottom: 10px;
+  font-size: clamp(1.5rem, 5vw, 2.5rem);
+  margin-bottom: 15px;
 }
+
 .hero p {
-  font-size: 1.2rem;
-  margin-bottom: 25px;
+  font-size: clamp(1rem, 2.5vw, 1.2rem);
+  margin-bottom: 20px;
+}
+
+.hero h4 {
+  font-size: clamp(0.9rem, 2vw, 1rem);
+  margin: 10px 0;
 }
 .btn {
   background: #00bfff;
@@ -304,23 +351,32 @@ nav a:hover {
   transition: background 0.2s;
   text-decoration: none;
   display: inline-block;
+  /* min-height: 44px; */
+  min-width: 4rem;
+  touch-action: manipulation;
+  user-select: none;
 }
 .btn:hover {
   background: #009acd;
 }
 
 .games-section {
-  padding: 50px 0 30px 0;
+  padding: 50px 20px 30px;
 }
+
 .games-section h2 {
   text-align: center;
   margin-bottom: 30px;
+  font-size: clamp(1.3rem, 4vw, 2rem);
 }
-.games-grid {
+
+.games-grid,
+.contain {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 30px;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
 }
+
 .game-card {
   background: #23272a;
   border-radius: 16px;
@@ -328,27 +384,36 @@ nav a:hover {
   padding: 20px;
   text-align: center;
   transition: transform 0.2s, box-shadow 0.2s;
+  display: flex;
+  flex-direction: column;
 }
-.game-card:hover {
-  transform: translateY(-8px) scale(1.03);
-  box-shadow: 0 8px 24px rgba(0, 191, 255, 0.15);
-}
+
 .game-card img {
   width: 100%;
   max-width: 180px;
   border-radius: 10px;
-  margin-bottom: 15px;
+  margin: 0 auto 15px;
   height: 180px;
   object-fit: cover;
 }
-.game-card h3 {
-  margin: 10px 0 5px 0;
-  font-size: 1.2rem;
+
+form {
+  margin-top: 15px;
+  text-align: center;
 }
+
+.game-card h3 {
+  margin: 10px 0 8px 0;
+  font-size: clamp(0.95rem, 2vw, 1.2rem);
+}
+
 .game-card p {
   margin: 0 0 15px 0;
   color: #b0b0b0;
+  font-size: 0.9rem;
+  flex-grow: 1;
 }
+
 .game-card button {
   background: #00bfff;
   color: #fff;
@@ -358,6 +423,8 @@ nav a:hover {
   font-size: 1rem;
   cursor: pointer;
   transition: background 0.2s;
+  min-height: 44px;
+  touch-action: manipulation;
 }
 .game-card button:hover {
   background: #009acd;
@@ -365,19 +432,24 @@ nav a:hover {
 
 .about-section,
 .contact-section {
-  padding: 40px 0;
+  padding: 50px 20px;
   background: #202225;
   margin-top: 30px;
   border-radius: 16px;
 }
+
 .about-section h2,
 .contact-section h2 {
   text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: 25px;
+  font-size: clamp(1.3rem, 4vw, 2rem);
 }
+
 .about-section p {
   text-align: center;
   color: #b0b0b0;
+  font-size: 0.95rem;
+  line-height: 1.6;
 }
 
 #contactForm {
@@ -386,7 +458,9 @@ nav a:hover {
   display: flex;
   flex-direction: column;
   gap: 15px;
+  padding: 0 20px;
 }
+
 #contactForm input,
 #contactForm textarea {
   padding: 12px;
@@ -396,50 +470,353 @@ nav a:hover {
   background: #23272a;
   color: #f3f3f3;
   resize: none;
+  min-height: 44px;
+  transition: border-color 0.2s;
 }
+
+#contactForm input:focus,
+#contactForm textarea:focus {
+  outline: none;
+  border: 2px solid #00bfff;
+}
+
 #contactForm button {
   background: #00bfff;
   color: #fff;
   border: none;
-  padding: 10px 0;
+  padding: 12px 0;
   border-radius: 20px;
   font-size: 1rem;
   cursor: pointer;
   transition: background 0.2s;
+  min-height: 44px;
+  touch-action: manipulation;
 }
 #contactForm button:hover {
   background: #009acd;
 }
 
 footer {
-  background: #23272a;
+  background: linear-gradient(90deg, #23272a 80%, #00bfff 100%);
   color: #b0b0b0;
   text-align: center;
-  padding: 20px 0;
+  padding: 30px 20px;
   margin-top: 40px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
 }
 
-@media (max-width: 700px) {
-  header .container,
-  .container {
+footer p {
+  margin: 0;
+  font-size: clamp(0.85rem, 2vw, 1rem);
+  flex: 1 1 auto;
+  min-width: 120px;
+}
+
+/* Tablet Devices (768px and below) */
+@media (max-width: 768px) {
+  header .container {
     flex-direction: column;
-    padding: 0 10px;
+    gap: 15px;
+    padding: 15px 10px;
   }
+
+  header h1 {
+    font-size: 1.5rem;
+  }
+
   nav ul {
     flex-direction: column;
-    gap: 10px;
+    gap: 8px;
     align-items: center;
+    width: 100%;
   }
+
+  nav li {
+    width: 100%;
+    justify-content: center;
+  }
+
+  nav li:last-child {
+    gap: 8px;
+  }
+
+  #searchInput {
+    width: 100%;
+    max-width: 300px;
+  }
+
+  .games-grid,
+  .contain {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+  }
+
+  .hero {
+    padding: 40px 0 30px 0;
+  }
+
+  .hero h2 {
+    font-size: 1.8rem;
+    margin-bottom: 10px;
+  }
+
+  .hero p {
+    font-size: 1rem;
+  }
+
+  .game-card {
+    padding: 15px;
+  }
+
+  .game-card img {
+    max-width: 150px;
+    height: 150px;
+  }
+
+  .game-card h3 {
+    font-size: 1rem;
+  }
+
+  .about-section,
+  .contact-section {
+    padding: 30px 15px;
+  }
+}
+
+/* Mobile Devices (480px and below) */
+@media (max-width: 480px) {
+  body {
+    font-size: 14px;
+  }
+
+  header {
+    padding: 15px 0;
+  }
+
+  header .container {
+    flex-direction: column;
+    gap: 10px;
+    padding: 0 8px;
+  }
+
+  header h1 {
+    font-size: 1.2rem;
+    margin: 0;
+    text-align: center;
+  }
+
+  nav ul {
+    flex-direction: column;
+    gap: 6px;
+    width: 100%;
+  }
+
+  nav li {
+    width: 100%;
+  }
+
+  nav li:last-child {
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  nav a {
+    font-size: 0.95rem;
+  }
+
+  #searchInput {
+    width: 100%;
+    font-size: 0.85rem;
+    padding: 5px 10px;
+  }
+
+  .btn {
+    padding: 8px 16px;
+    font-size: 0.85rem;
+  }
+
+  #cartBtn {
+    width: 100%;
+    padding: 8px 12px;
+  }
+
+  .hero {
+    padding: 30px 15px 20px;
+  }
+
+  .hero h2 {
+    font-size: 1.4rem;
+    margin-bottom: 8px;
+  }
+
+  .hero p {
+    font-size: 0.9rem;
+    margin-bottom: 12px;
+  }
+
+  .hero h4 {
+    font-size: 0.9rem;
+    margin: 8px 0;
+  }
+
+  .games-section {
+    padding: 30px 8px 20px;
+  }
+
+  .games-section h2 {
+    font-size: 1.3rem;
+    margin-bottom: 20px;
+  }
+
   .games-grid {
     grid-template-columns: 1fr;
+    gap: 15px;
   }
+
   .contain {
-    flex-direction: column;
-    gap: 20px;
-    align-items: stretch;
+    grid-template-columns: 1fr;
+    gap: 15px;
+    padding: 2%;
   }
-  .hero h2 {
-    font-size: 2rem;
+
+  .game-card {
+    padding: 12px;
+    border-radius: 12px;
+  }
+
+  .game-card img {
+    max-width: 120px;
+    height: 120px;
+    margin-bottom: 10px;
+  }
+
+  .game-card h3 {
+    font-size: 0.95rem;
+    margin: 8px 0 5px 0;
+  }
+
+  .game-card p {
+    font-size: 0.85rem;
+    margin-bottom: 10px;
+  }
+
+  .game-card button {
+    padding: 8px 16px;
+    font-size: 0.85rem;
+  }
+
+  .about-section,
+  .contact-section {
+    padding: 25px 12px;
+    margin-top: 20px;
+  }
+
+  .about-section h2,
+  .contact-section h2 {
+    font-size: 1.3rem;
+    margin-bottom: 15px;
+  }
+
+  .about-section p,
+  .contact-section p {
+    font-size: 0.9rem;
+  }
+
+  .contact-info {
+    margin-top: 15px;
+  }
+
+  #contactForm {
+    padding: 0 8px;
+  }
+
+  footer {
+    padding: 20px 8px;
+  }
+
+  footer p {
+    font-size: 0.85rem;
+    margin: 8px 0;
+  }
+
+  .cart-modal-content {
+    max-width: 90vw;
+    min-width: 280px;
+    padding: 20px 16px;
+    max-height: 85vh;
+  }
+
+  .cart-modal-content h2 {
+    font-size: 1.2rem;
+    margin-bottom: 15px;
+  }
+
+  .cart-modal-content .close {
+    font-size: 1.6rem;
+    right: 10px;
+    top: 8px;
+  }
+
+  #cartItems .cart-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 10px 0;
+  }
+
+  #cartItems .remove-btn {
+    width: 100%;
+    padding: 6px 8px;
+    font-size: 0.8rem;
+    margin-left: 0;
+  }
+
+  .form {
+    gap: 10px;
+  }
+
+  .form input,
+  .form label {
+    font-size: 0.9rem;
+  }
+
+  #qrCode img {
+    max-width: 180px;
+    border-width: 2px;
+  }
+
+  #tipSection {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  #tipSection label {
+    display: block;
+    margin-bottom: 8px;
+  }
+
+  #tipSection input {
+    width: 90%;
+    max-width: 150px;
+    margin-bottom: 8px;
+  }
+
+  #tipSection button {
+    width: 100%;
+    padding: 8px 16px;
+  }
+
+  #clearCartBtn {
+    width: 100%;
+  }
+
+  #donateAmount {
+    width: 70px;
+    padding: 4px 8px;
+    font-size: 0.9rem;
   }
 }
 
@@ -536,13 +913,14 @@ footer {
 }
 
 .form input {
-  padding: 12px;
+  padding: 10px;
   border-radius: 8px;
   border: 1px solid #333;
   background: #23272a;
   color: #f3f3f3;
-  font-size: 1rem;
+  font-size: 0.9rem;
   transition: border-color 0.2s;
+  min-height: 20px;
 }
 
 .form input:focus {
@@ -554,18 +932,20 @@ footer {
   color: #f3f3f3;
   font-weight: 500;
   margin-bottom: 5px;
+  font-size: 0.95rem;
 }
 
 /* Search Input Styling */
 #searchInput {
-  padding: 6px 12px;
+  padding: 8px 12px;
   border-radius: 20px;
   border: 1px solid #333;
   background: #23272a;
   color: #f3f3f3;
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   transition: border-color 0.2s;
-  width: 200px;
+  width: 220px;
+  min-height: 20px;
 }
 
 #searchInput:focus {
