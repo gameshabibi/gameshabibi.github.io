@@ -48,10 +48,13 @@ document.getElementById("orderForm").addEventListener("submit", async (e) => {
     }
   );
 
-  if (response.ok) {
-    alert("Order submitted successfully!");
-    form.reset();
-  } else {
-    alert("Submission failed");
+  if (!response.ok) {
+    const err = await response.text();
+    console.error("NocoDB error:", err);
+    alert("Failed: check console");
+    return;
   }
+
+  alert("Order submitted successfully!");
+  form.reset();
 });
