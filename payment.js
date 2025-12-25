@@ -29,32 +29,27 @@ function generateQRCode(amount) {
 document.getElementById("orderForm").addEventListener("submit", async (e) => {
   e.preventDefault();
 
-  const form = e.target;
-  const formData = new FormData();
+  const name = e.target.name.value;
+  const email = e.target.email.value;
+  const games = e.target.games.value;
 
-  formData.append("name", form.name.value);
-  formData.append("games", form.games.value);
-  formData.append("email", form.email.value);
-  formData.append("payment", form.payment.files[0]);
+  const message = `🎮 New Order
+👤 Name: ${name}
+📧 Email: ${email}
+🕹️ Games: ${games}`;
 
-  const response = await fetch(
-    "https://app.nocodb.com/api/v1/db/data/v1/Game_Store/Game_requests",
+  await fetch(
+    "https://api.telegram.org/bot8246672302:AAG8ClWyKHeDi-_VxsIBpowYfzxCTNYt-e0/sendMessage",
     {
       method: "POST",
-      headers: {
-        "xc-token": "STbdGsKyVZoYnHWlebxKFPYmW5y_bsugcYTitqjv",
-      },
-      body: formData,
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        chat_id: "5822439843",
+        text: message,
+      }),
     }
   );
 
-  if (!response.ok) {
-    const err = await response.text();
-    console.error("NocoDB error:", err);
-    alert("Failed: check console");
-    return;
-  }
-
-  alert("Order submitted successfully!");
-  form.reset();
+  alert("Order sent!");
+  e.target.reset();
 });
