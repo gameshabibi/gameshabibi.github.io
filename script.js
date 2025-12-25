@@ -441,7 +441,6 @@ function applyTip() {
 }
 
 function showCartModal() {
-  // console.log("showCartModal called, cart length:", cart.length);
   renderCart();
   const modal = document.getElementById("cartModal");
   if (modal) {
