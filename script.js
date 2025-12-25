@@ -348,6 +348,7 @@ function addToCart(game, price) {
     cart.push({ game, price, qty: 1 });
   }
   updateCartCount();
+  updateGameInputField();
   showCartToast(`${game} added to cart!`);
 }
 
@@ -357,12 +358,27 @@ function updateCartCount() {
   if (cartCount) cartCount.textContent = count;
 }
 
+function updateGameInputField() {
+  const gameInput = document.getElementById("gameInput");
+  if (!gameInput) return;
+
+  if (cart.length === 0) {
+    gameInput.value = "";
+    return;
+  }
+
+  // Format: Game Name x Qty
+  const gameNames = cart.map((item) => `${item.game} x ${item.qty}`);
+  gameInput.value = gameNames.join(", ");
+}
+
 function renderCart() {
   // console.log("renderCart called, cart:", cart);
   const cartItems = document.getElementById("cartItems");
   const cartTotal = document.getElementById("cartTotal");
   const imButton = document.querySelector('a[rel="im-checkout"]');
   if (!cartItems || !cartTotal) return;
+
   if (cart.length === 0) {
     cartItems.innerHTML = "<p>Your cart is empty.</p>";
     cartTotal.textContent = "";
