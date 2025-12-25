@@ -125,15 +125,19 @@
           Clear Cart
         </button>
         <div class="form">
-          <form name="user-details" action="/" method="POST" data-netlify="true" enctype="multipart/form-data">
-            <input type="hidden" name="form-name" value="user-details">
-            <input type="text" name="name" required placeholder="Enter Your Name"> <br><br>
-            <input type="text" id="gameInput" required name="games" placeholder="Games Purchased"><br>
-               <label>Payment screenshot:</label><br>
+          <form id="orderForm" enctype="multipart/form-data">
+  <input type="text" name="name" required placeholder="Enter Your Name"><br><br>
+
+  <input type="text" id="gameInput" name="games" required placeholder="Games Purchased"><br><br>
+
+  <label>Payment screenshot:</label><br>
   <input type="file" name="payment" accept="image/*" required><br><br>
-            <input type="email" name="email" required placeholder="Your email address">
-            <button type="submit" class="btn" style="margin-top: 15px;">Submit</button>
-          </form>
+
+  <input type="email" name="email" required placeholder="Your email address">
+
+  <button type="submit" class="btn" style="margin-top: 15px;">Submit</button>
+</form>
+
         </div>
         <div id="qrCode"></div>
         <h3 style="text-align: center; color: #00bfff; font-size: 1.1rem; margin: 15px 0; font-weight: bold; text-transform: uppercase; letter-spacing: 1px;">Use QR Code if Pay Now Button Fails</h3>
