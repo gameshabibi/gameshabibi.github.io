@@ -360,13 +360,14 @@ function updateCartCount() {
 function renderCart() {
   console.log("renderCart called, cart:", cart);
   const cartItems = document.getElementById("cartItems");
+  const gameform = document.getElementById("gameInput");
   const cartTotal = document.getElementById("cartTotal");
   const imButton = document.querySelector('a[rel="im-checkout"]');
   if (!cartItems || !cartTotal) return;
   if (cart.length === 0) {
     cartItems.innerHTML = "<p>Your cart is empty.</p>";
     cartTotal.textContent = "";
-    // Disable Instamojo button if cart is empty
+
     if (imButton) {
       imButton.style.pointerEvents = "none";
       imButton.style.opacity = "0.5";
@@ -392,7 +393,7 @@ function renderCart() {
     imButton.style.opacity = "1";
     imButton.setAttribute("data-text", `Pay ₹${(total + tip).toFixed(2)}`);
   }
-  // Generate QR Code for payment
+
   generateQRCode(total + tip);
 }
 
