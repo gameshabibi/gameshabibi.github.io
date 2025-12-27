@@ -1,6 +1,6 @@
 const services = [
   {
-    link: "youtube.png",
+    link: "youtue.png",
     img: "youtube.png",
     name: "Youtube Premium",
     p: {
