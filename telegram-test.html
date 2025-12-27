@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Telegram Bot Tester - GameStore</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg, #181a1b 0%, #23272a 100%);
+            color: #f3f3f3;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #23272a;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0, 191, 255, 0.1);
+        }
+        
+        h1 {
+            color: #00bfff;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #b0b0b0;
+            margin-bottom: 30px;
+        }
+        
+        .section {
+            background: #181a1b;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border-left: 4px solid #00bfff;
+        }
+        
+        .section h2 {
+            color: #00bfff;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #00bfff;
+            font-weight: 500;
+        }
+        
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #333;
+            border-radius: 8px;
+            background: #23272a;
+            color: #f3f3f3;
+            font-size: 1rem;
+            margin-bottom: 15px;
+            font-family: monospace;
+        }
+        
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #00bfff;
+        }
+        
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #333;
+            border-radius: 8px;
+            background: #23272a;
+            color: #f3f3f3;
+            font-size: 1rem;
+            margin-bottom: 15px;
+            resize: vertical;
+            min-height: 100px;
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: #00bfff;
+        }
+        
+        button {
+            background: #00bfff;
+            color: #fff;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.3s;
+            width: 100%;
+            font-weight: bold;
+        }
+        
+        button:hover {
+            background: #009acd;
+        }
+        
+        button:disabled {
+            background: #555;
+            cursor: not-allowed;
+        }
+        
+        .result {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 8px;
+            display: none;
+        }
+        
+        .result.success {
+            background: #0f5132;
+            border: 2px solid #198754;
+            color: #d1e7dd;
+        }
+        
+        .result.error {
+            background: #5a1a1a;
+            border: 2px solid #dc3545;
+            color: #f8d7da;
+        }
+        
+        .result.info {
+            background: #1a3a5a;
+            border: 2px solid #0dcaf0;
+            color: #cfe2ff;
+        }
+        
+        .steps {
+            list-style: none;
+            counter-reset: step;
+        }
+        
+        .steps li {
+            counter-increment: step;
+            margin-bottom: 15px;
+            padding-left: 40px;
+            position: relative;
+        }
+        
+        .steps li::before {
+            content: counter(step);
+            position: absolute;
+            left: 0;
+            background: #00bfff;
+            color: #fff;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        
+        .code-block {
+            background: #0d0d0d;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            overflow-x: auto;
+            border: 1px solid #333;
+        }
+        
+        .code-block code {
+            color: #0dcaf0;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .warning {
+            background: #5a3a1a;
+            border-left: 4px solid #ff9800;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        
+        .tip {
+            background: #1a3a1a;
+            border-left: 4px solid #4caf50;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🤖 Telegram Bot Configuration & Tester</h1>
+        <p class="subtitle">Test your bot connection before updating your website</p>
+
+        <!-- Step 1: Get Bot Token -->
+        <div class="section">
+            <h2>Step 1: Get Your Bot Token</h2>
+            <ol class="steps">
+                <li>Open Telegram and search for <strong>@BotFather</strong></li>
+                <li>Send the command: <code>/newbot</code></li>
+                <li>Follow instructions to create your bot</li>
+                <li>Copy the TOKEN that BotFather gives you</li>
+            </ol>
+            
+            <label for="botToken">📝 Paste Your Bot Token Here:</label>
+            <input type="text" id="botToken" placeholder="1234567890:ABCdefGHIjklMNOpqrsTUVwxyz-12345678">
+            
+            <button onclick="testBotToken()">Test Bot Token</button>
+            <div id="tokenResult" class="result"></div>
+        </div>
+
+        <!-- Step 2: Get Chat ID -->
+        <div class="section">
+            <h2>Step 2: Get Your Chat ID</h2>
+            <ol class="steps">
+                <li>Search for your bot in Telegram</li>
+                <li>Click <strong>Start</strong> or send any message</li>
+                <li>Click the button below to retrieve your Chat ID</li>
+            </ol>
+            
+            <button onclick="getChatId()">Get My Chat ID</button>
+            <div id="chatIdResult" class="result"></div>
+            
+            <label for="chatId" style="margin-top: 15px;">📝 Or Enter Your Chat ID Manually:</label>
+            <input type="text" id="chatId" placeholder="123456789">
+        </div>
+
+        <!-- Step 3: Test Message -->
+        <div class="section">
+            <h2>Step 3: Send Test Message</h2>
+            <p style="margin-bottom: 15px;">Send a test message to verify everything works!</p>
+            
+            <label for="testMessage">Test Message:</label>
+            <textarea id="testMessage" placeholder="Hello from GameStore! 🎮">🎮 Test message from GameStore!
+
+This is a test to verify your Telegram bot is working correctly.
+
+If you received this message, your setup is successful! ✅</textarea>
+            
+            <button onclick="sendTestMessage()">Send Test Message to Telegram</button>
+            <div id="messageResult" class="result"></div>
+        </div>
+
+        <!-- Step 4: Generate Config -->
+        <div class="section">
+            <h2>Step 4: Copy Configuration Code</h2>
+            <p style="margin-bottom: 15px;">Once your tests are successful, copy this code:</p>
+            
+            <button onclick="generateConfig()">Generate Configuration Code</button>
+            
+            <div id="configOutput" style="display: none; margin-top: 15px;">
+                <div class="code-block">
+                    <code id="configCode"></code>
+                </div>
+                <button onclick="copyConfig()">Copy to Clipboard</button>
+                <div class="tip">
+                    <strong>💡 Next Steps:</strong>
+                    <ol style="margin-top: 10px; margin-left: 20px;">
+                        <li>Copy the code above</li>
+                        <li>Open <strong>payment.js</strong> and replace lines 6-7</li>
+                        <li>Open <strong>telegram-forms.js</strong> and replace lines 6-7</li>
+                        <li>Save both files and push to GitHub</li>
+                        <li>Wait 2 minutes and test your website forms!</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <!-- Help Section -->
+        <div class="section">
+            <h2>❓ Need Help?</h2>
+            <div class="warning">
+                <strong>⚠️ Common Issues:</strong>
+                <ul style="margin-top: 10px; margin-left: 20px;">
+                    <li>Make sure you've sent /start to your bot</li>
+                    <li>Check for extra spaces in token/chat ID</li>
+                    <li>Bot token format: numbers:letters (with colon)</li>
+                    <li>Chat ID is just numbers (no letters)</li>
+                </ul>
+            </div>
+            
+            <p style="margin-top: 15px;">
+                📧 Email: <a href="mailto:mr.bgmi9098@gmail.com" style="color: #00bfff;">mr.bgmi9098@gmail.com</a><br>
+                📸 Instagram: <a href="https://www.instagram.com/games_habibi" target="_blank" style="color: #00bfff;">@games_habibi</a>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        function showResult(elementId, type, message) {
+            const element = document.getElementById(elementId);
+            element.className = `result ${type}`;
+            element.innerHTML = message;
+            element.style.display = 'block';
+        }
+
+        async function testBotToken() {
+            const token = document.getElementById('botToken').value.trim();
+            
+            if (!token) {
+                showResult('tokenResult', 'error', '❌ Please enter a bot token');
+                return;
+            }
+
+            showResult('tokenResult', 'info', '⏳ Testing bot token...');
+
+            try {
+                const response = await fetch(`https://api.telegram.org/bot${token}/getMe`);
+                const data = await response.json();
+
+                if (data.ok) {
+                    showResult('tokenResult', 'success', 
+                        `✅ Token is valid!<br><br>` +
+                        `<strong>Bot Info:</strong><br>` +
+                        `Name: ${data.result.first_name}<br>` +
+                        `Username: @${data.result.username}<br>` +
+                        `ID: ${data.result.id}`
+                    );
+                } else {
+                    showResult('tokenResult', 'error', 
+                        `❌ Invalid token!<br><br>Error: ${data.description}`
+                    );
+                }
+            } catch (error) {
+                showResult('tokenResult', 'error', 
+                    `❌ Error: ${error.message}<br><br>Check your internet connection`
+                );
+            }
+        }
+
+        async function getChatId() {
+            const token = document.getElementById('botToken').value.trim();
+            
+            if (!token) {
+                showResult('chatIdResult', 'error', '❌ Please enter your bot token first (Step 1)');
+                return;
+            }
+
+            showResult('chatIdResult', 'info', '⏳ Fetching chat ID...');
+
+            try {
+                const response = await fetch(`https://api.telegram.org/bot${token}/getUpdates`);
+                const data = await response.json();
+
+                if (data.ok && data.result.length > 0) {
+                    const chatId = data.result[data.result.length - 1].message.chat.id;
+                    document.getElementById('chatId').value = chatId;
+                    
+                    showResult('chatIdResult', 'success', 
+                        `✅ Chat ID found: <strong>${chatId}</strong><br><br>` +
+                        `The ID has been automatically filled in the field above.`
+                    );
+                } else {
+                    showResult('chatIdResult', 'error', 
+                        `❌ No messages found!<br><br>` +
+                        `Make sure you've sent /start to your bot first, then try again.`
+                    );
+                }
+            } catch (error) {
+                showResult('chatIdResult', 'error', 
+                    `❌ Error: ${error.message}`
+                );
+            }
+        }
+
+        async function sendTestMessage() {
+            const token = document.getElementById('botToken').value.trim();
+            const chatId = document.getElementById('chatId').value.trim();
+            const message = document.getElementById('testMessage').value.trim();
+
+            if (!token || !chatId) {
+                showResult('messageResult', 'error', '❌ Please complete Steps 1 and 2 first');
+                return;
+            }
+
+            if (!message) {
+                showResult('messageResult', 'error', '❌ Please enter a test message');
+                return;
+            }
+
+            showResult('messageResult', 'info', '⏳ Sending test message...');
+
+            try {
+                const response = await fetch(
+                    `https://api.telegram.org/bot${token}/sendMessage`,
+                    {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            chat_id: chatId,
+                            text: message,
+                            parse_mode: 'HTML'
+                        })
+                    }
+                );
+
+                const data = await response.json();
+
+                if (data.ok) {
+                    showResult('messageResult', 'success', 
+                        `✅ Message sent successfully!<br><br>` +
+                        `Check your Telegram bot for the test message.<br><br>` +
+                        `<strong>Your configuration is working! 🎉</strong>`
+                    );
+                } else {
+                    showResult('messageResult', 'error', 
+                        `❌ Failed to send message!<br><br>Error: ${data.description}`
+                    );
+                }
+            } catch (error) {
+                showResult('messageResult', 'error', 
+                    `❌ Error: ${error.message}`
+                );
+            }
+        }
+
+        function generateConfig() {
+            const token = document.getElementById('botToken').value.trim();
+            const chatId = document.getElementById('chatId').value.trim();
+
+            if (!token || !chatId) {
+                alert('❌ Please complete Steps 1-3 first and make sure tests are successful!');
+                return;
+            }
+
+            const config = `const TELEGRAM_BOT_TOKEN = "${token}";
+const TELEGRAM_CHAT_ID = "${chatId}";`;
+
+            document.getElementById('configCode').textContent = config;
+            document.getElementById('configOutput').style.display = 'block';
+        }
+
+        function copyConfig() {
+            const code = document.getElementById('configCode').textContent;
+            navigator.clipboard.writeText(code).then(() => {
+                alert('✅ Configuration copied to clipboard!\n\nNow paste it in:\n1. payment.js (lines 6-7)\n2. telegram-forms.js (lines 6-7)');
+            }).catch(() => {
+                alert('❌ Failed to copy. Please select and copy the code manually.');
+            });
+        }
+    </script>
+</body>
+</html>
