@@ -26,30 +26,3 @@ function generateQRCode(amount) {
 }
 
 //form
-document.getElementById("orderForm").addEventListener("submit", async (e) => {
-  e.preventDefault();
-
-  const name = e.target.name.value;
-  const email = e.target.email.value;
-  const games = e.target.games.value;
-
-  const message = `🎮 New Order
-👤 Name: ${name}
-📧 Email: ${email}
-🕹️ Games: ${games}`;
-
-  await fetch(
-    "https://api.telegram.org/bot8246672302:AAG8ClWyKHeDi-_VxsIBpowYfzxCTNYt-e0/sendMessage",
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        chat_id: "5822439843",
-        text: message,
-      }),
-    }
-  );
-
-  alert("Order sent!");
-  e.target.reset();
-});

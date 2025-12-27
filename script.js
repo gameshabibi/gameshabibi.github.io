@@ -441,7 +441,7 @@ function applyTip() {
 }
 
 function showCartModal() {
-  renderCart();
+  crenderCart();
   const modal = document.getElementById("cartModal");
   if (modal) {
     modal.style.visibility = "visible";
