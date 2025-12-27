@@ -102,3 +102,51 @@ function generateQRCode(amount) {
 }
 
 //form
+document.getElementById("orderForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const form = e.target;
+
+  const name = form.name.value;
+  const games = form.games.value;
+  const email = form.email.value;
+  const paymentFile = form.payment.files[0];
+
+  const BOT_TOKEN = "8246672302:AAG8ClWyKHeDi-_VxsIBpowYfzxCTNYt-e0";
+  const CHAT_ID = "5822439843";
+
+  // Telegram caption (max ~1024 chars)
+  const caption =
+    "🛒 New Order Received\n\n" +
+    "👤 Name: " +
+    name +
+    "\n" +
+    "🎮 Games: " +
+    games +
+    "\n" +
+    "📧 Email: " +
+    email;
+
+  const telegramData = new FormData();
+  telegramData.append("chat_id", CHAT_ID);
+  telegramData.append("caption", caption);
+  telegramData.append("photo", paymentFile);
+
+  try {
+    const res = await fetch(
+      `https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`,
+      {
+        method: "POST",
+        body: telegramData,
+      }
+    );
+
+    if (!res.ok) throw new Error("Telegram upload failed");
+
+    alert("✅ Order sent to Telegram");
+    form.reset();
+  } catch (err) {
+    console.error(err);
+    alert("❌ Failed to send order");
+  }
+});
