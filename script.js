@@ -2,7 +2,7 @@ const services = [
   {
     link: "youtue.png",
     img: "youtube.png",
-    name: "Youtube Premium",
+    name: "Youtube dPremium",
     p: {
       genre: "background play,PIP",
       price: 59,
