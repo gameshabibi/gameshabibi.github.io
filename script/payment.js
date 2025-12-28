@@ -86,7 +86,7 @@ document.getElementById("orderForm").addEventListener("submit", async (e) => {
 
   const games = cart.map((item) => `${item.game} x ${item.qty}`).join(", ");
 
-  const BOT_TOKEN = "NEW_TOKEN_HERE";
+  const BOT_TOKEN = "8246672302:AAFTjkRfjUbJf8J2eEHvmj03Ep3854lPJI8";
   const CHAT_ID = "5822439843";
 
   const orderId = "ORD-" + Date.now().toString().slice(-6);

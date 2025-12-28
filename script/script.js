@@ -1,7 +1,7 @@
 const services = [
   {
-    link: "youtue.png",
-    img: "youtube.png",
+    link: "png/youtue.png",
+    img: "/png/youtube.png",
     name: "YoutubePremium",
     p: {
       genre: "background play,PIP",
@@ -10,8 +10,8 @@ const services = [
   },
 
   {
-    link: "netflix.png",
-    img: "netflix.png",
+    link: "png/netflix.png",
+    img: "png/netflix.png",
     name: "Netflix Premium",
     p: {
       genre: "4k , 1 month",
@@ -317,9 +317,7 @@ function enableSubmit() {
 
 function playSuccessFeedback() {
   // Sound
-  const audio = new Audio(
-    "https://assets.mixkit.co/sfx/preview/mixkit-confirmation-tone-2867.mp3"
-  );
+  const audio = new Audio("/audio/succ.wav");
   audio.volume = 0.4;
   audio.play().catch(() => {});
 
@@ -330,9 +328,7 @@ function playSuccessFeedback() {
 }
 
 function playErrorFeedback() {
-  const audio = new Audio(
-    "https://assets.mixkit.co/sfx/preview/mixkit-wrong-answer-fail-notification-946.mp3"
-  );
+  const audio = new Audio("error.wav");
   audio.volume = 0.4;
   audio.play().catch(() => {});
 
@@ -385,7 +381,7 @@ function renderServices(serviceList) {
   });
   const otherGrid = document.querySelector(".contain");
   let donateHTML = `<div class="game-card" data-name="Donation">
-    <img src="donate2.png" alt="Donate" />
+    <img src="png/donate2.png" alt="Donate" />
     <h3>Donate | Pay</h3>
     <p> <b>Amount</b> | <input type="number" id="donateAmount" min="1" value="10" style="width: 60px; padding: 2px; border-radius: 4px; border: 1px solid #00bfff; background: #23272a; color: #f3f3f3;"> ₹</p>
     <button onclick="addToCart('Donation', parseFloat(document.getElementById('donateAmount').value) || 10)">
