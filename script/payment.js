@@ -150,10 +150,29 @@ document.getElementById("orderForm").addEventListener("submit", async (e) => {
       throw new Error(result.description || "Telegram error");
     }
 
-    document.getElementById("loaderText").innerHTML =
-      "Order received!<div class='order-id'>ID: " + orderId + "</div>";
+    document.getElementById("loaderText").innerHTML = `
+  <strong>Order received!</strong><br>
+  <div class="order-id">
+    Order ID: <b>${orderId}</b>
+  </div>
+  <button id="copyOrderIdBtn" class="btn" style="margin-top:10px;">
+    Copy Order ID
+  </button>
+`;
+
+    setTimeout(() => {
+      const copyBtn = document.getElementById("copyOrderIdBtn");
+      if (copyBtn) {
+        copyBtn.addEventListener("click", () => {
+          navigator.clipboard.writeText(orderId);
+          copyBtn.textContent = "Copied ✔";
+        });
+      }
+    }, 100);
 
     playSuccessFeedback();
+
+    localStorage.setItem("lastOrderId", orderId);
 
     setTimeout(() => {
       hideLoader();
@@ -186,3 +205,10 @@ if (paymentInput) {
     }
   });
 }
+
+document.addEventListener("DOMContentLoaded", () => {
+  const lastOrder = localStorage.getItem("lastOrderId");
+  if (lastOrder) {
+    console.log("Last Order ID:", lastOrder);
+  }
+});

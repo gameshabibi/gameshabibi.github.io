@@ -621,3 +621,23 @@ document.addEventListener("DOMContentLoaded", function () {
   handleFadeIn();
   window.addEventListener("scroll", handleFadeIn);
 });
+
+document.addEventListener("DOMContentLoaded", () => {
+  const lastOrderId = localStorage.getItem("lastOrderId");
+
+  if (lastOrderId) {
+    const box = document.getElementById("lastOrderBox");
+    const text = document.getElementById("lastOrderIdText");
+    const copyBtn = document.getElementById("copyLastOrderBtn");
+
+    if (box && text && copyBtn) {
+      text.textContent = lastOrderId;
+      box.style.display = "block";
+
+      copyBtn.addEventListener("click", () => {
+        navigator.clipboard.writeText(lastOrderId);
+        copyBtn.textContent = "Copied ✔";
+      });
+    }
+  }
+});
