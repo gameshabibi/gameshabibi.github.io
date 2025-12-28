@@ -33,6 +33,11 @@ document.getElementById("orderForm").addEventListener("submit", async (e) => {
   const form = e.target;
   const name = form.name.value;
   const games = form.games.value;
+  if (!games || games.trim().length === 0) {
+    alert("❌ Cart is empty. Please add games before submitting.");
+    return;
+  }
+
   const email = form.email.value;
   const paymentFile = form.payment.files[0];
 
@@ -72,6 +77,9 @@ document.getElementById("orderForm").addEventListener("submit", async (e) => {
     console.log(result);
 
     if (!result.ok) throw result;
+    if (!result.ok) {
+      alert(result);
+    }
 
     alert("✅ Order Recieved");
     form.reset();
