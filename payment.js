@@ -68,15 +68,13 @@ document.getElementById("orderForm").addEventListener("submit", async (e) => {
     );
 
     const result = await res.json();
-    console.log(result);
 
     if (!result.ok) throw result;
 
-    alert("✅ Order sent to Telegram");
+    alert("✅ Order Recieved");
     form.reset();
-    clearCart(); // optional but recommended
+    clearCart();
   } catch (err) {
-    console.error("Telegram error:", err);
     alert("❌ Failed to send order");
   }
 });
