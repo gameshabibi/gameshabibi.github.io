@@ -180,6 +180,7 @@ document.getElementById("orderForm").addEventListener("submit", async (e) => {
       form.reset();
       clearCart();
       enableSubmit();
+      window.location.reload();
     }, 3000);
   } catch (err) {
     console.error("Telegram error:", err);
