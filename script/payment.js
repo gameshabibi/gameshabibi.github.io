@@ -167,3 +167,21 @@ document.getElementById("orderForm").addEventListener("submit", async (e) => {
     showError(err.message || "Order failed");
   }
 });
+
+// OPTIONAL: validate image size immediately on file select
+const paymentInput = document.querySelector('input[name="payment"]');
+
+if (paymentInput) {
+  paymentInput.addEventListener("change", (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+
+    if (file.size > MAX_FILE_SIZE) {
+      playErrorFeedback();
+      showError("Selected image is larger than 5 MB");
+      e.target.value = ""; // reset file input
+    }
+  });
+}
