@@ -75,6 +75,7 @@ function hideLoader() {
 
 document.getElementById("orderForm").addEventListener("submit", async (e) => {
   e.preventDefault();
+  enableSubmit();
 
   if (cart.length === 0) {
     showError("Cart is empty");

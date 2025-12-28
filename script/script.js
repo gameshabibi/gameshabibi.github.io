@@ -316,21 +316,27 @@ function enableSubmit() {
 }
 
 function playSuccessFeedback() {
-  // Sound
-  const audio = new Audio("/audio/succ.wav");
-  audio.volume = 0.4;
-  audio.play().catch(() => {});
+  try {
+    const audio = new Audio("/audio/succ.wav");
+    audio.volume = 0.4;
+    audio.play().catch(() => {});
+  } catch (e) {
+    console.warn("Success sound failed");
+  }
 
-  // Haptic (mobile only)
   if (navigator.vibrate) {
     navigator.vibrate([100, 50, 100]);
   }
 }
 
 function playErrorFeedback() {
-  const audio = new Audio("/audio/error.wav");
-  audio.volume = 0.4;
-  audio.play().catch(() => {});
+  try {
+    const audio = new Audio("/audio/error.wav");
+    audio.volume = 0.4;
+    audio.play().catch(() => {});
+  } catch (e) {
+    console.warn("Error sound failed");
+  }
 
   if (navigator.vibrate) {
     navigator.vibrate([200, 100, 200]);
