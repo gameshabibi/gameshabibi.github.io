@@ -300,26 +300,32 @@ let tip = 0;
 function renderGames(gameList) {
   let productHTML = "";
   gameList.forEach((element) => {
-    productHTML += `<div class="game-card" data-name="${element.name}">
-        <a
-          target="_blank"
-          href= ${element.link}
-        >
-          <img
-            src= ${element.img}
-            alt= ${element.name}
-          />
-        </a>
-        <h3>${element.name}</h3>
-        <p>${element.p.genre} | &#8377;${element.p.price}</p>
-        <button onclick="addToCart('${element.name}', ${element.p.price})">
-          Add to Cart
-        </button>
-      </div>`;
+    productHTML += `
+  <div class="game-card" data-name="${element.name}">
+    <a target="_blank" href="${element.link}">
+      <img src="${element.img}" alt="${element.name}" />
+    </a>
+    <h3>${element.name}</h3>
+    <p>${element.p.genre} | ₹${element.p.price}</p>
+    <button 
+      class="add-to-cart-btn"
+      data-name="${element.name}"
+      data-price="${element.p.price}">
+      Add to Cart
+    </button>
+  </div>`;
   });
   const htmlGrid = document.querySelector(".games-grid");
   htmlGrid.innerHTML = productHTML;
 }
+
+document.addEventListener("click", function (e) {
+  if (e.target.classList.contains("add-to-cart-btn")) {
+    const name = e.target.dataset.name;
+    const price = parseFloat(e.target.dataset.price);
+    addToCart(name, price);
+  }
+});
 
 function renderServices(serviceList) {
   let serviceHTML = "";
