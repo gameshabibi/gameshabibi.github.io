@@ -54,15 +54,12 @@ function showError(message = "Order failed. Try again.") {
   const icon = document.getElementById("loaderIcon");
   const label = document.getElementById("loaderText");
 
-  // ❌ REMOVE spinner
   icon.className = "loader-icon loader-error";
   icon.innerHTML = "✖";
-
-  // 🧾 SHOW error message
   label.textContent = message;
 
-  enableSubmit();
-  // ⏱ Auto-hide overlay
+  enableSubmit(); // ✅ THIS IS THE FIX
+
   setTimeout(() => {
     hideLoader();
   }, 3000);
@@ -78,6 +75,7 @@ document.getElementById("orderForm").addEventListener("submit", async (e) => {
   console.log("Submitting", cart);
 
   if (cart.length === 0) {
+    playErrorFeedback();
     showError("Cart is empty");
     return;
   }
@@ -101,8 +99,8 @@ document.getElementById("orderForm").addEventListener("submit", async (e) => {
 
   const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 MB
   if (paymentFile.size > MAX_FILE_SIZE) {
-    showError("Payment screenshot must be under 5 MB");
     playErrorFeedback();
+    showError("Payment screenshot must be under 5 MB");
     return;
   }
 
