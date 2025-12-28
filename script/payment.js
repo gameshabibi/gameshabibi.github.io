@@ -62,7 +62,6 @@ function showError(message = "Order failed. Try again.") {
   label.textContent = message;
 
   enableSubmit();
-
   // ⏱ Auto-hide overlay
   setTimeout(() => {
     hideLoader();
@@ -75,7 +74,8 @@ function hideLoader() {
 
 document.getElementById("orderForm").addEventListener("submit", async (e) => {
   e.preventDefault();
-  enableSubmit();
+
+  console.log("Submitting", cart);
 
   if (cart.length === 0) {
     showError("Cart is empty");
@@ -88,11 +88,13 @@ document.getElementById("orderForm").addEventListener("submit", async (e) => {
   const paymentFile = form.payment.files[0];
 
   if (!paymentFile) {
+    playErrorFeedback();
     showError("Upload payment screenshot");
     return;
   }
 
   if (!paymentFile.type.startsWith("image/")) {
+    playErrorFeedback();
     showError("Only image files are allowed");
     return;
   }
@@ -100,6 +102,7 @@ document.getElementById("orderForm").addEventListener("submit", async (e) => {
   const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 MB
   if (paymentFile.size > MAX_FILE_SIZE) {
     showError("Payment screenshot must be under 5 MB");
+    playErrorFeedback();
     return;
   }
 

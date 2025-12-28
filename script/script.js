@@ -420,6 +420,7 @@ function addToCart(game, price) {
   updateCartCount();
   updateGameInputField();
   showCartToast(`${game} added to cart!`);
+  renderCart();
 }
 
 function updateCartCount() {
@@ -486,6 +487,7 @@ function removeFromCart(idx) {
   cart.splice(idx, 1);
   renderCart();
   updateCartCount();
+  updateGameInputField();
 }
 
 function clearCart() {
