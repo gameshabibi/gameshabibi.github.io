@@ -22,6 +22,24 @@ const services = [
 
 const games = [
   {
+    link: "https://www.igdb.com/games/a-way-out",
+    img: "https://images.igdb.com/igdb/image/upload/t_cover_big/co1vca.webp",
+    name: "A Way Out",
+    p: {
+      genre: "Adventure",
+      price: 99,
+    },
+  },
+  {
+    link: "https://www.igdb.com/games/euro-truck-simulator-2",
+    img: "https://images.igdb.com/igdb/image/upload/t_cover_big/co7et5.webp",
+    name: "Euro Truck Simulator 2",
+    p: {
+      genre: "Racing, Simulator",
+      price: 99,
+    },
+  },
+  {
     link: "https://www.igdb.com/games/the-last-of-us",
     img: "https://images.igdb.com/igdb/image/upload/t_cover_big/co1r7f.webp",
     name: "The last of us",
@@ -36,7 +54,7 @@ const games = [
     name: "Spider Man Miles Morals",
     p: {
       genre: "Shooter, Adventure",
-      price: 149,
+      price: 89,
     },
   },
   {
@@ -45,7 +63,7 @@ const games = [
     name: "The Witcher 3: Wild Hunt",
     p: {
       genre: "Role-playing (RPG), Adventure",
-      price: 149,
+      price: 99,
     },
   },
   {
