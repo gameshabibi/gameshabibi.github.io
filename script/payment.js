@@ -51,14 +51,17 @@ function showSuccess(message = "Order received!") {
 }
 
 function showError(message = "Order failed. Try again.") {
+  const overlay = document.getElementById("loaderOverlay");
   const icon = document.getElementById("loaderIcon");
   const label = document.getElementById("loaderText");
+
+  overlay.style.display = "flex"; // ✅ MAKE IT VISIBLE
 
   icon.className = "loader-icon loader-error";
   icon.innerHTML = "✖";
   label.textContent = message;
 
-  enableSubmit(); // ✅ THIS IS THE FIX
+  enableSubmit(); // keep button alive
 
   setTimeout(() => {
     hideLoader();
