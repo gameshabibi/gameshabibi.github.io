@@ -74,12 +74,9 @@ document.getElementById("orderForm").addEventListener("submit", async (e) => {
 
     const result = await res.json();
 
-    console.log(result);
+    // console.log(result);
 
     if (!result.ok) throw result;
-    if (!result.ok) {
-      alert(result);
-    }
 
     alert("✅ Order Recieved");
     form.reset();
