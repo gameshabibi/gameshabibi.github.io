@@ -27,6 +27,14 @@ function generateQRCode(amount) {
 
 //form
 
+function showLoader() {
+  document.getElementById("loaderOverlay").style.display = "flex";
+}
+
+function hideLoader() {
+  document.getElementById("loaderOverlay").style.display = "none";
+}
+
 document.getElementById("orderForm").addEventListener("submit", async (e) => {
   e.preventDefault();
 
@@ -66,6 +74,8 @@ document.getElementById("orderForm").addEventListener("submit", async (e) => {
   data.append("photo", paymentFile);
   data.append("caption", caption);
 
+  showLoader();
+
   try {
     const res = await fetch(
       `https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`,
@@ -77,7 +87,7 @@ document.getElementById("orderForm").addEventListener("submit", async (e) => {
     // console.log(result);
 
     if (!result.ok) throw result;
-
+    hideLoader();
     alert("✅ Order Recieved");
     form.reset();
     clearCart();
