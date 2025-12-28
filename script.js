@@ -297,6 +297,50 @@ const games = [
 let cart = [];
 let tip = 0;
 
+function disableSubmit() {
+  const btn = document.getElementById("orderSubmitBtn");
+  if (btn) {
+    btn.disabled = true;
+    btn.style.opacity = "0.6";
+    btn.style.pointerEvents = "none";
+  }
+}
+
+function enableSubmit() {
+  const btn = document.getElementById("orderSubmitBtn");
+  if (btn) {
+    btn.disabled = false;
+    btn.style.opacity = "1";
+    btn.style.pointerEvents = "auto";
+  }
+}
+
+function playSuccessFeedback() {
+  // Sound
+  const audio = new Audio(
+    "https://assets.mixkit.co/sfx/preview/mixkit-confirmation-tone-2867.mp3"
+  );
+  audio.volume = 0.4;
+  audio.play().catch(() => {});
+
+  // Haptic (mobile only)
+  if (navigator.vibrate) {
+    navigator.vibrate([100, 50, 100]);
+  }
+}
+
+function playErrorFeedback() {
+  const audio = new Audio(
+    "https://assets.mixkit.co/sfx/preview/mixkit-wrong-answer-fail-notification-946.mp3"
+  );
+  audio.volume = 0.4;
+  audio.play().catch(() => {});
+
+  if (navigator.vibrate) {
+    navigator.vibrate([200, 100, 200]);
+  }
+}
+
 function renderGames(gameList) {
   let productHTML = "";
   gameList.forEach((element) => {

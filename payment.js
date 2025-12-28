@@ -49,7 +49,7 @@ function showSuccess(message = "Order received!") {
   setTimeout(hideLoader, 2000);
 }
 
-function showError(message = "Order failed. Try again.") {
+function showError(message = "Order failed") {
   const icon = document.getElementById("loaderIcon");
   const label = document.getElementById("loaderText");
 
@@ -57,7 +57,9 @@ function showError(message = "Order failed. Try again.") {
   icon.innerHTML = "✖";
   label.textContent = message;
 
-  setTimeout(hideLoader, 2500);
+  enableSubmit();
+
+  setTimeout(hideLoader, 3000);
 }
 
 function hideLoader() {
@@ -67,27 +69,33 @@ function hideLoader() {
 document.getElementById("orderForm").addEventListener("submit", async (e) => {
   e.preventDefault();
 
-  const form = e.target;
-  const name = form.name.value;
-  const games = form.games.value;
-  if (!games || games.trim().length === 0) {
-    alert("❌ Cart is empty. Please add games before submitting.");
+  if (cart.length === 0) {
+    showError("Cart is empty");
     return;
   }
 
+  const form = e.target;
+  const name = form.name.value;
   const email = form.email.value;
   const paymentFile = form.payment.files[0];
 
   if (!paymentFile) {
-    alert("❌ Upload payment screenshot");
+    showError("Upload payment screenshot");
     return;
   }
 
-  const BOT_TOKEN = "8246672302:AAFTjkRfjUbJf8J2eEHvmj03Ep3854lPJI8";
+  const games = cart.map((item) => `${item.game} x ${item.qty}`).join(", ");
+
+  const BOT_TOKEN = "NEW_TOKEN_HERE";
   const CHAT_ID = "5822439843";
 
+  const orderId = "ORD-" + Date.now().toString().slice(-6);
+
   const caption = (
-    "🛒 New Order Received\n\n" +
+    "🛒 New Order\n\n" +
+    "🆔 Order ID: " +
+    orderId +
+    "\n" +
     "👤 Name: " +
     name +
     "\n" +
@@ -103,7 +111,8 @@ document.getElementById("orderForm").addEventListener("submit", async (e) => {
   data.append("photo", paymentFile);
   data.append("caption", caption);
 
-  showLoader();
+  disableSubmit();
+  showLoader("Sending order…");
 
   try {
     const res = await fetch(
@@ -112,14 +121,27 @@ document.getElementById("orderForm").addEventListener("submit", async (e) => {
     );
 
     const result = await res.json();
+    console.log(result);
 
-    // console.log(result);
+    if (!result.ok) {
+      throw new Error(result.description || "Telegram error");
+    }
 
-    if (!result.ok) throw result;
-    showSuccess("Order received!");
-    form.reset();
-    clearCart();
+    document.getElementById("loaderText").innerHTML =
+      "Order received!<div class='order-id'>ID: " + orderId + "</div>";
+
+    playSuccessFeedback();
+
+    setTimeout(() => {
+      hideLoader();
+      hideCartModal();
+      form.reset();
+      clearCart();
+      enableSubmit();
+    }, 2000);
   } catch (err) {
-    showError("Order failed. Please retry.");
+    console.error("Telegram error:", err);
+    playErrorFeedback();
+    showError(err.message || "Order failed");
   }
 });
