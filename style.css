@@ -993,3 +993,21 @@ footer p {
     transform: rotate(360deg);
   }
 }
+/* Success & Error Icons */
+.loader-icon {
+  font-size: 48px;
+  margin-bottom: 15px;
+}
+
+.loader-success {
+  color: #2ecc71;
+}
+
+.loader-error {
+  color: #ff4d4d;
+}
+
+/* Smooth transition */
+.loader-box {
+  transition: all 0.3s ease;
+}

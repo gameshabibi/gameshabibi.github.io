@@ -26,9 +26,38 @@ function generateQRCode(amount) {
 }
 
 //form
+function showLoader(text = "Sending order…") {
+  const overlay = document.getElementById("loaderOverlay");
+  const icon = document.getElementById("loaderIcon");
+  const label = document.getElementById("loaderText");
 
-function showLoader() {
-  document.getElementById("loaderOverlay").style.display = "flex";
+  icon.className = "spinner";
+  icon.innerHTML = "";
+  label.textContent = text;
+
+  overlay.style.display = "flex";
+}
+
+function showSuccess(message = "Order received!") {
+  const icon = document.getElementById("loaderIcon");
+  const label = document.getElementById("loaderText");
+
+  icon.className = "loader-icon loader-success";
+  icon.innerHTML = "✔";
+  label.textContent = message;
+
+  setTimeout(hideLoader, 2000);
+}
+
+function showError(message = "Order failed. Try again.") {
+  const icon = document.getElementById("loaderIcon");
+  const label = document.getElementById("loaderText");
+
+  icon.className = "loader-icon loader-error";
+  icon.innerHTML = "✖";
+  label.textContent = message;
+
+  setTimeout(hideLoader, 2500);
 }
 
 function hideLoader() {
@@ -87,11 +116,10 @@ document.getElementById("orderForm").addEventListener("submit", async (e) => {
     // console.log(result);
 
     if (!result.ok) throw result;
-    hideLoader();
-    alert("✅ Order Recieved");
+    showSuccess("Order received!");
     form.reset();
     clearCart();
   } catch (err) {
-    alert("❌ Failed to send order");
+    showError("Order failed. Please retry.");
   }
 });
