@@ -103,6 +103,9 @@ document.getElementById("orderForm").addEventListener("submit", async (e) => {
     return;
   }
 
+  disableSubmit();
+  showLoader("Sending order…");
+
   const games = cart.map((item) => `${item.game} x ${item.qty}`).join(", ");
 
   const BOT_TOKEN = "8246672302:AAFHfb4h-MI23-p3OQDAiXvfq29PB_hB6Nw";
@@ -129,9 +132,6 @@ document.getElementById("orderForm").addEventListener("submit", async (e) => {
   data.append("chat_id", CHAT_ID);
   data.append("photo", paymentFile);
   data.append("caption", caption);
-
-  disableSubmit();
-  showLoader("Sending order…");
 
   try {
     const res = await fetch(
