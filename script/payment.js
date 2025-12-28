@@ -91,9 +91,20 @@ document.getElementById("orderForm").addEventListener("submit", async (e) => {
     return;
   }
 
+  if (!paymentFile.type.startsWith("image/")) {
+    showError("Only image files are allowed");
+    return;
+  }
+
+  const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 MB
+  if (paymentFile.size > MAX_FILE_SIZE) {
+    showError("Payment screenshot must be under 5 MB");
+    return;
+  }
+
   const games = cart.map((item) => `${item.game} x ${item.qty}`).join(", ");
 
-  const BOT_TOKEN = "8246672302:AAFTjkRfjUbJf8J2eEHvmj03Ep3854lPJI8";
+  const BOT_TOKEN = "8246672302:AAFHfb4h-MI23-p3OQDAiXvfq29PB_hB6Nw";
   const CHAT_ID = "5822439843";
 
   const orderId = "ORD-" + Date.now().toString().slice(-6);

@@ -328,7 +328,7 @@ function playSuccessFeedback() {
 }
 
 function playErrorFeedback() {
-  const audio = new Audio("error.wav");
+  const audio = new Audio("/audio/error.wav");
   audio.volume = 0.4;
   audio.play().catch(() => {});
 
