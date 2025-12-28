@@ -31,6 +31,7 @@ function showLoader(text = "Sending order…") {
   const icon = document.getElementById("loaderIcon");
   const label = document.getElementById("loaderText");
 
+  // 🔄 RESET to spinner every time
   icon.className = "spinner";
   icon.innerHTML = "";
   label.textContent = text;
@@ -49,17 +50,23 @@ function showSuccess(message = "Order received!") {
   setTimeout(hideLoader, 2000);
 }
 
-function showError(message = "Order failed") {
+function showError(message = "Order failed. Try again.") {
   const icon = document.getElementById("loaderIcon");
   const label = document.getElementById("loaderText");
 
+  // ❌ REMOVE spinner
   icon.className = "loader-icon loader-error";
   icon.innerHTML = "✖";
+
+  // 🧾 SHOW error message
   label.textContent = message;
 
   enableSubmit();
 
-  setTimeout(hideLoader, 3000);
+  // ⏱ Auto-hide overlay
+  setTimeout(() => {
+    hideLoader();
+  }, 3000);
 }
 
 function hideLoader() {
@@ -138,7 +145,7 @@ document.getElementById("orderForm").addEventListener("submit", async (e) => {
       form.reset();
       clearCart();
       enableSubmit();
-    }, 2000);
+    }, 3000);
   } catch (err) {
     console.error("Telegram error:", err);
     playErrorFeedback();
