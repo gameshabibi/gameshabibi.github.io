@@ -627,15 +627,10 @@ footer p {
     margin-bottom: 20px;
   }
 
-  .games-grid {
-    grid-template-columns: 1fr;
-    gap: 15px;
-  }
-
+  .games-grid,
   .contain {
-    grid-template-columns: 1fr;
-    gap: 15px;
-    padding: 2%;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
   }
 
   .game-card {
@@ -769,6 +764,13 @@ footer p {
     width: 70px;
     padding: 4px 8px;
     font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .games-grid,
+  .contain {
+    grid-template-columns: 1fr;
   }
 }
 
