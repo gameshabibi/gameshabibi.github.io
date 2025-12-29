@@ -42,22 +42,21 @@
               <button id="cartBtn" class="btn" style="padding: 6px 18px; font-size: 0.9rem;">Cart (<span id="cartCount">0</span>)</button>
             </li>
           </ul>
-          <div id="lastOrderBox" style="
-  display:none;
-  margin: 12px auto;
-  padding: 10px 14px;
-  max-width: 200px;
-  background: #1e2226;
-  border: 1px solid #00bfff;
-  border-radius: 10px;
-  text-align: center;
-">
-  <p style="margin:0; color:#b0b0b0;">Last Order ID</p>
-  <b id="lastOrderIdText" style="color:#00bfff; font-size:1.1rem;"></b>
-  <br><br>
-  <button id="copyLastOrderBtn" class="btn">Copy Order ID</button>
-</div>
-
+            <div id="lastOrderBox" style="
+                  display:none;
+                  margin: 12px auto;
+                  padding: 10px 14px;
+                  max-width: 200px;
+                  background: #1e2226;
+                  border: 1px solid #00bfff;
+                  border-radius: 10px;
+                  text-align: center;
+                  ">
+            <p style="margin:0; color:#b0b0b0;">Last Order ID</p>
+            <b id="lastOrderIdText" style="color:#00bfff; font-size:1.1rem;"></b>
+            <br><br>
+            <button id="copyLastOrderBtn" class="btn">Copy Order ID</button>
+          </div>
         </nav>
       </div>
     </header>
@@ -79,11 +78,14 @@
           <h2>Other Services</h2>
           <div class="contain">
             <!-- other services -->
+            
           </div>
           <br><br>
           <div class="container">
             <h2>Featured Games</h2>
-            <div class="games-grid"></div>
+            <div class="games-grid">
+              
+            </div>
             <br><br>
           <h1>For other games , contact me</h1>
         </div>
@@ -104,7 +106,7 @@
               class="insta"
               target="_blank"
               href="https://www.instagram.com/games_habibi?igsh=aDJsNXo3bzQwMXY2"
-              >Everything.habibi</a
+              >Games_habibi</a
             >
           </p>
         </div>
@@ -128,9 +130,7 @@
         <span class="close" id="closeCart">&times;</span>
         <h2>Your Cart</h2>
         <div id="cartItems"></div>
-        <!-- <div class="tip">
-          working
-        </div> -->
+  
         <div id="cartTotal" style="margin: 15px 0"></div>
         <div id="tipSection" style="margin: 15px 0; text-align: center">
           <label for="tipAmount" style="color: #f3f3f3; margin-right: 10px">Add Tip (₹):</label>
@@ -167,20 +167,10 @@
         <div id="qrCode"></div>
         <h3 style="text-align: center; color: #00bfff; font-size: 1.1rem; margin: 15px 0; font-weight: bold; text-transform: uppercase; letter-spacing: 1px;">Use QR Code if Pay Now Button Fails</h3>
         <div id="payButton" style="margin-top: 20px; text-align: center"></div>
-        <!-- <div style="margin-top: 20px; text-align: center">
-          Instamojo Payment Button (UPDATED)
-          <a
-            href="https://www.instamojo.com/@everything_habibi/ld6d1a288622d4899ba9ff1cf7243c0a1/"
-            rel="im-checkout"
-            data-text="Get now !!"
-            data-css-style="color:#bed3f3; background:#1273de; width:180px; border-radius:4px"
-            data-layout="vertical"
-          ></a>
-        </div> -->
+       
       </div>
     </div>
-    <!--  Instamojo Button Script
-   <script src="https://js.instamojo.com/v1/button.js"></script>  -->
+
     <footer>
       <div class="container">
         <p>&copy; 2025 GameStore. All rights reserved.</p>

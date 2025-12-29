@@ -306,6 +306,20 @@ function disableSubmit() {
   }
 }
 
+function playErrorFeedback() {
+  try {
+    const audio = new Audio("/audio/error.wav");
+    audio.volume = 0.4;
+    audio.play().catch(() => {});
+  } catch (e) {
+    console.warn("Error sound failed");
+  }
+
+  if (navigator.vibrate) {
+    navigator.vibrate([200, 100, 200]);
+  }
+}
+
 function enableSubmit() {
   const btn = document.getElementById("orderSubmitBtn");
   if (btn) {
@@ -329,25 +343,11 @@ function playSuccessFeedback() {
   }
 }
 
-function playErrorFeedback() {
-  try {
-    const audio = new Audio("/audio/error.wav");
-    audio.volume = 0.4;
-    audio.play().catch(() => {});
-  } catch (e) {
-    console.warn("Error sound failed");
-  }
-
-  if (navigator.vibrate) {
-    navigator.vibrate([200, 100, 200]);
-  }
-}
-
 function renderGames(gameList) {
   let productHTML = "";
   gameList.forEach((element) => {
     productHTML += `
-  <div class="game-card" data-name="${element.name}">
+    <div class="game-card" data-name="${element.name}">
     <a target="_blank" href="${element.link}">
       <img src="${element.img}" alt="${element.name}" />
     </a>
@@ -358,8 +358,8 @@ function renderGames(gameList) {
       data-name="${element.name}"
       data-price="${element.p.price}">
       Add to Cart
-    </button>
-  </div>`;
+      </button>
+      </div>`;
   });
   const htmlGrid = document.querySelector(".games-grid");
   htmlGrid.innerHTML = productHTML;
@@ -377,25 +377,70 @@ function renderServices(serviceList) {
   let serviceHTML = "";
   serviceList.forEach((element) => {
     serviceHTML += `<div class="game-card" data-name="${element.name}">
-              <a href="${element.link}"><img src="${element.img}" alt="${element.name}" /></a>
-              <h3>${element.name}</h3>
-              <p>${element.p.genre} | &#8377;${element.p.price}</p>
-              <button onclick="addToCart('${element.name}', ${element.p.price})">
-                Add to Cart
-              </button>
-            </div>`;
+    <a href="${element.link}"><img src="${element.img}" alt="${element.name}" /></a>
+    <h3>${element.name}</h3>
+    <p>${element.p.genre} | &#8377;${element.p.price}</p>
+    <button onclick="addToCart('${element.name}', ${element.p.price})">
+    Add to Cart
+    </button>
+              </div>`;
   });
   const otherGrid = document.querySelector(".contain");
   let donateHTML = `<div class="game-card" data-name="Donation">
-    <img src="png/donate2.png" alt="Donate" />
-    <h3>Donate | Pay</h3>
-    <p> <b>Amount</b> | <input type="number" id="donateAmount" min="1" value="10" style="width: 60px; padding: 2px; border-radius: 4px; border: 1px solid #00bfff; background: #23272a; color: #f3f3f3;"> ₹</p>
+            <img src="png/donate2.png" alt="Donate" />
+            <h3>Donate | Pay</h3>
+            <p> <b>Amount</b> | <input type="number" id="donateAmount" min="1" value="10" style="width: 60px; padding: 2px; border-radius: 4px; border: 1px solid #00bfff; background: #23272a; color: #f3f3f3;"> ₹</p>
     <button onclick="addToCart('Donation', parseFloat(document.getElementById('donateAmount').value) || 10)">
-      Donate
+    Donate
     </button>
-  </div>`;
-  otherGrid.innerHTML = donateHTML + serviceHTML;
+    </div>`;
+
+  let dropdown = `
+<div class="game-card">
+  <img src="https://sm.pcmag.com/t/pcmag_uk/review/x/xbox/xbox_rmuk.3840.jpg" alt="Xbox" />
+
+  <h3>Xbox Game Pass</h3>
+
+  <select onchange="change(this)" class="xbox-select">
+    <option value="Xbox Game Pass" data-price="149">
+      Xbox Game Pass | ₹149
+    </option>
+    <option value="Xbox Game Pass Ultimate" data-price="199">
+      Xbox Game Pass Ultimate | ₹199
+    </option>
+  </select>
+
+  <p class="xbox">1 month | ₹149</p>
+
+  <button class="add-xbox-btn">Add to Cart</button>
+</div>
+`;
+
+  otherGrid.innerHTML = donateHTML + serviceHTML + dropdown;
 }
+
+function change(select) {
+  const card = select.closest(".game-card");
+  const para = card.querySelector(".xbox");
+
+  const option = select.options[select.selectedIndex];
+  const price = parseFloat(option.dataset.price);
+
+  para.innerHTML = `1 month | ₹${price}`;
+}
+
+document.addEventListener("click", function (e) {
+  if (e.target.classList.contains("add-xbox-btn")) {
+    const card = e.target.closest(".game-card");
+    const select = card.querySelector(".xbox-select");
+    const option = select.options[select.selectedIndex];
+
+    const name = option.value;
+    const price = parseFloat(option.dataset.price);
+
+    addToCart(name, price);
+  }
+});
 
 function highlightGame(name) {
   const element = document.querySelector(`[data-name="${name}"]`);
@@ -409,14 +454,13 @@ function highlightGame(name) {
 }
 
 function addToCart(game, price) {
-  // console.log("addToCart called with", game, price);
-  // Check if game already in cart, increment quantity
   const found = cart.find((item) => item.game === game);
   if (found) {
     found.qty += 1;
   } else {
     cart.push({ game, price, qty: 1 });
   }
+
   updateCartCount();
   updateGameInputField();
   showCartToast(`${game} added to cart!`);
@@ -547,7 +591,6 @@ function showCartToast(msg) {
   }, 3000);
 }
 
-// Contact form handler and cart modal events
 document.addEventListener("DOMContentLoaded", function () {
   renderGames(games);
   renderServices(services);
