@@ -427,6 +427,9 @@ function change(select) {
   const price = parseFloat(option.dataset.price);
 
   para.innerHTML = `1 month | ₹${price}`;
+
+  para.classList.add("updated");
+  setTimeout(() => para.classList.remove("updated"), 200);
 }
 
 document.addEventListener("click", function (e) {
