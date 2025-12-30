@@ -34,6 +34,33 @@ const services = [
 
 const games = [
   {
+    link: "#",
+    img: "https://images.igdb.com/igdb/image/upload/t_cover_big/co3ofx.webp",
+    name: "Forza horizon 5",
+    p: {
+      genre: "Racing",
+      price: 149,
+    },
+  },
+  {
+    link: "https://www.igdb.com/games/cricket-26",
+    img: "https://images.igdb.com/igdb/image/upload/t_cover_big/coav6j.webp",
+    name: "Cricket 26",
+    p: {
+      genre: " Simulator, Sport",
+      price: 149,
+    },
+  },
+  {
+    link: "https://www.igdb.com/games/solo-leveling-arise-overdrive",
+    img: "https://images.igdb.com/igdb/image/upload/t_cover_big/coakb8.webp",
+    name: "Solo Leveling: Arise Overdrive",
+    p: {
+      genre: "Role-playing (RPG)",
+      price: 49,
+    },
+  },
+  {
     link: "https://www.igdb.com/games/only-up",
     img: "https://images.igdb.com/igdb/image/upload/t_cover_big/co6l8u.webp",
     name: "Only Up!",
@@ -139,6 +166,15 @@ const games = [
     p: {
       genre: "Adventure",
       price: 149,
+    },
+  },
+  {
+    link: "https://www.igdb.com/games/cricket-22",
+    img: "https://images.igdb.com/igdb/image/upload/t_cover_big/co4pmp.webp",
+    name: "Cricket 22",
+    p: {
+      genre: " Simulator, Sport",
+      price: 49,
     },
   },
   {
@@ -303,15 +339,7 @@ const games = [
       price: 149,
     },
   },
-  {
-    link: "#",
-    img: "https://images.igdb.com/igdb/image/upload/t_cover_big/co3ofx.webp",
-    name: "Forza horizon 5",
-    p: {
-      genre: "Racing",
-      price: 149,
-    },
-  },
+
   {
     link: "#",
     img: "https://images.igdb.com/igdb/image/upload/t_cover_big/co8h3y.webp",
