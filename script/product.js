@@ -19,8 +19,38 @@ const services = [
     },
   },
 ];
+/*
+ {
+    link: "",
+    img: "",
+    name: "",
+    p: {
+      genre: "",
+      price: ,
+    },
+  },
+
+*/
 
 const games = [
+  {
+    link: "https://www.igdb.com/games/only-up",
+    img: "https://images.igdb.com/igdb/image/upload/t_cover_big/co6l8u.webp",
+    name: "Only Up!",
+    p: {
+      genre: "Adventure, Indie",
+      price: 49,
+    },
+  },
+  {
+    link: "https://www.igdb.com/games/ghost-of-tsushima-directors-cut",
+    img: "https://images.igdb.com/igdb/image/upload/t_cover_big/co3p5f.webp",
+    name: "Ghost of Tsushima: Director's Cut",
+    p: {
+      genre: "Role-playing (RPG), Adventure",
+      price: 69,
+    },
+  },
   {
     link: "https://www.igdb.com/games/a-way-out",
     img: "https://images.igdb.com/igdb/image/upload/t_cover_big/co1vca.webp",

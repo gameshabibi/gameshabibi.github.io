@@ -394,7 +394,7 @@ nav a:hover {
   border-radius: 10px;
   margin: 0 auto 15px;
   height: 180px;
-  object-fit: cover;
+  object-fit: contain;
 }
 
 form {
