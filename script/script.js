@@ -119,7 +119,9 @@ document.addEventListener("click", function (e) {
     const gameName = card.dataset.name + " (" + option.value + ")";
     const price = parseFloat(option.dataset.price);
 
-    addToCart(gameName, price);
+    const isEligibleVariant = option.value === "In your steam account";
+
+    addToCart(gameName, price, true, isEligibleVariant);
   }
 });
 
@@ -127,7 +129,7 @@ document.addEventListener("click", function (e) {
   if (e.target.classList.contains("add-to-cart-btn")) {
     const name = e.target.dataset.name;
     const price = parseFloat(e.target.dataset.price);
-    addToCart(name, price);
+    addToCart(name, price, true);
   }
 });
 
@@ -199,7 +201,7 @@ document.addEventListener("click", function (e) {
     const name = option.value;
     const price = parseFloat(option.dataset.price);
 
-    addToCart(name, price);
+    addToCart(name, price, true);
   }
 });
 
@@ -224,12 +226,12 @@ function highlightGame(name) {
   }, 3000);
 }
 
-function addToCart(game, price) {
+function addToCart(game, price, isGame = false, isDiscountEligible = false) {
   const found = cart.find((item) => item.game === game);
   if (found) {
     found.qty += 1;
   } else {
-    cart.push({ game, price, qty: 1 });
+    cart.push({ game, price, qty: 1, isGame, isDiscountEligible });
   }
 
   updateCartCount();
@@ -258,6 +260,13 @@ function updateGameInputField() {
   gameInput.value = gameNames.join(", ");
 }
 
+function getDiscountRate(gameCount) {
+  if (gameCount >= 5) return 0.15;
+  if (gameCount >= 3) return 0.1;
+  if (gameCount >= 2) return 0.05;
+  return 0;
+}
+
 function renderCart() {
   // console.log("renderCart called, cart:", cart);
   const cartItems = document.getElementById("cartItems");
@@ -278,24 +287,52 @@ function renderCart() {
   }
   let html = "";
   let total = 0;
+  let eligibleGameTotal = 0;
+  let eligibleGameCount = 0;
+
   cart.forEach((item, idx) => {
-    total += item.price * item.qty;
-    html += `<div class="cart-item">${item.game} x ${item.qty} <span>₹${(
-      item.price * item.qty
-    ).toFixed(
-      2
-    )}</span> <button class="remove-btn" onclick="removeFromCart(${idx})">Remove</button></div>`;
+    const itemTotal = item.price * item.qty;
+    total += itemTotal;
+
+    if (item.isGame && item.isDiscountEligible) {
+      eligibleGameTotal += itemTotal;
+      eligibleGameCount += item.qty;
+    }
+
+    html += `<div class="cart-item">
+    ${item.game} x ${item.qty}
+    <span>₹${itemTotal.toFixed(2)}</span>
+    <button class="remove-btn" onclick="removeFromCart(${idx})">Remove</button>
+  </div>`;
   });
+
   cartItems.innerHTML = html;
-  cartTotal.textContent = `Total: ₹${(total + tip).toFixed(2)}`;
+
+  const discountRate = getDiscountRate(eligibleGameCount);
+  const discountAmount = eligibleGameTotal * discountRate;
+  const finalTotal = total - discountAmount + tip;
+
+  cartTotal.innerHTML = `
+  <div>Subtotal: ₹${total.toFixed(2)}</div>
+  ${
+    discountRate > 0
+      ? `<div style="color:#00ff88;">
+          Discount on Steam Account Games (${discountRate * 100}%):
+          −₹${discountAmount.toFixed(2)}
+        </div>`
+      : ""
+  }
+  <strong>Total: ₹${finalTotal.toFixed(2)}</strong>
+`;
+
   // Enable Instamojo button and update label with total
   if (imButton) {
     imButton.style.pointerEvents = "auto";
     imButton.style.opacity = "1";
-    imButton.setAttribute("data-text", `Pay ₹${(total + tip).toFixed(2)}`);
+    imButton.setAttribute("data-text", `Pay ₹${finalTotal.toFixed(2)}`);
   }
 
-  generateQRCode(total + tip);
+  generateQRCode(finalTotal);
 }
 
 function removeFromCart(idx) {
