@@ -49,25 +49,79 @@ function playSuccessFeedback() {
 
 function renderGames(gameList) {
   let productHTML = "";
+
   gameList.forEach((element) => {
+    const hasVariants = element.p.variants && element.p.variants.length > 0;
+
     productHTML += `
     <div class="game-card" data-name="${element.name}">
-    <a target="_blank" href="${element.link}">
-      <img src="${element.img}" alt="${element.name}" />
-    </a>
-    <h3>${element.name}</h3>
-    <p>${element.p.genre} | ₹${element.p.price}</p>
-    <button 
-      class="add-to-cart-btn"
-      data-name="${element.name}"
-      data-price="${element.p.price}">
-      Add to Cart
-      </button>
-      </div>`;
+      <a target="_blank" href="${element.link}">
+        <img src="${element.img}" alt="${element.name}" />
+      </a>
+
+      <h3>${element.name}</h3>
+
+      ${
+        hasVariants
+          ? `
+        <select class="variant-select">
+          ${element.p.variants
+            .map(
+              (v) =>
+                `<option value="${v.name}" data-price="${v.price}">
+                  ${v.name} | ₹${v.price}
+                </option>`
+            )
+            .join("")}
+        </select>
+
+        <p class="variant-price">${element.p.genre} | ₹${
+              element.p.variants[0].price
+            }</p>
+
+        <button class="add-variant-btn">Add to Cart</button>
+        `
+          : `
+        <p>${element.p.genre} | ₹${element.p.price}</p>
+        <button 
+          class="add-to-cart-btn"
+          data-name="${element.name}"
+          data-price="${element.p.price}">
+          Add to Cart
+        </button>
+        `
+      }
+    </div>`;
   });
-  const htmlGrid = document.querySelector(".games-grid");
-  htmlGrid.innerHTML = productHTML;
+
+  document.querySelector(".games-grid").innerHTML = productHTML;
 }
+
+document.addEventListener("change", function (e) {
+  if (e.target.classList.contains("variant-select")) {
+    const card = e.target.closest(".game-card");
+    const para = card.querySelector(".variant-price");
+
+    const option = e.target.options[e.target.selectedIndex];
+    const price = option.dataset.price;
+
+    para.innerHTML = `${para.innerHTML.split("|")[0]} | ₹${price}`;
+    para.classList.add("updated");
+    setTimeout(() => para.classList.remove("updated"), 200);
+  }
+});
+document.addEventListener("click", function (e) {
+  if (e.target.classList.contains("add-variant-btn")) {
+    const card = e.target.closest(".game-card");
+    const select = card.querySelector(".variant-select");
+    const option = select.options[select.selectedIndex];
+
+    const gameName = card.dataset.name + " (" + option.value + ")";
+    const price = parseFloat(option.dataset.price);
+
+    addToCart(gameName, price);
+  }
+});
 
 document.addEventListener("click", function (e) {
   if (e.target.classList.contains("add-to-cart-btn")) {
@@ -100,7 +154,7 @@ function renderServices(serviceList) {
     </div>`;
 
   let dropdown = `
-<div class="game-card">
+  <div class="game-card">
   <img src="https://sm.pcmag.com/t/pcmag_uk/review/x/xbox/xbox_rmuk.3840.jpg" alt="Xbox" />
 
   <h3>Xbox Game Pass</h3>
@@ -150,14 +204,24 @@ document.addEventListener("click", function (e) {
 });
 
 function highlightGame(name) {
-  const element = document.querySelector(`[data-name="${name}"]`);
-  if (element) {
-    element.scrollIntoView({ behavior: "smooth", block: "center" });
-    element.classList.add("highlight");
-    setTimeout(() => {
-      element.classList.remove("highlight");
-    }, 3000);
+  const element = document.querySelector(`[data-name="${CSS.escape(name)}"]`);
+
+  if (!element) {
+    console.warn("highlightGame: element not found →", name);
+    showCartToast(`${name} not found on page`);
+    return;
   }
+
+  element.scrollIntoView({
+    behavior: "smooth",
+    block: "center",
+  });
+
+  element.classList.add("highlight");
+
+  setTimeout(() => {
+    element.classList.remove("highlight");
+  }, 3000);
 }
 
 function addToCart(game, price) {
@@ -297,8 +361,7 @@ function showCartToast(msg) {
     }, 300);
   }, 3000);
 }
-
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", () => {
   renderGames(games);
   renderServices(services);
 
@@ -308,7 +371,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const closeCart = document.getElementById("closeCart");
   const clearCartBtn = document.getElementById("clearCartBtn");
   const applyTipBtn = document.getElementById("applyTipBtn");
-  const searchBtn = document.getElementById("searchBtn");
+
   const searchResults = document.getElementById("searchResults");
   if (cartBtn) {
     cartBtn.addEventListener("click", function () {
@@ -370,9 +433,6 @@ document.addEventListener("DOMContentLoaded", function () {
   }
   handleFadeIn();
   window.addEventListener("scroll", handleFadeIn);
-});
-
-document.addEventListener("DOMContentLoaded", () => {
   const lastOrderId = localStorage.getItem("lastOrderId");
 
   if (lastOrderId) {

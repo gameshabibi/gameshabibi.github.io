@@ -112,7 +112,7 @@ document.getElementById("orderForm").addEventListener("submit", async (e) => {
 
   const games = cart.map((item) => `${item.game} x ${item.qty}`).join(", ");
 
-  const BOT_TOKEN = "8246672302:AAFHfb4h-MI23-p3OQDAiXvfq29PB_hB6Nw";
+  const BOT_TOKEN = "8246672302:AAFP8NvVADdAuJPQKGXtvhUP5d65Hl51a0U";
   const CHAT_ID = "5822439843";
 
   const orderId = "ORD-" + Date.now().toString().slice(-6);

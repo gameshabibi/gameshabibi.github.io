@@ -39,7 +39,10 @@ const games = [
     name: "Forza horizon 5",
     p: {
       genre: "Racing",
-      price: 149,
+      variants: [
+        { name: "In your steam account", price: 549 },
+        { name: "Shared Steam Account", price: 149 },
+      ],
     },
   },
   {
@@ -48,7 +51,10 @@ const games = [
     name: "Cricket 26",
     p: {
       genre: " Simulator, Sport",
-      price: 149,
+      variants: [
+        { name: "In your steam account", price: 549 },
+        { name: "Shared Steam Account", price: 149 },
+      ],
     },
   },
   {
@@ -57,7 +63,10 @@ const games = [
     name: "Solo Leveling: Arise Overdrive",
     p: {
       genre: "Role-playing (RPG)",
-      price: 49,
+      variants: [
+        { name: "In your steam account", price: 549 },
+        { name: "Shared Steam Account", price: 149 },
+      ],
     },
   },
   {
@@ -66,7 +75,10 @@ const games = [
     name: "Only Up!",
     p: {
       genre: "Adventure, Indie",
-      price: 49,
+      variants: [
+        { name: "In your steam account", price: 549 },
+        { name: "Shared Steam Account", price: 149 },
+      ],
     },
   },
   {
@@ -84,7 +96,10 @@ const games = [
     name: "A Way Out",
     p: {
       genre: "Adventure",
-      price: 99,
+      variants: [
+        { name: "In your steam account", price: 549 },
+        { name: "Shared Steam Account", price: 149 },
+      ],
     },
   },
   {
@@ -93,7 +108,10 @@ const games = [
     name: "Euro Truck Simulator 2",
     p: {
       genre: "Racing, Simulator",
-      price: 99,
+      variants: [
+        { name: "In your steam account", price: 549 },
+        { name: "Shared Steam Account", price: 149 },
+      ],
     },
   },
   {
@@ -102,7 +120,10 @@ const games = [
     name: "The last of us",
     p: {
       genre: "Shooter, Adventure",
-      price: 149,
+      variants: [
+        { name: "In your steam account", price: 549 },
+        { name: "Shared Steam Account", price: 149 },
+      ],
     },
   },
   {
@@ -111,7 +132,10 @@ const games = [
     name: "Spider Man Miles Morals",
     p: {
       genre: "Shooter, Adventure",
-      price: 89,
+      variants: [
+        { name: "In your steam account", price: 549 },
+        { name: "Shared Steam Account", price: 149 },
+      ],
     },
   },
   {
@@ -120,7 +144,10 @@ const games = [
     name: "The Witcher 3: Wild Hunt",
     p: {
       genre: "Role-playing (RPG), Adventure",
-      price: 99,
+      variants: [
+        { name: "In your steam account", price: 549 },
+        { name: "Shared Steam Account", price: 149 },
+      ],
     },
   },
   {
@@ -129,7 +156,10 @@ const games = [
     name: "God of War",
     p: {
       genre: "Adventure",
-      price: 149,
+      variants: [
+        { name: "In your steam account", price: 549 },
+        { name: "Shared Steam Account", price: 149 },
+      ],
     },
   },
   {
@@ -138,7 +168,10 @@ const games = [
     name: "God of War Ragnarök",
     p: {
       genre: " Role-playing (RPG), Adventure",
-      price: 149,
+      variants: [
+        { name: "In your steam account", price: 549 },
+        { name: "Shared Steam Account", price: 149 },
+      ],
     },
   },
   {
@@ -147,7 +180,10 @@ const games = [
     name: "Assassin's Creed Shadows",
     p: {
       genre: "Role-playing (RPG), Adventure",
-      price: 149,
+      variants: [
+        { name: "In your steam account", price: 549 },
+        { name: "Shared Steam Account", price: 149 },
+      ],
     },
   },
   {
@@ -156,7 +192,10 @@ const games = [
     name: "Mafia: The Old Country",
     p: {
       genre: "Shooter, Adventure",
-      price: 169,
+      variants: [
+        { name: "In your steam account", price: 549 },
+        { name: "Shared Steam Account", price: 149 },
+      ],
     },
   },
   {
@@ -165,7 +204,10 @@ const games = [
     name: "Wuchang: Fallen Feathers",
     p: {
       genre: "Adventure",
-      price: 149,
+      variants: [
+        { name: "In your steam account", price: 549 },
+        { name: "Shared Steam Account", price: 149 },
+      ],
     },
   },
   {
@@ -174,7 +216,10 @@ const games = [
     name: "Cricket 22",
     p: {
       genre: " Simulator, Sport",
-      price: 49,
+      variants: [
+        { name: "In your steam account", price: 549 },
+        { name: "Shared Steam Account", price: 149 },
+      ],
     },
   },
   {
@@ -183,7 +228,10 @@ const games = [
     name: "Marvel's Spider-Man 2",
     p: {
       genre: "Hack and slash/Beat 'em up, Adventure",
-      price: 149,
+      variants: [
+        { name: "In your steam account", price: 549 },
+        { name: "Shared Steam Account", price: 149 },
+      ],
     },
   },
   {
@@ -192,7 +240,10 @@ const games = [
     name: "Grand Theft Auto V",
     p: {
       genre: "offline only",
-      price: 149,
+      variants: [
+        { name: "In your steam account", price: 549 },
+        { name: "Shared Steam Account", price: 149 },
+      ],
     },
   },
   {
@@ -201,7 +252,10 @@ const games = [
     name: "Red Dead Redemption",
     p: {
       genre: "Adventure, Action",
-      price: 99,
+      variants: [
+        { name: "In your steam account", price: 549 },
+        { name: "Shared Steam Account", price: 149 },
+      ],
     },
   },
   {
@@ -210,7 +264,10 @@ const games = [
     name: "Stellar Blade",
     p: {
       genre: "Role-playing (RPG)",
-      price: 149,
+      variants: [
+        { name: "In your steam account", price: 549 },
+        { name: "Shared Steam Account", price: 149 },
+      ],
     },
   },
   {
@@ -219,7 +276,10 @@ const games = [
     name: "Sekiro: Shadows Die Twice",
     p: {
       genre: "Action-Adventure",
-      price: 149,
+      variants: [
+        { name: "In your steam account", price: 549 },
+        { name: "Shared Steam Account", price: 149 },
+      ],
     },
   },
   {
@@ -228,7 +288,10 @@ const games = [
     name: "Tekken 8",
     p: {
       genre: "Fighting",
-      price: 149,
+      variants: [
+        { name: "In your steam account", price: 549 },
+        { name: "Shared Steam Account", price: 149 },
+      ],
     },
   },
   {
@@ -237,7 +300,10 @@ const games = [
     name: "Life is Strange Remastered",
     p: {
       genre: " Role-playing (RPG), Adventure",
-      price: 129,
+      variants: [
+        { name: "In your steam account", price: 549 },
+        { name: "Shared Steam Account", price: 149 },
+      ],
     },
   },
   {
@@ -246,7 +312,10 @@ const games = [
     name: "Elden Ring",
     p: {
       genre: "Action RPG",
-      price: 149,
+      variants: [
+        { name: "In your steam account", price: 549 },
+        { name: "Shared Steam Account", price: 149 },
+      ],
     },
   },
   {
@@ -255,7 +324,10 @@ const games = [
     name: "Far Cry 5",
     p: {
       genre: "Adventure, Action",
-      price: 149,
+      variants: [
+        { name: "In your steam account", price: 549 },
+        { name: "Shared Steam Account", price: 149 },
+      ],
     },
   },
   {
@@ -273,7 +345,10 @@ const games = [
     name: "Clair Obscur: Expedition 33",
     p: {
       genre: "Role-playing (RPG), (TBS)",
-      price: 149,
+      variants: [
+        { name: "In your steam account", price: 549 },
+        { name: "Shared Steam Account", price: 149 },
+      ],
     },
   },
   {
@@ -282,7 +357,10 @@ const games = [
     name: "Resident all variant",
     p: {
       genre: "Companion",
-      price: 149,
+      variants: [
+        { name: "In your steam account", price: 549 },
+        { name: "Shared Steam Account", price: 149 },
+      ],
     },
   },
   {
@@ -291,7 +369,10 @@ const games = [
     name: "Hogwarts Legacy",
     p: {
       genre: "Role-playing (RPG), Adventure",
-      price: 149,
+      variants: [
+        { name: "In your steam account", price: 549 },
+        { name: "Shared Steam Account", price: 149 },
+      ],
     },
   },
   {
@@ -300,7 +381,10 @@ const games = [
     name: "WatchDogs 2",
     p: {
       genre: "Shooter, Adventure",
-      price: 149,
+      variants: [
+        { name: "In your steam account", price: 549 },
+        { name: "Shared Steam Account", price: 149 },
+      ],
     },
   },
   {
@@ -309,7 +393,10 @@ const games = [
     name: "Cyberpunk 2077",
     p: {
       genre: "Shooter, Role-playing (RPG), Adventure",
-      price: 149,
+      variants: [
+        { name: "In your steam account", price: 549 },
+        { name: "Shared Steam Account", price: 149 },
+      ],
     },
   },
   {
@@ -318,7 +405,10 @@ const games = [
     name: "Call of Duty: Black Ops",
     p: {
       genre: "First-person shooter",
-      price: 139,
+      variants: [
+        { name: "In your steam account", price: 549 },
+        { name: "Shared Steam Account", price: 149 },
+      ],
     },
   },
   {
@@ -327,7 +417,10 @@ const games = [
     name: "Call of Duty: Modern Warfare 2",
     p: {
       genre: "First-person shooter",
-      price: 129,
+      variants: [
+        { name: "In your steam account", price: 549 },
+        { name: "Shared Steam Account", price: 149 },
+      ],
     },
   },
   {
@@ -336,7 +429,10 @@ const games = [
     name: "The Last of Us Part II",
     p: {
       genre: "Action-Adventure",
-      price: 149,
+      variants: [
+        { name: "In your steam account", price: 549 },
+        { name: "Shared Steam Account", price: 149 },
+      ],
     },
   },
 
@@ -346,7 +442,10 @@ const games = [
     name: "Black Myth: Wukong",
     p: {
       genre: "Action RPG",
-      price: 149,
+      variants: [
+        { name: "In your steam account", price: 549 },
+        { name: "Shared Steam Account", price: 149 },
+      ],
     },
   },
 ];

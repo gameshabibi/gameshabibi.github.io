@@ -3,18 +3,38 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Game store</title>
-    <link rel="apple-touch-icon" sizes="180x180" href="png/apple-touch-icon.png" />
-    <link rel="icon" type="image/png" sizes="32x32" href="png/favicon-32x32.png" />
-    <link rel="icon" type="image/png" sizes="16x16" href="png/favicon-16x16.png" />
+
+    <title>Game Store</title>
+
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="png/apple-touch-icon.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="png/favicon-32x32.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="png/favicon-16x16.png"
+    />
     <link rel="manifest" href="/site.webmanifest" />
+
     <link rel="stylesheet" href="css/style.css" />
+
     <script
       src="https://kit.fontawesome.com/a8521956f6.js"
       crossorigin="anonymous"
     ></script>
   </head>
+
   <body>
+    <!-- HEADER -->
     <header>
       <div class="container">
         <h1>
@@ -26,171 +46,184 @@
             >Games Habibi</a
           >
         </h1>
-        <br />
+
         <h1>GameStore</h1>
+
         <nav>
           <ul>
             <li><a href="#">Home</a></li>
             <li><a href="#games">Games</a></li>
             <li><a href="#about">About</a></li>
             <li><a href="#contact">Contact</a></li>
-            <li style="display: flex; align-items: center; gap: 10px;">
-              <input type="text" id="searchInput" placeholder="Search games & services..." style="padding: 6px 12px; border-radius: 20px; border: 1px solid #333; background: #23272a; color: #f3f3f3; font-size: 0.9rem; width: 200px;">
-              <button id="searchBtn" class="btn" style="padding: 6px 18px; font-size: 0.9rem;">Search</button>
+
+            <li style="display: flex; align-items: center; gap: 10px">
+              <input
+                type="text"
+                id="searchInput"
+                placeholder="Search games & services..."
+              />
+              <button id="searchBtn" class="btn btn-small">Search</button>
             </li>
+
             <li>
-              <button id="cartBtn" class="btn" style="padding: 6px 18px; font-size: 0.9rem;">Cart (<span id="cartCount">0</span>)</button>
+              <button id="cartBtn" class="btn btn-small">
+                Cart (<span id="cartCount">0</span>)
+              </button>
             </li>
           </ul>
-            <div id="lastOrderBox" style="
-                  display:none;
-                  margin: 12px auto;
-                  padding: 10px 14px;
-                  max-width: 200px;
-                  background: #1e2226;
-                  border: 1px solid #00bfff;
-                  border-radius: 10px;
-                  text-align: center;
-                  ">
-            <p style="margin:0; color:#b0b0b0;">Last Order ID</p>
-            <b id="lastOrderIdText" style="color:#00bfff; font-size:1.1rem;"></b>
-            <br><br>
+
+          <!-- LAST ORDER BOX -->
+          <div id="lastOrderBox" style="display: none">
+            <p>Last Order ID</p>
+            <b id="lastOrderIdText"></b>
+            <br /><br />
             <button id="copyLastOrderBtn" class="btn">Copy Order ID</button>
           </div>
         </nav>
       </div>
     </header>
-    <div id="searchResults" style="display: none; max-height: 200px; overflow-y: auto; background: #23272a; padding: 10px; margin: 10px auto; max-width: 1200px; border-radius: 8px; box-shadow: 0 4px 16px rgba(0, 191, 255, 0.1);"></div>
+
+    <!-- SEARCH RESULTS -->
+    <div id="searchResults"></div>
+
     <main>
+      <!-- HERO -->
       <section class="hero fade-in">
         <div class="container">
           <h2>Discover & Buy the Best PC Games</h2>
           <p>Browse our collection of top-rated games and exclusive deals!</p>
-          <h4>
-            DM me on insta to get further discount and login details after payment.
-          </h4>
-          <p>Secure UPI payments available now!</p>
+          <h4>DM on Instagram for discounts & login details after payment</h4>
+          <p>Secure UPI payments available</p>
           <a href="#games" class="btn">Shop Now</a>
         </div>
       </section>
+
+      <!-- GAMES -->
       <section id="games" class="games-section fade-in">
         <div class="container">
           <h2>Other Services</h2>
-          <div class="contain">
-            <!-- other services -->
-            
-          </div>
-          <br><br>
-          <div class="container">
-            <h2>Featured Games</h2>
-            <div class="games-grid">
-              
-            </div>
-            <br><br>
-          <h1>For other games , contact me</h1>
+          <div class="contain"></div>
+
+          <br /><br />
+
+          <h2>Featured Games</h2>
+          <div class="games-grid"></div>
+
+          <br /><br />
+          <h1>For other games, contact me</h1>
         </div>
       </section>
+
+      <!-- ABOUT -->
       <section id="about" class="about-section fade-in">
         <div class="container">
           <h2>About Us</h2>
           <p>
-            GameStore is your one-stop shop for the latest and greatest PC
-            games. We offer secure payments, instant delivery, and top-notch
-            customer support.
+            GameStore is your one-stop shop for PC games with secure payments,
+            instant delivery, and trusted support.
           </p>
           <br />
           <p>
-            This website is handled by ,
-            <i class="fa-brands fa-instagram"></i>
+            Managed by
             <a
               class="insta"
               target="_blank"
-              href="https://www.instagram.com/games_habibi?igsh=aDJsNXo3bzQwMXY2"
-              >Games_habibi</a
+              href="https://www.instagram.com/games_habibi/"
+              >@games_habibi</a
             >
           </p>
         </div>
       </section>
+
+      <!-- CONTACT -->
       <section id="contact" class="contact-section fade-in">
         <div class="container">
           <h2>Contact</h2>
           <p class="contact-info">
-            Have questions or need support? Reach out to us via the form below
-            or email us at
+            Email:
             <a class="link" href="mailto:mr.bgmi9098@gmail.com">
-              mr.bgmi9098@gmail.com</a
-            >
+              mr.bgmi9098@gmail.com
+            </a>
           </p>
         </div>
       </section>
     </main>
-    <!-- Cart Modal -->
+
+    <!-- CART MODAL -->
     <div id="cartModal" class="cart-modal">
       <div class="cart-modal-content">
         <span class="close" id="closeCart">&times;</span>
+
         <h2>Your Cart</h2>
         <div id="cartItems"></div>
-  
-        <div id="cartTotal" style="margin: 15px 0"></div>
-        <div id="tipSection" style="margin: 15px 0; text-align: center">
-          <label for="tipAmount" style="color: #f3f3f3; margin-right: 10px">Add Tip (₹):</label>
-          <input type="number" id="tipAmount" min="0" step="1" value="0" style="width: 80px; padding: 5px; border-radius: 5px; border: none;">
-          <button id="applyTipBtn" class="btn" style="padding: 5px 15px; font-size: 0.9rem">Apply Tip</button>
+        <div id="cartTotal"></div>
+
+        <div id="tipSection">
+          <label for="tipAmount">Add Tip (₹):</label>
+          <input type="number" id="tipAmount" min="0" value="0" />
+          <button id="applyTipBtn" class="btn btn-small">Apply</button>
         </div>
-        <button id="clearCartBtn" class="btn" style="background: #ff4d4d">
-          Clear Cart
-        </button>
+
+        <button id="clearCartBtn" class="btn">Clear Cart</button>
+
+        <!-- ORDER FORM -->
         <div class="form">
           <form id="orderForm" enctype="multipart/form-data">
-  <input type="text" name="name" required placeholder="Enter Your Name"><br><br>
+            <input type="text" name="name" placeholder="Your Name" required />
 
-  <input type="text" id="gameInput" name="games" required placeholder="Games Purchased"><br><br>
+            <input
+              type="text"
+              id="gameInput"
+              name="games"
+              placeholder="Games Purchased"
+              required
+            />
 
-  <label>Payment screenshot:</label><br>
-  <input type="file" name="payment" accept="image/*" required><br><br>
+            <label>Payment Screenshot</label>
+            <input type="file" name="payment" accept="image/*" required />
 
-  <input type="email" name="email" required placeholder="Your email address">
+            <input
+              type="email"
+              name="email"
+              placeholder="Your Email"
+              required
+            />
 
- <button
-  type="submit"
-  id="orderSubmitBtn"
-  class="btn"
-  style="margin-top: 15px;"
->
-  Submit
-</button>
-
-
-</form>
-
+            <button type="submit" id="orderSubmitBtn" class="btn">
+              Submit
+            </button>
+          </form>
         </div>
+
         <div id="qrCode"></div>
-        <h3 style="text-align: center; color: #00bfff; font-size: 1.1rem; margin: 15px 0; font-weight: bold; text-transform: uppercase; letter-spacing: 1px;">Use QR Code if Pay Now Button Fails</h3>
-        <div id="payButton" style="margin-top: 20px; text-align: center"></div>
-       
+        <div id="payButton"></div>
       </div>
     </div>
 
+    <!-- FOOTER -->
     <footer>
       <div class="container">
-        <p>&copy; 2025 GameStore. All rights reserved.</p>
-
-        <p><a class="link" href="html/contact.html">contact us</a></p>
-        <p><a class="link" href="html/privacy.html">privacy policy</a></p>
-        <p><a class="link" href="html/shipping.html">shipping policy</a></p>
-        <p><a class="link" href="html/terms.html">terms and conditions</a></p>
-        <p><a class="link" href="html/cancellation.html">cancellation and refunds</a></p>
+        <p>&copy; 2025 GameStore</p>
+        <p><a class="link" href="html/privacy.html">Privacy Policy</a></p>
+        <p><a class="link" href="html/terms.html">Terms</a></p>
+        <p><a class="link" href="html/cancellation.html">Refunds</a></p>
       </div>
     </footer>
+
+    <!-- SCRIPTS -->
     <script src="script/product.js"></script>
     <script src="script/script.js"></script>
     <script src="script/payment.js"></script>
-    <div id="toastContainer" style="position: fixed; bottom: 20px; right: 20px; z-index: 10001;"></div>
-  <div id="loaderOverlay" class="loader-overlay">
-  <div class="loader-box">
-    <div id="loaderIcon" class="spinner"></div>
-    <p id="loaderText">Sending order…</p>
-  </div>
-</div>
+
+    <!-- TOAST -->
+    <div id="toastContainer"></div>
+
+    <!-- LOADER -->
+    <div id="loaderOverlay" class="loader-overlay">
+      <div class="loader-box">
+        <div id="loaderIcon" class="spinner"></div>
+        <p id="loaderText">Processing…</p>
+      </div>
+    </div>
   </body>
 </html>
