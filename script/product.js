@@ -41,7 +41,7 @@ const games = [
       genre: "Racing",
       variants: [
         { name: "In your steam account", price: 549 },
-        { name: "Shared Steam Account", price: 149 },
+        { name: "Shared Steam Account", price: 99 },
       ],
     },
   },
@@ -65,7 +65,7 @@ const games = [
       genre: "Role-playing (RPG)",
       variants: [
         { name: "In your steam account", price: 549 },
-        { name: "Shared Steam Account", price: 149 },
+        { name: "Shared Steam Account", price: 49 },
       ],
     },
   },
@@ -77,7 +77,7 @@ const games = [
       genre: "Adventure, Indie",
       variants: [
         { name: "In your steam account", price: 549 },
-        { name: "Shared Steam Account", price: 149 },
+        { name: "Shared Steam Account", price: 49 },
       ],
     },
   },
@@ -87,7 +87,10 @@ const games = [
     name: "Ghost of Tsushima: Director's Cut",
     p: {
       genre: "Role-playing (RPG), Adventure",
-      price: 69,
+      variants: [
+        { name: "In your steam account", price: 549 },
+        { name: "Shared Steam Account", price: 49 },
+      ],
     },
   },
   {
@@ -98,7 +101,7 @@ const games = [
       genre: "Adventure",
       variants: [
         { name: "In your steam account", price: 549 },
-        { name: "Shared Steam Account", price: 149 },
+        { name: "Shared Steam Account", price: 99 },
       ],
     },
   },
@@ -110,7 +113,7 @@ const games = [
       genre: "Racing, Simulator",
       variants: [
         { name: "In your steam account", price: 549 },
-        { name: "Shared Steam Account", price: 149 },
+        { name: "Shared Steam Account", price: 69 },
       ],
     },
   },
@@ -134,7 +137,7 @@ const games = [
       genre: "Shooter, Adventure",
       variants: [
         { name: "In your steam account", price: 549 },
-        { name: "Shared Steam Account", price: 149 },
+        { name: "Shared Steam Account", price: 119 },
       ],
     },
   },
@@ -146,7 +149,7 @@ const games = [
       genre: "Role-playing (RPG), Adventure",
       variants: [
         { name: "In your steam account", price: 549 },
-        { name: "Shared Steam Account", price: 149 },
+        { name: "Shared Steam Account", price: 99 },
       ],
     },
   },
@@ -158,7 +161,7 @@ const games = [
       genre: "Adventure",
       variants: [
         { name: "In your steam account", price: 549 },
-        { name: "Shared Steam Account", price: 149 },
+        { name: "Shared Steam Account", price: 119 },
       ],
     },
   },
@@ -170,7 +173,7 @@ const games = [
       genre: " Role-playing (RPG), Adventure",
       variants: [
         { name: "In your steam account", price: 549 },
-        { name: "Shared Steam Account", price: 149 },
+        { name: "Shared Steam Account", price: 119 },
       ],
     },
   },
@@ -182,7 +185,7 @@ const games = [
       genre: "Role-playing (RPG), Adventure",
       variants: [
         { name: "In your steam account", price: 549 },
-        { name: "Shared Steam Account", price: 149 },
+        { name: "Shared Steam Account", price: 139 },
       ],
     },
   },
@@ -218,7 +221,7 @@ const games = [
       genre: " Simulator, Sport",
       variants: [
         { name: "In your steam account", price: 549 },
-        { name: "Shared Steam Account", price: 149 },
+        { name: "Shared Steam Account", price: 69 },
       ],
     },
   },
@@ -239,7 +242,7 @@ const games = [
     img: "https://images.igdb.com/igdb/image/upload/t_cover_big/co9751.webp",
     name: "Grand Theft Auto V",
     p: {
-      genre: "offline only",
+      genre: "1st - online , Shared with Rockstar",
       variants: [
         { name: "In your steam account", price: 549 },
         { name: "Shared Steam Account", price: 149 },
@@ -336,7 +339,10 @@ const games = [
     name: "Palworld",
     p: {
       genre: "Shooter, Role-playing (RPG)",
-      price: 80,
+      variants: [
+        { name: "In your steam account", price: 549 },
+        { name: "Shared Steam Account", price: 99 },
+      ],
     },
   },
   {
