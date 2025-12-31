@@ -381,7 +381,7 @@ nav a:hover {
   background: #23272a;
   border-radius: 16px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
-  padding: 20px;
+  padding: 10px;
   text-align: center;
   transition: transform 0.2s, box-shadow 0.2s;
   display: flex;
