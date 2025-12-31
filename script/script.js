@@ -261,9 +261,9 @@ function updateGameInputField() {
 }
 
 function getDiscountRate(gameCount) {
-  if (gameCount >= 5) return 0.15;
-  if (gameCount >= 3) return 0.1;
-  if (gameCount >= 2) return 0.05;
+  if (gameCount >= 4) return 0.57; // ~₹850 for 4 games
+  if (gameCount >= 3) return 0.53; // ~₹700 for 3 games
+  if (gameCount >= 2) return 0.35; // ~₹650 for 2 games
   return 0;
 }
 
