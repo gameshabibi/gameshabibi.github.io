@@ -40,7 +40,7 @@ const games = [
     p: {
       genre: "Racing",
       variants: [
-        { name: "In your steam account", price: 499 },
+        { name: "In your steam account", price: 299 },
         { name: "Shared Steam Account", price: 99 },
       ],
     },
@@ -52,7 +52,7 @@ const games = [
     p: {
       genre: " Simulator, Sport",
       variants: [
-        { name: "In your steam account", price: 499 },
+        { name: "In your steam account", price: 299 },
         { name: "Shared Steam Account", price: 149 },
       ],
     },
@@ -64,7 +64,7 @@ const games = [
     p: {
       genre: "Role-playing (RPG)",
       variants: [
-        { name: "In your steam account", price: 499 },
+        { name: "In your steam account", price: 299 },
         { name: "Shared Steam Account", price: 49 },
       ],
     },
@@ -76,7 +76,7 @@ const games = [
     p: {
       genre: "Adventure, Indie",
       variants: [
-        { name: "In your steam account", price: 499 },
+        { name: "In your steam account", price: 299 },
         { name: "Shared Steam Account", price: 49 },
       ],
     },
@@ -88,7 +88,7 @@ const games = [
     p: {
       genre: "Role-playing (RPG), Adventure",
       variants: [
-        { name: "In your steam account", price: 499 },
+        { name: "In your steam account", price: 299 },
         { name: "Shared Steam Account", price: 49 },
       ],
     },
@@ -100,7 +100,7 @@ const games = [
     p: {
       genre: "Adventure",
       variants: [
-        { name: "In your steam account", price: 499 },
+        { name: "In your steam account", price: 299 },
         { name: "Shared Steam Account", price: 99 },
       ],
     },
@@ -112,7 +112,7 @@ const games = [
     p: {
       genre: "Racing, Simulator",
       variants: [
-        { name: "In your steam account", price: 499 },
+        { name: "In your steam account", price: 299 },
         { name: "Shared Steam Account", price: 69 },
       ],
     },
@@ -124,7 +124,7 @@ const games = [
     p: {
       genre: "Shooter, Adventure",
       variants: [
-        { name: "In your steam account", price: 499 },
+        { name: "In your steam account", price: 299 },
         { name: "Shared Steam Account", price: 149 },
       ],
     },
@@ -136,7 +136,7 @@ const games = [
     p: {
       genre: "Shooter, Adventure",
       variants: [
-        { name: "In your steam account", price: 499 },
+        { name: "In your steam account", price: 299 },
         { name: "Shared Steam Account", price: 119 },
       ],
     },
@@ -148,7 +148,7 @@ const games = [
     p: {
       genre: "Role-playing (RPG), Adventure",
       variants: [
-        { name: "In your steam account", price: 499 },
+        { name: "In your steam account", price: 299 },
         { name: "Shared Steam Account", price: 99 },
       ],
     },
@@ -160,7 +160,7 @@ const games = [
     p: {
       genre: "Adventure",
       variants: [
-        { name: "In your steam account", price: 499 },
+        { name: "In your steam account", price: 299 },
         { name: "Shared Steam Account", price: 119 },
       ],
     },
@@ -172,7 +172,7 @@ const games = [
     p: {
       genre: " Role-playing (RPG), Adventure",
       variants: [
-        { name: "In your steam account", price: 499 },
+        { name: "In your steam account", price: 299 },
         { name: "Shared Steam Account", price: 119 },
       ],
     },
@@ -184,7 +184,7 @@ const games = [
     p: {
       genre: "Role-playing (RPG), Adventure",
       variants: [
-        { name: "In your steam account", price: 499 },
+        { name: "In your steam account", price: 299 },
         { name: "Shared Steam Account", price: 139 },
       ],
     },
@@ -196,7 +196,7 @@ const games = [
     p: {
       genre: "Shooter, Adventure",
       variants: [
-        { name: "In your steam account", price: 499 },
+        { name: "In your steam account", price: 299 },
         { name: "Shared Steam Account", price: 149 },
       ],
     },
@@ -208,7 +208,7 @@ const games = [
     p: {
       genre: "Adventure",
       variants: [
-        { name: "In your steam account", price: 499 },
+        { name: "In your steam account", price: 299 },
         { name: "Shared Steam Account", price: 149 },
       ],
     },
@@ -220,7 +220,7 @@ const games = [
     p: {
       genre: " Simulator, Sport",
       variants: [
-        { name: "In your steam account", price: 499 },
+        { name: "In your steam account", price: 299 },
         { name: "Shared Steam Account", price: 69 },
       ],
     },
@@ -232,7 +232,7 @@ const games = [
     p: {
       genre: "Hack and slash/Beat 'em up, Adventure",
       variants: [
-        { name: "In your steam account", price: 499 },
+        { name: "In your steam account", price: 299 },
         { name: "Shared Steam Account", price: 149 },
       ],
     },
@@ -244,7 +244,7 @@ const games = [
     p: {
       genre: "1st - online , Shared with Rockstar",
       variants: [
-        { name: "In your steam account", price: 499 },
+        { name: "In your steam account", price: 299 },
         { name: "Shared Steam Account", price: 149 },
       ],
     },
@@ -256,7 +256,7 @@ const games = [
     p: {
       genre: "Adventure, Action",
       variants: [
-        { name: "In your steam account", price: 499 },
+        { name: "In your steam account", price: 299 },
         { name: "Shared Steam Account", price: 149 },
       ],
     },
@@ -268,7 +268,7 @@ const games = [
     p: {
       genre: "Role-playing (RPG)",
       variants: [
-        { name: "In your steam account", price: 499 },
+        { name: "In your steam account", price: 299 },
         { name: "Shared Steam Account", price: 149 },
       ],
     },
@@ -280,7 +280,7 @@ const games = [
     p: {
       genre: "Action-Adventure",
       variants: [
-        { name: "In your steam account", price: 499 },
+        { name: "In your steam account", price: 299 },
         { name: "Shared Steam Account", price: 149 },
       ],
     },
@@ -292,7 +292,7 @@ const games = [
     p: {
       genre: "Fighting",
       variants: [
-        { name: "In your steam account", price: 499 },
+        { name: "In your steam account", price: 299 },
         { name: "Shared Steam Account", price: 149 },
       ],
     },
@@ -304,7 +304,7 @@ const games = [
     p: {
       genre: " Role-playing (RPG), Adventure",
       variants: [
-        { name: "In your steam account", price: 499 },
+        { name: "In your steam account", price: 299 },
         { name: "Shared Steam Account", price: 149 },
       ],
     },
@@ -316,7 +316,7 @@ const games = [
     p: {
       genre: "Action RPG",
       variants: [
-        { name: "In your steam account", price: 499 },
+        { name: "In your steam account", price: 299 },
         { name: "Shared Steam Account", price: 149 },
       ],
     },
@@ -328,7 +328,7 @@ const games = [
     p: {
       genre: "Adventure, Action",
       variants: [
-        { name: "In your steam account", price: 499 },
+        { name: "In your steam account", price: 299 },
         { name: "Shared Steam Account", price: 149 },
       ],
     },
@@ -340,7 +340,7 @@ const games = [
     p: {
       genre: "Shooter, Role-playing (RPG)",
       variants: [
-        { name: "In your steam account", price: 499 },
+        { name: "In your steam account", price: 299 },
         { name: "Shared Steam Account", price: 99 },
       ],
     },
@@ -352,7 +352,7 @@ const games = [
     p: {
       genre: "Role-playing (RPG), (TBS)",
       variants: [
-        { name: "In your steam account", price: 499 },
+        { name: "In your steam account", price: 299 },
         { name: "Shared Steam Account", price: 149 },
       ],
     },
@@ -364,7 +364,7 @@ const games = [
     p: {
       genre: "Companion",
       variants: [
-        { name: "In your steam account", price: 499 },
+        { name: "In your steam account", price: 299 },
         { name: "Shared Steam Account", price: 149 },
       ],
     },
@@ -376,7 +376,7 @@ const games = [
     p: {
       genre: "Role-playing (RPG), Adventure",
       variants: [
-        { name: "In your steam account", price: 499 },
+        { name: "In your steam account", price: 299 },
         { name: "Shared Steam Account", price: 149 },
       ],
     },
@@ -388,7 +388,7 @@ const games = [
     p: {
       genre: "Shooter, Adventure",
       variants: [
-        { name: "In your steam account", price: 499 },
+        { name: "In your steam account", price: 299 },
         { name: "Shared Steam Account", price: 149 },
       ],
     },
@@ -400,7 +400,7 @@ const games = [
     p: {
       genre: "Shooter, Role-playing (RPG), Adventure",
       variants: [
-        { name: "In your steam account", price: 499 },
+        { name: "In your steam account", price: 299 },
         { name: "Shared Steam Account", price: 149 },
       ],
     },
@@ -412,7 +412,7 @@ const games = [
     p: {
       genre: "First-person shooter",
       variants: [
-        { name: "In your steam account", price: 499 },
+        { name: "In your steam account", price: 299 },
         { name: "Shared Steam Account", price: 149 },
       ],
     },
@@ -424,7 +424,7 @@ const games = [
     p: {
       genre: "First-person shooter",
       variants: [
-        { name: "In your steam account", price: 499 },
+        { name: "In your steam account", price: 299 },
         { name: "Shared Steam Account", price: 149 },
       ],
     },
@@ -436,7 +436,7 @@ const games = [
     p: {
       genre: "Action-Adventure",
       variants: [
-        { name: "In your steam account", price: 499 },
+        { name: "In your steam account", price: 299 },
         { name: "Shared Steam Account", price: 149 },
       ],
     },
@@ -449,7 +449,7 @@ const games = [
     p: {
       genre: "Action RPG",
       variants: [
-        { name: "In your steam account", price: 499 },
+        { name: "In your steam account", price: 299 },
         { name: "Shared Steam Account", price: 149 },
       ],
     },
