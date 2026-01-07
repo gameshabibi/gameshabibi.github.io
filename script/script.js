@@ -219,11 +219,14 @@ function highlightGame(name) {
     block: "center",
   });
 
-  element.classList.add("highlight");
+  element.classList.remove("search-highlight");
+  void element.offsetWidth;
+
+  element.classList.add("search-highlight");
 
   setTimeout(() => {
-    element.classList.remove("highlight");
-  }, 3000);
+    element.classList.remove("search-highlight");
+  }, 1200);
 }
 
 function addToCart(game, price, isGame = false, isDiscountEligible = false) {

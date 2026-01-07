@@ -26,13 +26,29 @@ const services = [
     name: "",
     p: {
       genre: "",
-      price: ,
+      variants: [
+        { name: "In your steam account", price: 299 },
+        { name: "Shared Steam account", price: 149 },
+      ],
     },
   },
 
 */
 
 const games = [
+  {
+    link: "https://www.igdb.com/games/dayz",
+    img: "https://images.igdb.com/igdb/image/upload/t_cover_big/coaaqs.webp",
+    name: "DayZ",
+    p: {
+      genre:
+        "Shooter, Role-playing (RPG), Simulator, Tactical, Adventure, Indie",
+      variants: [
+        { name: "In your steam account", price: 299 },
+        { name: "Shared Steam account", price: 149 },
+      ],
+    },
+  },
   {
     link: "#",
     img: "https://images.igdb.com/igdb/image/upload/t_cover_big/co3ofx.webp",
@@ -52,8 +68,8 @@ const games = [
     p: {
       genre: " Simulator, Sport",
       variants: [
-        { name: "In your steam account", price: 299 },
-        { name: "Shared Steam Account", price: 149 },
+        { name: "ONLINE", price: 249 },
+        { name: "OFFLINE", price: 149 },
       ],
     },
   },
@@ -82,6 +98,18 @@ const games = [
     },
   },
   {
+    link: "https://www.igdb.com/games/control",
+    img: "https://images.igdb.com/igdb/image/upload/t_cover_big/co2evj.webp",
+    name: "Control",
+    p: {
+      genre: "Shooter, Adventure",
+      variants: [
+        { name: "In your steam account", price: 299 },
+        { name: "Shared Steam Account", price: 149 },
+      ],
+    },
+  },
+  {
     link: "https://www.igdb.com/games/ghost-of-tsushima-directors-cut",
     img: "https://images.igdb.com/igdb/image/upload/t_cover_big/co3p5f.webp",
     name: "Ghost of Tsushima: Director's Cut",
@@ -90,6 +118,18 @@ const games = [
       variants: [
         { name: "In your steam account", price: 299 },
         { name: "Shared Steam Account", price: 49 },
+      ],
+    },
+  },
+  {
+    link: "https://www.igdb.com/games/days-gone",
+    img: "https://images.igdb.com/igdb/image/upload/t_cover_big/co94bn.webp",
+    name: "Days Gone",
+    p: {
+      genre: "Shooter, Adventure",
+      variants: [
+        { name: "In your steam account", price: 299 },
+        { name: "Shared Steam account", price: 149 },
       ],
     },
   },
@@ -114,6 +154,18 @@ const games = [
       variants: [
         { name: "In your steam account", price: 299 },
         { name: "Shared Steam Account", price: 69 },
+      ],
+    },
+  },
+  {
+    link: "https://www.igdb.com/games/detroit-become-human--1",
+    img: "https://images.igdb.com/igdb/image/upload/t_cover_big/co6mzf.webp",
+    name: "Detroit: Become Human",
+    p: {
+      genre: "Puzzle, Adventure",
+      variants: [
+        { name: "In your steam account", price: 299 },
+        { name: "Shared Steam account", price: 149 },
       ],
     },
   },
@@ -162,6 +214,18 @@ const games = [
       variants: [
         { name: "In your steam account", price: 299 },
         { name: "Shared Steam Account", price: 119 },
+      ],
+    },
+  },
+  {
+    link: "https://www.igdb.com/games/silent-hill-f",
+    img: "https://images.igdb.com/igdb/image/upload/t_cover_big/co9wy4.webp",
+    name: "Silent Hill f",
+    p: {
+      genre: "Puzzle, Adventure",
+      variants: [
+        { name: "In your steam account", price: 299 },
+        { name: "Shared Steam account", price: 149 },
       ],
     },
   },
@@ -220,8 +284,8 @@ const games = [
     p: {
       genre: " Simulator, Sport",
       variants: [
-        { name: "In your steam account", price: 299 },
-        { name: "Shared Steam Account", price: 69 },
+        { name: "In your steam account", price: 199 },
+        { name: "Shared Steam account", price: 69 },
       ],
     },
   },
@@ -449,8 +513,8 @@ const games = [
     p: {
       genre: "Action RPG",
       variants: [
-        { name: "In your steam account", price: 299 },
         { name: "Shared Steam Account", price: 149 },
+        { name: "ONLY 1 Variant", price: 149 },
       ],
     },
   },
