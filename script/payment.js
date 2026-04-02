@@ -81,6 +81,16 @@ function hideLoader() {
   if (overlay) overlay.style.display = "none";
 }
 
+function syncLastOrderUI(orderId) {
+  const lastOrderBox = document.getElementById("lastOrderBox");
+  const lastOrderText = document.getElementById("lastOrderIdText");
+
+  if (!lastOrderBox || !lastOrderText) return;
+
+  lastOrderText.textContent = orderId;
+  lastOrderBox.hidden = false;
+}
+
 function completeSuccessfulOrder(form, orderId) {
   const loaderText = document.getElementById("loaderText");
 
@@ -108,6 +118,7 @@ function completeSuccessfulOrder(form, orderId) {
 
   playSuccessFeedback();
   localStorage.setItem("lastOrderId", orderId);
+  syncLastOrderUI(orderId);
 
   window.setTimeout(() => {
     hideLoader();
@@ -115,7 +126,7 @@ function completeSuccessfulOrder(form, orderId) {
     form.reset();
     clearCart();
     enableSubmit();
-    window.location.reload();
+    showCartToast(`Order placed: ${orderId}`);
   }, 3000);
 }
 

@@ -1276,7 +1276,7 @@ main {
   display: grid;
   justify-items: center;
   gap: 1rem;
-  margin-left: 45%;
+  margin: 0 auto;
   min-inline-size: min(100%, 22rem);
   padding: 1.6rem;
   text-align: center;
@@ -1654,7 +1654,13 @@ main {
   }
 
   .site-header.is-menu-open .header-meta {
-    display: none;
+    display: grid;
+    gap: 0.4rem;
+    padding-top: 0.15rem;
+  }
+
+  .site-header.is-menu-open .last-order-card {
+    max-inline-size: none;
   }
 
   .site-header.is-menu-open #cartBtn {
