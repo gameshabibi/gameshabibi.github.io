@@ -1,6 +1,6 @@
 const services = [
   {
-    link: "png/youtue.png",
+    link: "#",
     img: "/png/youtube.png",
     name: "YoutubePremium",
     p: {
@@ -10,7 +10,7 @@ const services = [
   },
 
   {
-    link: "png/netflix.png",
+    link: "#",
     img: "png/netflix.png",
     name: "Netflix Premium",
     p: {
@@ -142,6 +142,20 @@ const games = [
       variants: [
         { name: "In your steam account", price: 299 },
         { name: "Shared Steam Account", price: 99 },
+      ],
+    },
+  },
+  {
+    link: "",
+    img: "https://www.gamespot.com/a/uploads/original/1595/15950357/4378598-residentevilgames.jpg",
+    name: "resident evil bundle",
+    p: {
+      genre: "shooting",
+      variants: [
+        {
+          name: "re-0 , re-1, re-4 (remake) , re -5 ,re-6, re-7 , re-8",
+          price: 349,
+        },
       ],
     },
   },

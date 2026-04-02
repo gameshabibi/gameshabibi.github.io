@@ -2,9 +2,17 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <meta
+      name="description"
+      content="Games Habibi offers premium PC game access, memberships, and UPI-friendly checkout with fast support."
+    />
+    <meta name="theme-color" content="#07111f" />
 
-    <title>Game Store</title>
+    <title>Games Habibi | Premium Digital Game Store</title>
 
     <link
       rel="apple-touch-icon"
@@ -24,204 +32,463 @@
       href="png/favicon-16x16.png"
     />
     <link rel="manifest" href="/site.webmanifest" />
-
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Sora:wght@500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="css/style.css" />
-
-    <script
-      src="https://kit.fontawesome.com/a8521956f6.js"
-      crossorigin="anonymous"
-    ></script>
   </head>
 
   <body>
-    <!-- HEADER -->
-    <header>
-      <div class="container">
-        <h1>
-          <i class="fa-brands fa-instagram"></i>
-          <a
-            class="insta"
-            target="_blank"
-            href="https://www.instagram.com/games_habibi/"
-            >Games Habibi</a
-          >
-        </h1>
+    <div class="page-background" aria-hidden="true">
+      <span class="ambient ambient-one"></span>
+      <span class="ambient ambient-two"></span>
+      <span class="ambient ambient-grid"></span>
+    </div>
 
-        <h1>GameStore</h1>
+    <header class="site-header fade-in">
+      <div class="container header-inner">
+        <a class="brand-lockup" href="#top" aria-label="Games Habibi home">
+          <span class="brand-mark">GH</span>
+          <span class="brand-copy">
+            <span class="brand-kicker">Instant digital delivery</span>
+            <span class="brand-name">Games Habibi</span>
+          </span>
+        </a>
 
-        <nav>
-          <ul>
-            <li><a href="#">Home</a></li>
-            <li><a href="#games">Games</a></li>
-            <li><a href="#about">About</a></li>
-            <li><a href="#contact">Contact</a></li>
-
-            <li style="display: flex; align-items: center; gap: 10px">
-              <input
-                type="text"
-                id="searchInput"
-                placeholder="Search games & services..."
-              />
-              <button id="searchBtn" class="btn btn-small">Search</button>
-            </li>
-
-            <li>
-              <button id="cartBtn" class="btn btn-small">
-                Cart (<span id="cartCount">0</span>)
-              </button>
-            </li>
-          </ul>
-
-          <!-- LAST ORDER BOX -->
-          <div id="lastOrderBox" style="display: none">
-            <p>Last Order ID</p>
-            <b id="lastOrderIdText"></b>
-            <br /><br />
-            <button id="copyLastOrderBtn" class="btn">Copy Order ID</button>
-          </div>
+        <nav class="site-nav" aria-label="Primary navigation">
+          <a href="#games">Catalog</a>
+          <a href="#how-it-works">How It Works</a>
+          <a href="#about">About</a>
+          <a href="#contact">Support</a>
+          <a href="html/contact.html">Policies</a>
         </nav>
+
+        <div class="header-actions">
+          <div class="search-shell">
+            <label class="sr-only" for="searchInput">Search products</label>
+            <input
+              type="text"
+              id="searchInput"
+              placeholder="Search games, passes, or services"
+              autocomplete="off"
+            />
+            <button id="searchBtn" class="btn btn-secondary" type="button">
+              Find
+            </button>
+            <div id="searchResults" class="search-results" hidden></div>
+          </div>
+
+          <button id="cartBtn" class="btn cart-button" type="button">
+            Cart
+            <span id="cartCount" class="cart-count">0</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="container header-meta">
+        <div id="lastOrderBox" class="last-order-card" hidden>
+          <p class="meta-label">Last order</p>
+          <b id="lastOrderIdText"></b>
+          <button id="copyLastOrderBtn" class="btn btn-tertiary" type="button">
+            Copy Order ID
+          </button>
+        </div>
+
+        <div class="header-note">
+          Premium access, smooth UPI checkout, and direct support when you need
+          it.
+        </div>
       </div>
     </header>
 
-    <!-- SEARCH RESULTS -->
-    <div id="searchResults"></div>
-
-    <main>
-      <!-- HERO -->
+    <main id="top">
       <section class="hero fade-in">
-        <div class="container">
-          <h2>Offer! for 3 games in personal account- total price 538 inr</h2>
-          <h4>Discover & Buy the Best PC Games</h4>
-          <p>Secure UPI payments available</p>
-          <a href="#games" class="btn">Shop Now</a>
-        </div>
-      </section>
-
-      <!-- GAMES -->
-      <section id="games" class="games-section fade-in">
-        <div class="container">
-          <h2>Other Services</h2>
-          <div class="contain"></div>
-
-          <br /><br />
-
-          <h2>Featured Games</h2>
-          <div class="games-grid"></div>
-
-          <br /><br />
-          <h1>For other games, contact me</h1>
-        </div>
-      </section>
-
-      <!-- ABOUT -->
-      <section id="about" class="about-section fade-in">
-        <div class="container">
-          <h2>About Us</h2>
-          <p>
-            GameStore is your one-stop shop for PC games with secure payments,
-            instant delivery, and trusted support.
-          </p>
-          <br />
-          <p>
-            Managed by
-            <a
-              class="insta"
-              target="_blank"
-              href="https://www.instagram.com/games_habibi/"
-              >@games_habibi</a
+        <div class="container hero-grid">
+          <div class="hero-copy">
+            <p class="eyebrow">Curated for fast, trusted digital delivery</p>
+            <span class="offer-chip"
+              >Current offer: 3 personal account games for 538 INR</span
             >
-          </p>
+
+            <h1>Modern game access with a checkout flow that feels premium.</h1>
+            <p class="hero-text">
+              Browse featured titles, memberships, and add-ons in one polished
+              storefront. Pay through UPI, upload your payment proof, and keep
+              your order ID ready for support.
+            </p>
+
+            <div class="hero-actions">
+              <a href="#games" class="btn">Browse Catalog</a>
+              <a href="#contact" class="btn btn-secondary">Talk to Support</a>
+            </div>
+
+            <div class="trust-strip" aria-label="Trust indicators">
+              <span>UPI-ready checkout</span>
+              <span>Order ID tracking</span>
+              <span>Direct email and Instagram support</span>
+            </div>
+          </div>
+
+          <div class="hero-preview">
+            <div class="hero-panel spotlight-card">
+              <p class="meta-label">Premium storefront flow</p>
+              <h2>Fast browse to payment in one clear path.</h2>
+              <p>
+                Search products instantly, add account variants, review totals,
+                scan the QR, then submit your payment screenshot.
+              </p>
+
+              <div class="preview-stack">
+                <article class="mini-panel">
+                  <p class="mini-label">Featured delivery</p>
+                  <strong>Digital fulfillment</strong>
+                  <span>Sent after payment confirmation</span>
+                </article>
+
+                <article class="mini-panel">
+                  <p class="mini-label">Checkout confidence</p>
+                  <strong>Clear totals and discounts</strong>
+                  <span>Steam account bundles update live in cart</span>
+                </article>
+
+                <article class="mini-panel">
+                  <p class="mini-label">Support lane</p>
+                  <strong>Keep your order ID handy</strong>
+                  <span>Useful for any follow-up or refund request</span>
+                </article>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
-      <!-- CONTACT -->
-      <section id="contact" class="contact-section fade-in">
+      <section id="games" class="catalog-section">
         <div class="container">
-          <h2>Contact</h2>
-          <p class="contact-info">
-            Email:
-            <a class="link" href="mailto:mr.bgmi9098@gmail.com">
-              mr.bgmi9098@gmail.com
-            </a>
-          </p>
+          <div class="section-heading">
+            <p class="eyebrow">Storefront</p>
+            <h2>Services, memberships, and featured games</h2>
+            <p>
+              Each card is optimized for quick scanning on mobile and desktop,
+              with pricing and variants surfaced upfront.
+            </p>
+          </div>
+
+          <div class="catalog-shell">
+            <article class="catalog-block">
+              <div class="catalog-header">
+                <p class="meta-label">Services</p>
+                <h3>Streaming, passes, and extras</h3>
+              </div>
+              <div class="contain product-grid"></div>
+            </article>
+
+            <article class="catalog-block">
+              <div class="catalog-header">
+                <p class="meta-label">Featured games</p>
+                <h3>Popular picks for shared or personal access</h3>
+              </div>
+              <div class="games-grid product-grid"></div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="how-it-works" class="process-section">
+        <div class="container">
+          <div class="section-heading">
+            <p class="eyebrow">How it works</p>
+            <h2>Simple from search to delivery</h2>
+          </div>
+
+          <div class="steps-grid">
+            <article class="step-card">
+              <span class="step-number">01</span>
+              <h3>Choose the right access type</h3>
+              <p>
+                Compare variants, review pricing, and add the exact game or
+                service package you want.
+              </p>
+            </article>
+
+            <article class="step-card">
+              <span class="step-number">02</span>
+              <h3>Pay with UPI and confirm</h3>
+              <p>
+                Open the cart, review discounts, scan the QR or tap Pay Now,
+                then upload your payment screenshot.
+              </p>
+            </article>
+
+            <article class="step-card">
+              <span class="step-number">03</span>
+              <h3>Track your order with confidence</h3>
+              <p>
+                Save the generated order ID for support, delivery follow-up, or
+                refund requests if needed.
+              </p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="about" class="about-section">
+        <div class="container about-grid">
+          <div class="about-copy">
+            <p class="eyebrow">About Games Habibi</p>
+            <h2>A storefront built around clarity, trust, and fast follow-up.</h2>
+            <p>
+              Games Habibi focuses on digital game access and memberships with a
+              direct, support-first buying experience. The site keeps browsing
+              lightweight, checkout steps clear, and support contact easy to
+              find.
+            </p>
+          </div>
+
+          <div class="about-points">
+            <article class="info-card">
+              <h3>Modern browsing</h3>
+              <p>
+                Better hierarchy, cleaner pricing, and responsive cards that
+                feel polished on phones first.
+              </p>
+            </article>
+
+            <article class="info-card">
+              <h3>Purchase confidence</h3>
+              <p>
+                Discount logic, live totals, QR payment, and clear form states
+                all stay visible in one flow.
+              </p>
+            </article>
+
+            <article class="info-card">
+              <h3>Reachable support</h3>
+              <p>
+                Email and Instagram remain front and center so buyers can always
+                follow up with context.
+              </p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="contact" class="support-section">
+        <div class="container">
+          <div class="section-heading">
+            <p class="eyebrow">Support</p>
+            <h2>Need help before or after checkout?</h2>
+            <p>
+              Reach out for order questions, delivery issues, or product
+              requests that are not listed in the storefront yet.
+            </p>
+          </div>
+
+          <div class="support-grid">
+            <article class="support-card">
+              <p class="meta-label">Email</p>
+              <h3>Primary support channel</h3>
+              <a class="contact-link" href="mailto:mr.bgmi9098@gmail.com">
+                mr.bgmi9098@gmail.com
+              </a>
+              <p>Best for payment, refund, and delivery questions.</p>
+            </article>
+
+            <article class="support-card">
+              <p class="meta-label">Instagram</p>
+              <h3>Social support</h3>
+              <a
+                class="contact-link"
+                target="_blank"
+                rel="noreferrer"
+                href="https://www.instagram.com/games_habibi/"
+              >
+                @games_habibi
+              </a>
+              <p>Useful for quick updates and custom title requests.</p>
+            </article>
+
+            <article class="support-card">
+              <p class="meta-label">Policy hub</p>
+              <h3>Important information</h3>
+              <div class="policy-links">
+                <a href="html/privacy.html">Privacy</a>
+                <a href="html/terms.html">Terms</a>
+                <a href="html/shipping.html">Shipping</a>
+                <a href="html/cancellation.html">Refunds</a>
+                <a href="html/contact.html">Contact page</a>
+              </div>
+            </article>
+          </div>
         </div>
       </section>
     </main>
 
-    <!-- CART MODAL -->
-    <div id="cartModal" class="cart-modal">
-      <div class="cart-modal-content">
-        <span class="close" id="closeCart">&times;</span>
+    <div id="cartModal" class="cart-modal" aria-hidden="true">
+      <button
+        class="cart-backdrop"
+        type="button"
+        data-cart-close
+        aria-label="Close cart"
+      ></button>
 
-        <h2>Your Cart</h2>
-        <div id="cartItems"></div>
-        <div id="cartTotal"></div>
-
-        <div id="tipSection">
-          <label for="tipAmount">Add Tip (₹):</label>
-          <input type="number" id="tipAmount" min="0" value="0" />
-          <button id="applyTipBtn" class="btn btn-small">Apply</button>
+      <div
+        class="cart-modal-content"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="cartTitle"
+      >
+        <div class="cart-modal-head">
+          <div>
+            <p class="meta-label">Checkout</p>
+            <h2 id="cartTitle">Review cart and submit order</h2>
+          </div>
+          <button class="close" id="closeCart" type="button" aria-label="Close">
+            &times;
+          </button>
         </div>
 
-        <button id="clearCartBtn" class="btn">Clear Cart</button>
+        <div class="cart-modal-body">
+          <section class="cart-panel-group cart-summary-panel">
+            <div class="cart-step-heading">
+              <span class="step-number step-inline">01</span>
+              <div>
+                <h3>Cart summary</h3>
+                <p>Check totals, bundle savings, and remove anything you do not need.</p>
+              </div>
+            </div>
 
-        <!-- ORDER FORM -->
-        <div class="form">
-          <form id="orderForm" enctype="multipart/form-data">
-            <input type="text" name="name" placeholder="Your Name" required />
+            <div id="cartItems" class="cart-items-list"></div>
+            <div id="cartTotal" class="cart-total-card"></div>
 
-            <input
-              type="text"
-              id="gameInput"
-              name="games"
-              placeholder="Games Purchased"
-              required
-            />
+            <div id="tipSection" class="tip-card">
+              <label for="tipAmount">Optional tip in INR</label>
+              <div class="tip-row">
+                <input type="number" id="tipAmount" min="0" value="0" />
+                <button id="applyTipBtn" class="btn btn-secondary" type="button">
+                  Apply
+                </button>
+              </div>
+            </div>
 
-            <label>Payment Screenshot</label>
-            <input type="file" name="payment" accept="image/*" required />
-
-            <input
-              type="email"
-              name="email"
-              placeholder="Your Email"
-              required
-            />
-
-            <button type="submit" id="orderSubmitBtn" class="btn">
-              Submit
+            <button id="clearCartBtn" class="btn btn-tertiary" type="button">
+              Clear Cart
             </button>
-          </form>
-        </div>
+          </section>
 
-        <div id="qrCode"></div>
-        <div id="payButton"></div>
+          <section class="cart-panel-group payment-panel">
+            <div class="cart-step-heading">
+              <span class="step-number step-inline">02</span>
+              <div>
+                <h3>Pay with UPI</h3>
+                <p>Scan the QR on another device or open the payment link on mobile.</p>
+              </div>
+            </div>
+
+            <div id="qrCode" class="qr-shell"></div>
+            <div id="payButton" class="pay-button-wrap"></div>
+          </section>
+
+          <section class="cart-panel-group order-panel form">
+            <div class="cart-step-heading">
+              <span class="step-number step-inline">03</span>
+              <div>
+                <h3>Send order details</h3>
+                <p>Upload your payment screenshot so Games Habibi can verify the order.</p>
+              </div>
+            </div>
+
+            <form id="orderForm" enctype="multipart/form-data">
+              <div class="field-group">
+                <label for="customerName">Your name</label>
+                <input
+                  type="text"
+                  id="customerName"
+                  name="name"
+                  placeholder="Enter your name"
+                  required
+                />
+              </div>
+
+              <div class="field-group field-group-wide">
+                <label for="gameInput">Items in your order</label>
+                <input
+                  type="text"
+                  id="gameInput"
+                  name="games"
+                  placeholder="Cart items appear here"
+                  required
+                  readonly
+                />
+              </div>
+
+              <div class="field-group field-group-wide">
+                <label for="paymentProof">Payment screenshot</label>
+                <input
+                  type="file"
+                  id="paymentProof"
+                  name="payment"
+                  accept="image/*"
+                  required
+                />
+              </div>
+
+              <div class="field-group">
+                <label for="customerEmail">Your email</label>
+                <input
+                  type="email"
+                  id="customerEmail"
+                  name="email"
+                  placeholder="Enter your email"
+                  required
+                />
+              </div>
+
+              <button
+                type="submit"
+                id="orderSubmitBtn"
+                class="btn btn-block form-submit"
+              >
+                Submit Order
+              </button>
+            </form>
+          </section>
+        </div>
       </div>
     </div>
 
-    <!-- FOOTER -->
-    <footer>
-      <div class="container">
-        <p>&copy; 2025 GameStore</p>
-        <p><a class="link" href="html/privacy.html">Privacy Policy</a></p>
-        <p><a class="link" href="html/terms.html">Terms</a></p>
-        <p><a class="link" href="html/cancellation.html">Refunds</a></p>
+    <footer class="site-footer">
+      <div class="container footer-inner">
+        <div>
+          <p class="footer-brand">Games Habibi</p>
+          <p class="footer-copy">
+            Premium digital storefront design with mobile-friendly checkout and
+            direct support.
+          </p>
+        </div>
+
+        <div class="footer-links">
+          <a href="html/privacy.html">Privacy Policy</a>
+          <a href="html/terms.html">Terms</a>
+          <a href="html/cancellation.html">Refunds</a>
+          <a href="html/shipping.html">Shipping</a>
+          <a href="html/contact.html">Contact</a>
+        </div>
       </div>
     </footer>
 
-    <!-- SCRIPTS -->
     <script src="script/product.js"></script>
     <script src="script/script.js"></script>
     <script src="script/payment.js"></script>
 
-    <!-- TOAST -->
-    <div id="toastContainer"></div>
+    <div id="toastContainer" aria-live="polite" aria-atomic="true"></div>
 
-    <!-- LOADER -->
     <div id="loaderOverlay" class="loader-overlay">
       <div class="loader-box">
         <div id="loaderIcon" class="spinner"></div>
-        <p id="loaderText">Processing…</p>
+        <p id="loaderText">Processing...</p>
       </div>
     </div>
   </body>

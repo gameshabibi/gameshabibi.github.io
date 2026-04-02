@@ -1,13 +1,47 @@
 let cart = [];
 let tip = 0;
 
+const currencyFormatter = new Intl.NumberFormat("en-IN", {
+  maximumFractionDigits: 0,
+});
+
+const totalFormatter = new Intl.NumberFormat("en-IN", {
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2,
+});
+
+let revealObserver;
+
+function formatPrice(value) {
+  return `₹${currencyFormatter.format(Number(value) || 0)}`;
+}
+
+function formatTotal(value) {
+  return `₹${totalFormatter.format(Number(value) || 0)}`;
+}
+
+function escapeHTML(value) {
+  return String(value).replace(/[&<>"']/g, (char) => {
+    const entities = {
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#39;",
+    };
+
+    return entities[char] || char;
+  });
+}
+
 function disableSubmit() {
   const btn = document.getElementById("orderSubmitBtn");
-  if (btn) {
-    btn.disabled = true;
-    btn.style.opacity = "0.6";
-    btn.style.pointerEvents = "none";
-  }
+  if (btn) btn.disabled = true;
+}
+
+function enableSubmit() {
+  const btn = document.getElementById("orderSubmitBtn");
+  if (btn) btn.disabled = false;
 }
 
 function playErrorFeedback() {
@@ -15,21 +49,12 @@ function playErrorFeedback() {
     const audio = new Audio("/audio/error.wav");
     audio.volume = 0.4;
     audio.play().catch(() => {});
-  } catch (e) {
-    console.warn("Error sound failed");
+  } catch (error) {
+    console.warn("Error sound failed", error);
   }
 
   if (navigator.vibrate) {
     navigator.vibrate([200, 100, 200]);
-  }
-}
-
-function enableSubmit() {
-  const btn = document.getElementById("orderSubmitBtn");
-  if (btn) {
-    btn.disabled = false;
-    btn.style.opacity = "1";
-    btn.style.pointerEvents = "auto";
   }
 }
 
@@ -38,8 +63,8 @@ function playSuccessFeedback() {
     const audio = new Audio("/audio/succ.wav");
     audio.volume = 0.4;
     audio.play().catch(() => {});
-  } catch (e) {
-    console.warn("Success sound failed");
+  } catch (error) {
+    console.warn("Success sound failed", error);
   }
 
   if (navigator.vibrate) {
@@ -47,190 +72,248 @@ function playSuccessFeedback() {
   }
 }
 
-function renderGames(gameList) {
-  let productHTML = "";
+function buildGameCardMarkup(item) {
+  const name = escapeHTML(item.name);
+  const genre = escapeHTML(item.p.genre);
+  const link = escapeHTML(item.link);
+  const img = escapeHTML(item.img);
+  const hasVariants = Array.isArray(item.p.variants) && item.p.variants.length > 0;
 
-  gameList.forEach((element) => {
-    const hasVariants = element.p.variants && element.p.variants.length > 0;
+  if (!hasVariants) {
+    return `
+      <article class="game-card" data-name="${name}" data-type="game">
+        <a class="product-media" target="_blank" rel="noreferrer" href="${link}">
+          <img src="${img}" alt="${name}" loading="lazy" />
+        </a>
 
-    productHTML += `
-    <div class="game-card" data-name="${element.name}">
-      <a target="_blank" href="${element.link}">
-        <img src="${element.img}" alt="${element.name}" />
+        <div class="product-copy">
+          <span class="product-badge">Featured game</span>
+          <h3>${name}</h3>
+          <p>${genre}</p>
+        </div>
+
+        <div class="product-actions">
+          <div class="price-row">
+            <span class="price-pill">${formatPrice(item.p.price)}</span>
+          </div>
+
+          <button
+            class="btn add-to-cart-btn"
+            type="button"
+            data-name="${name}"
+            data-price="${escapeHTML(item.p.price)}"
+          >
+            Add to Cart
+          </button>
+        </div>
+      </article>
+    `;
+  }
+
+  const firstVariant = item.p.variants[0];
+  const optionMarkup = item.p.variants
+    .map(
+      (variant) => `
+        <option
+          value="${escapeHTML(variant.name)}"
+          data-price="${escapeHTML(variant.price)}"
+        >
+          ${escapeHTML(variant.name)} | ${formatPrice(variant.price)}
+        </option>
+      `
+    )
+    .join("");
+
+  return `
+    <article class="game-card" data-name="${name}" data-type="game">
+      <a class="product-media" target="_blank" rel="noreferrer" href="${link}">
+        <img src="${img}" alt="${name}" loading="lazy" />
       </a>
 
-      <h3>${element.name}</h3>
+      <div class="product-copy">
+        <span class="product-badge">Account variants</span>
+        <h3>${name}</h3>
+        <p>${genre}</p>
+      </div>
 
-      ${
-        hasVariants
-          ? `
-        <select class="variant-select">
-          ${element.p.variants
-            .map(
-              (v) =>
-                `<option value="${v.name}" data-price="${v.price}">
-                  ${v.name} | ₹${v.price}
-                </option>`
-            )
-            .join("")}
+      <div class="product-actions">
+        <select class="variant-select" aria-label="Choose ${name} variant">
+          ${optionMarkup}
         </select>
 
-        <p class="variant-price">${element.p.genre} | ₹${
-              element.p.variants[0].price
-            }</p>
+        <p class="variant-price">${escapeHTML(firstVariant.name)} | ${formatPrice(firstVariant.price)}</p>
 
-        <button class="add-variant-btn">Add to Cart</button>
-        `
-          : `
-        <p>${element.p.genre} | ₹${element.p.price}</p>
-        <button 
-          class="add-to-cart-btn"
-          data-name="${element.name}"
-          data-price="${element.p.price}">
+        <button class="btn add-variant-btn" type="button">
           Add to Cart
         </button>
-        `
-      }
-    </div>`;
-  });
-
-  document.querySelector(".games-grid").innerHTML = productHTML;
+      </div>
+    </article>
+  `;
 }
 
-document.addEventListener("change", function (e) {
-  if (e.target.classList.contains("variant-select")) {
-    const card = e.target.closest(".game-card");
-    const para = card.querySelector(".variant-price");
+function renderGames(gameList) {
+  const grid = document.querySelector(".games-grid");
+  if (!grid) return;
 
-    const option = e.target.options[e.target.selectedIndex];
-    const price = option.dataset.price;
+  grid.innerHTML = gameList.map(buildGameCardMarkup).join("");
+}
 
-    para.innerHTML = `${para.innerHTML.split("|")[0]} | ₹${price}`;
-    para.classList.add("updated");
-    setTimeout(() => para.classList.remove("updated"), 200);
-  }
-});
-document.addEventListener("click", function (e) {
-  if (e.target.classList.contains("add-variant-btn")) {
-    const card = e.target.closest(".game-card");
-    const select = card.querySelector(".variant-select");
-    const option = select.options[select.selectedIndex];
+function buildServiceCardMarkup(item) {
+  const name = escapeHTML(item.name);
+  const genre = escapeHTML(item.p.genre);
+  const link = escapeHTML(item.link);
+  const img = escapeHTML(item.img);
 
-    const gameName = card.dataset.name + " (" + option.value + ")";
-    const price = parseFloat(option.dataset.price);
+  return `
+    <article class="game-card" data-name="${name}" data-type="service">
+      <a class="product-media" target="_blank" rel="noreferrer" href="${link}">
+        <img src="${img}" alt="${name}" loading="lazy" />
+      </a>
 
-    const isEligibleVariant = option.value === "In your steam account";
+      <div class="product-copy">
+        <span class="product-badge">Service</span>
+        <h3>${name}</h3>
+        <p>${genre}</p>
+      </div>
 
-    addToCart(gameName, price, true, isEligibleVariant);
-  }
-});
+      <div class="product-actions">
+        <div class="price-row">
+          <span class="price-pill">${formatPrice(item.p.price)}</span>
+        </div>
 
-document.addEventListener("click", function (e) {
-  if (e.target.classList.contains("add-to-cart-btn")) {
-    const name = e.target.dataset.name;
-    const price = parseFloat(e.target.dataset.price);
-    addToCart(name, price, true);
-  }
-});
+        <button
+          class="btn add-service-btn"
+          type="button"
+          data-name="${name}"
+          data-price="${escapeHTML(item.p.price)}"
+        >
+          Add to Cart
+        </button>
+      </div>
+    </article>
+  `;
+}
+
+function buildDonationCardMarkup() {
+  return `
+    <article class="game-card" data-name="Donation" data-type="service">
+      <div class="product-media">
+        <img src="png/donate2.png" alt="Donation" loading="lazy" />
+      </div>
+
+      <div class="product-copy">
+        <span class="product-badge">Support</span>
+        <h3>Donation</h3>
+        <p>Support the storefront with any custom amount.</p>
+      </div>
+
+      <div class="product-actions">
+        <div class="donation-field">
+          <label for="donateAmount">Donation amount in INR</label>
+          <input
+            type="number"
+            id="donateAmount"
+            min="1"
+            step="1"
+            value="10"
+          />
+        </div>
+
+        <button class="btn add-donation-btn" type="button">
+          Add Donation
+        </button>
+      </div>
+    </article>
+  `;
+}
+
+function buildXboxCardMarkup() {
+  return `
+    <article class="game-card" data-name="Xbox Game Pass" data-type="service">
+      <div class="product-media">
+        <img
+          src="https://sm.pcmag.com/t/pcmag_uk/review/x/xbox/xbox_rmuk.3840.jpg"
+          alt="Xbox Game Pass"
+          loading="lazy"
+        />
+      </div>
+
+      <div class="product-copy">
+        <span class="product-badge">Membership</span>
+        <h3>Xbox Game Pass</h3>
+        <p>Pick the plan that matches your account and play style.</p>
+      </div>
+
+      <div class="product-actions">
+        <select class="xbox-select" aria-label="Choose Xbox Game Pass plan">
+          <option value="Xbox Game Pass" data-price="149">
+            Xbox Game Pass | ${formatPrice(149)}
+          </option>
+          <option value="Xbox Game Pass Ultimate" data-price="199">
+            Xbox Game Pass Ultimate | ${formatPrice(199)}
+          </option>
+        </select>
+
+        <p class="xbox">1 month | ${formatPrice(149)}</p>
+
+        <button class="btn add-xbox-btn" type="button">
+          Add to Cart
+        </button>
+      </div>
+    </article>
+  `;
+}
 
 function renderServices(serviceList) {
-  let serviceHTML = "";
-  serviceList.forEach((element) => {
-    serviceHTML += `<div class="game-card" data-name="${element.name}">
-    <a href="${element.link}"><img src="${element.img}" alt="${element.name}" /></a>
-    <h3>${element.name}</h3>
-    <p>${element.p.genre} | &#8377;${element.p.price}</p>
-    <button onclick="addToCart('${element.name}', ${element.p.price})">
-    Add to Cart
-    </button>
-              </div>`;
-  });
-  const otherGrid = document.querySelector(".contain");
-  let donateHTML = `<div class="game-card" data-name="Donation">
-            <img src="png/donate2.png" alt="Donate" />
-            <h3>Donate | Pay</h3>
-            <p> <b>Amount</b> | <input type="number" id="donateAmount" min="1" value="10" style="width: 60px; padding: 2px; border-radius: 4px; border: 1px solid #00bfff; background: #23272a; color: #f3f3f3;"> ₹</p>
-    <button onclick="addToCart('Donation', parseFloat(document.getElementById('donateAmount').value) || 10)">
-    Donate
-    </button>
-    </div>`;
+  const grid = document.querySelector(".contain");
+  if (!grid) return;
 
-  let dropdown = `
-  <div class="game-card">
-  <img src="https://sm.pcmag.com/t/pcmag_uk/review/x/xbox/xbox_rmuk.3840.jpg" alt="Xbox" />
+  const markup = [
+    buildDonationCardMarkup(),
+    ...serviceList.map(buildServiceCardMarkup),
+    buildXboxCardMarkup(),
+  ].join("");
 
-  <h3>Xbox Game Pass</h3>
-
-  <select onchange="change(this)" class="xbox-select">
-    <option value="Xbox Game Pass" data-price="149">
-      Xbox Game Pass | ₹149
-    </option>
-    <option value="Xbox Game Pass Ultimate" data-price="199">
-      Xbox Game Pass Ultimate | ₹199
-    </option>
-  </select>
-
-  <p class="xbox">1 month | ₹149</p>
-
-  <button class="add-xbox-btn">Add to Cart</button>
-</div>
-`;
-
-  otherGrid.innerHTML = donateHTML + serviceHTML + dropdown;
+  grid.innerHTML = markup;
 }
 
-function change(select) {
+function updateVariantPrice(select) {
   const card = select.closest(".game-card");
-  const para = card.querySelector(".xbox");
-
+  const priceLabel = card?.querySelector(".variant-price, .xbox");
   const option = select.options[select.selectedIndex];
-  const price = parseFloat(option.dataset.price);
+  if (!card || !priceLabel || !option) return;
 
-  para.innerHTML = `1 month | ₹${price}`;
-
-  para.classList.add("updated");
-  setTimeout(() => para.classList.remove("updated"), 200);
+  const price = formatPrice(option.dataset.price);
+  const durationPrefix = priceLabel.classList.contains("xbox") ? "1 month" : option.value;
+  priceLabel.textContent = `${durationPrefix} | ${price}`;
+  priceLabel.classList.add("updated");
+  window.setTimeout(() => priceLabel.classList.remove("updated"), 220);
 }
-
-document.addEventListener("click", function (e) {
-  if (e.target.classList.contains("add-xbox-btn")) {
-    const card = e.target.closest(".game-card");
-    const select = card.querySelector(".xbox-select");
-    const option = select.options[select.selectedIndex];
-
-    const name = option.value;
-    const price = parseFloat(option.dataset.price);
-
-    addToCart(name, price, true);
-  }
-});
 
 function highlightGame(name) {
-  const element = document.querySelector(`[data-name="${CSS.escape(name)}"]`);
-
-  if (!element) {
-    console.warn("highlightGame: element not found →", name);
+  const target = document.querySelector(`[data-name="${CSS.escape(name)}"]`);
+  if (!target) {
     showCartToast(`${name} not found on page`);
     return;
   }
 
-  element.scrollIntoView({
+  target.scrollIntoView({
     behavior: "smooth",
     block: "center",
   });
 
-  element.classList.remove("search-highlight");
-  void element.offsetWidth;
+  target.classList.remove("search-highlight");
+  void target.offsetWidth;
+  target.classList.add("search-highlight");
 
-  element.classList.add("search-highlight");
-
-  setTimeout(() => {
-    element.classList.remove("search-highlight");
-  }, 1200);
+  window.setTimeout(() => {
+    target.classList.remove("search-highlight");
+  }, 1400);
 }
 
 function addToCart(game, price, isGame = false, isDiscountEligible = false) {
   const found = cart.find((item) => item.game === game);
+
   if (found) {
     found.qty += 1;
   } else {
@@ -239,255 +322,457 @@ function addToCart(game, price, isGame = false, isDiscountEligible = false) {
 
   updateCartCount();
   updateGameInputField();
-  showCartToast(`${game} added to cart!`);
   renderCart();
+  showCartToast(`${game} added to cart`);
 }
 
 function updateCartCount() {
   const count = cart.reduce((sum, item) => sum + item.qty, 0);
-  const cartCount = document.getElementById("cartCount");
-  if (cartCount) cartCount.textContent = count;
+  const counter = document.getElementById("cartCount");
+  if (counter) counter.textContent = count;
 }
 
 function updateGameInputField() {
-  const gameInput = document.getElementById("gameInput");
-  if (!gameInput) return;
+  const field = document.getElementById("gameInput");
+  if (!field) return;
 
-  if (cart.length === 0) {
-    gameInput.value = "";
-    return;
-  }
-
-  // Format: Game Name x Qty
-  const gameNames = cart.map((item) => `${item.game} x ${item.qty}`);
-  gameInput.value = gameNames.join(", ");
+  field.value = cart.length
+    ? cart.map((item) => `${item.game} x ${item.qty}`).join(", ")
+    : "";
 }
 
 function getDiscountRate(gameCount) {
-  if (gameCount >= 4) return 0.47; // ~₹850 for 4 games
-  if (gameCount >= 3) return 0.4; // ~₹700 for 3 games
-  if (gameCount >= 2) return 0.25; // ~₹650 for 2 games
+  if (gameCount >= 4) return 0.47;
+  if (gameCount >= 3) return 0.4;
+  if (gameCount >= 2) return 0.25;
   return 0;
 }
 
 function renderCart() {
-  // console.log("renderCart called, cart:", cart);
   const cartItems = document.getElementById("cartItems");
   const cartTotal = document.getElementById("cartTotal");
-  const imButton = document.querySelector('a[rel="im-checkout"]');
+
   if (!cartItems || !cartTotal) return;
 
-  if (cart.length === 0) {
-    cartItems.innerHTML = "<p>Your cart is empty.</p>";
-    cartTotal.textContent = "";
-
-    if (imButton) {
-      imButton.style.pointerEvents = "none";
-      imButton.style.opacity = "0.5";
-      imButton.setAttribute("data-text", "Add items to cart");
-    }
+  if (!cart.length) {
+    cartItems.innerHTML = `
+      <div class="empty-cart">
+        Your cart is empty. Add a game or service to start checkout.
+      </div>
+    `;
+    cartTotal.innerHTML = "";
+    generateQRCode(0);
+    updateGameInputField();
     return;
   }
-  let html = "";
-  let total = 0;
+
+  let subtotal = 0;
   let eligibleGameTotal = 0;
   let eligibleGameCount = 0;
 
-  cart.forEach((item, idx) => {
-    const itemTotal = item.price * item.qty;
-    total += itemTotal;
+  const itemsMarkup = cart
+    .map((item, index) => {
+      const itemTotal = item.price * item.qty;
+      subtotal += itemTotal;
 
-    if (item.isGame && item.isDiscountEligible) {
-      eligibleGameTotal += itemTotal;
-      eligibleGameCount += item.qty;
-    }
+      if (item.isGame && item.isDiscountEligible) {
+        eligibleGameTotal += itemTotal;
+        eligibleGameCount += item.qty;
+      }
 
-    html += `<div class="cart-item">
-    ${item.game} x ${item.qty}
-    <span>₹${itemTotal.toFixed(2)}</span>
-    <button class="remove-btn" onclick="removeFromCart(${idx})">Remove</button>
-  </div>`;
-  });
+      return `
+        <article class="cart-item">
+          <div class="cart-line">
+            <strong>${escapeHTML(item.game)}</strong>
+            <span>${item.qty} item${item.qty > 1 ? "s" : ""} | ${formatTotal(itemTotal)}</span>
+          </div>
 
-  cartItems.innerHTML = html;
+          <button
+            class="remove-btn"
+            type="button"
+            data-remove-index="${index}"
+            aria-label="Remove ${escapeHTML(item.game)}"
+          >
+            Remove
+          </button>
+        </article>
+      `;
+    })
+    .join("");
+
+  cartItems.innerHTML = itemsMarkup;
 
   const discountRate = getDiscountRate(eligibleGameCount);
   const discountAmount = eligibleGameTotal * discountRate;
-  const finalTotal = total - discountAmount + tip;
+  const finalTotal = subtotal - discountAmount + tip;
 
   cartTotal.innerHTML = `
-  <div>Subtotal: ₹${total.toFixed(2)}</div>
-  ${
-    discountRate > 0
-      ? `<div style="color:#00ff88;">
-          Discount on Steam Account Games (${discountRate * 100}%):
-          −₹${discountAmount.toFixed(2)}
-        </div>`
-      : ""
-  }
-  <strong>Total: ₹${finalTotal.toFixed(2)}</strong>
-`;
-
-  // Enable Instamojo button and update label with total
-  if (imButton) {
-    imButton.style.pointerEvents = "auto";
-    imButton.style.opacity = "1";
-    imButton.setAttribute("data-text", `Pay ₹${finalTotal.toFixed(2)}`);
-  }
+    <div class="cart-total-row">
+      <span>Subtotal</span>
+      <strong>${formatTotal(subtotal)}</strong>
+    </div>
+    ${
+      discountRate > 0
+        ? `
+          <div class="cart-total-row discount-line">
+            <span>Steam account discount (${Math.round(discountRate * 100)}%)</span>
+            <strong>- ${formatTotal(discountAmount)}</strong>
+          </div>
+        `
+        : ""
+    }
+    ${
+      tip > 0
+        ? `
+          <div class="cart-total-row">
+            <span>Tip</span>
+            <strong>${formatTotal(tip)}</strong>
+          </div>
+        `
+        : ""
+    }
+    <div class="cart-total-primary">
+      <span>Total</span>
+      <strong>${formatTotal(finalTotal)}</strong>
+    </div>
+  `;
 
   generateQRCode(finalTotal);
+  updateGameInputField();
 }
 
-function removeFromCart(idx) {
-  cart.splice(idx, 1);
+function removeFromCart(index) {
+  cart.splice(index, 1);
   renderCart();
   updateCartCount();
-  updateGameInputField();
 }
 
 function clearCart() {
   cart = [];
   tip = 0;
+
+  const tipInput = document.getElementById("tipAmount");
+  if (tipInput) tipInput.value = "0";
+
   renderCart();
   updateCartCount();
 }
 
 function applyTip() {
   const tipInput = document.getElementById("tipAmount");
-  if (tipInput) {
-    const newTip = parseFloat(tipInput.value) || 0;
-    if (newTip < 0) {
-      tip = 0;
-      tipInput.value = 0;
-      showCartToast("Tip cannot be negative!");
-    } else {
-      tip = newTip;
-    }
-    renderCart();
+  if (!tipInput) return;
+
+  const value = parseFloat(tipInput.value);
+  if (!Number.isFinite(value) || value < 0) {
+    tip = 0;
+    tipInput.value = "0";
+    showCartToast("Tip cannot be negative");
+  } else {
+    tip = value;
   }
+
+  renderCart();
 }
 
 function showCartModal() {
-  renderCart();
   const modal = document.getElementById("cartModal");
-  if (modal) {
-    modal.style.visibility = "visible";
-    modal.style.opacity = "1";
-    // console.log("Cart modal shown");
-  } else {
-    console.error("Cart modal not found in DOM");
-  }
+  if (!modal) return;
+
+  renderCart();
+  modal.classList.add("is-open");
+  modal.setAttribute("aria-hidden", "false");
+  document.body.classList.add("is-locked");
+
+  const closeButton = document.getElementById("closeCart");
+  closeButton?.focus();
 }
 
 function hideCartModal() {
   const modal = document.getElementById("cartModal");
-  if (modal) {
-    modal.style.visibility = "hidden";
-    modal.style.opacity = "0";
-  }
+  if (!modal) return;
+
+  modal.classList.remove("is-open");
+  modal.setAttribute("aria-hidden", "true");
+  document.body.classList.remove("is-locked");
 }
 
-function showCartToast(msg) {
+function showCartToast(message) {
   const container = document.getElementById("toastContainer");
+  if (!container) return;
+
   const toast = document.createElement("div");
   toast.className = "toast";
-  toast.textContent = msg;
+  toast.textContent = message;
   container.appendChild(toast);
-  setTimeout(() => toast.classList.add("show"), 10);
-  setTimeout(() => {
+
+  window.setTimeout(() => toast.classList.add("show"), 10);
+  window.setTimeout(() => {
     toast.classList.remove("show");
-    setTimeout(() => {
+    window.setTimeout(() => {
       if (container.contains(toast)) container.removeChild(toast);
-    }, 300);
-  }, 3000);
+    }, 240);
+  }, 2800);
 }
+
+function buildSearchData() {
+  const productItems = [
+    ...games.map((game) => ({ name: game.name, type: "Game" })),
+    ...services.map((service) => ({ name: service.name, type: "Service" })),
+  ];
+
+  productItems.push({ name: "Donation", type: "Support" });
+  productItems.push({ name: "Xbox Game Pass", type: "Membership" });
+
+  return productItems;
+}
+
+function closeSearchResults() {
+  const results = document.getElementById("searchResults");
+  if (!results) return;
+
+  results.innerHTML = "";
+  results.hidden = true;
+}
+
+function renderSearchResults(matches) {
+  const results = document.getElementById("searchResults");
+  if (!results) return;
+
+  if (!matches.length) {
+    results.innerHTML = `<div class="empty-cart">No matches found.</div>`;
+    results.hidden = false;
+    return;
+  }
+
+  results.innerHTML = matches
+    .map(
+      (item) => `
+        <button
+          class="search-result-btn"
+          type="button"
+          data-search-name="${escapeHTML(item.name)}"
+        >
+          <strong>${escapeHTML(item.name)}</strong>
+          <span>${escapeHTML(item.type)}</span>
+        </button>
+      `
+    )
+    .join("");
+
+  results.hidden = false;
+}
+
+function performSearch(query) {
+  const normalized = query.trim().toLowerCase();
+  if (!normalized) {
+    closeSearchResults();
+    return [];
+  }
+
+  const matches = buildSearchData()
+    .filter((item) => item.name.toLowerCase().includes(normalized))
+    .slice(0, 8);
+
+  renderSearchResults(matches);
+  return matches;
+}
+
+function initializeRevealAnimations() {
+  const items = document.querySelectorAll(".fade-in");
+  if (!items.length) return;
+
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    items.forEach((item) => item.classList.add("visible"));
+    return;
+  }
+
+  if (!("IntersectionObserver" in window)) {
+    items.forEach((item) => item.classList.add("visible"));
+    return;
+  }
+
+  revealObserver?.disconnect();
+
+  revealObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add("visible");
+        revealObserver.unobserve(entry.target);
+      });
+    },
+    { threshold: 0.16, rootMargin: "0% 0% -10% 0%" }
+  );
+
+  items.forEach((item) => revealObserver.observe(item));
+}
+
+document.addEventListener("change", (event) => {
+  const target = event.target;
+  if (!(target instanceof HTMLElement)) return;
+
+  if (target.classList.contains("variant-select")) {
+    updateVariantPrice(target);
+  }
+
+  if (target.classList.contains("xbox-select")) {
+    updateVariantPrice(target);
+  }
+});
+
+document.addEventListener("click", (event) => {
+  const target = event.target;
+  if (!(target instanceof Element)) return;
+
+  const cartCloseTarget = target.closest("[data-cart-close]");
+  if (cartCloseTarget) {
+    hideCartModal();
+    return;
+  }
+
+  const addVariantButton = target.closest(".add-variant-btn");
+  if (addVariantButton) {
+    const card = addVariantButton.closest(".game-card");
+    const select = card?.querySelector(".variant-select");
+    if (!(select instanceof HTMLSelectElement) || !card) return;
+
+    const option = select.options[select.selectedIndex];
+    const selectedName = `${card.dataset.name} (${option.value})`;
+    const price = parseFloat(option.dataset.price || "0");
+    const isDiscountEligible = option.value.toLowerCase() === "in your steam account";
+
+    addToCart(selectedName, price, true, isDiscountEligible);
+    return;
+  }
+
+  const addStandardButton = target.closest(".add-to-cart-btn, .add-service-btn");
+  if (addStandardButton instanceof HTMLButtonElement) {
+    addToCart(
+      addStandardButton.dataset.name || "",
+      parseFloat(addStandardButton.dataset.price || "0"),
+      addStandardButton.classList.contains("add-to-cart-btn"),
+      false
+    );
+    return;
+  }
+
+  const donationButton = target.closest(".add-donation-btn");
+  if (donationButton) {
+    const donationInput = document.getElementById("donateAmount");
+    const donationValue = donationInput instanceof HTMLInputElement
+      ? Math.max(parseFloat(donationInput.value || "10") || 10, 1)
+      : 10;
+
+    addToCart("Donation", donationValue, false, false);
+    return;
+  }
+
+  const xboxButton = target.closest(".add-xbox-btn");
+  if (xboxButton) {
+    const card = xboxButton.closest(".game-card");
+    const select = card?.querySelector(".xbox-select");
+    if (!(select instanceof HTMLSelectElement)) return;
+
+    const option = select.options[select.selectedIndex];
+    addToCart(option.value, parseFloat(option.dataset.price || "0"), false, false);
+    return;
+  }
+
+  const removeButton = target.closest("[data-remove-index]");
+  if (removeButton instanceof HTMLButtonElement) {
+    removeFromCart(Number(removeButton.dataset.removeIndex));
+    return;
+  }
+
+  const searchResult = target.closest("[data-search-name]");
+  if (searchResult instanceof HTMLButtonElement) {
+    const searchInput = document.getElementById("searchInput");
+    const name = searchResult.dataset.searchName || "";
+    if (searchInput instanceof HTMLInputElement) searchInput.value = name;
+    closeSearchResults();
+    highlightGame(name);
+    return;
+  }
+
+  const insideSearch = target.closest(".search-shell");
+  if (!insideSearch) {
+    closeSearchResults();
+  }
+});
+
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape") {
+    closeSearchResults();
+    hideCartModal();
+  }
+});
+
 document.addEventListener("DOMContentLoaded", () => {
   renderGames(games);
   renderServices(services);
+  initializeRevealAnimations();
 
-  // Contact form (no JS handler, handled by Formspree)
-  const cartBtn = document.getElementById("cartBtn");
-  const cartModal = document.getElementById("cartModal");
-  const closeCart = document.getElementById("closeCart");
-  const clearCartBtn = document.getElementById("clearCartBtn");
-  const applyTipBtn = document.getElementById("applyTipBtn");
-
-  const searchResults = document.getElementById("searchResults");
-  if (cartBtn) {
-    cartBtn.addEventListener("click", function () {
-      // console.log("Cart button clicked");
-      showCartModal();
-    });
-  }
-  if (closeCart) closeCart.addEventListener("click", hideCartModal);
-  if (cartModal)
-    cartModal.addEventListener("click", function (e) {
-      if (e.target === cartModal) hideCartModal();
-    });
-  if (clearCartBtn) clearCartBtn.addEventListener("click", clearCart);
-  if (applyTipBtn) applyTipBtn.addEventListener("click", applyTip);
-
+  const cartButton = document.getElementById("cartBtn");
+  const clearCartButton = document.getElementById("clearCartBtn");
+  const applyTipButton = document.getElementById("applyTipBtn");
+  const closeCartButton = document.getElementById("closeCart");
   const searchInput = document.getElementById("searchInput");
-  if (searchInput) {
-    searchInput.addEventListener("input", function () {
-      const query = searchInput.value.toLowerCase().trim();
-      if (query === "") {
-        searchResults.style.display = "none";
-        return;
-      }
-      const filteredGames = games.filter((game) =>
-        game.name.toLowerCase().includes(query)
-      );
-      const filteredServices = services.filter((service) =>
-        service.name.toLowerCase().includes(query)
-      );
-      const allMatches = [...filteredGames, ...filteredServices];
-      if ("donation".toLowerCase().includes(query)) {
-        allMatches.push({ name: "Donation" });
-      }
-      if (allMatches.length === 0) {
-        searchResults.innerHTML = "<p>No matches found.</p>";
-        searchResults.style.display = "block";
-        return;
-      }
-      let html = "<ul>";
-      allMatches.forEach((item) => {
-        html += `<li onclick="highlightGame('${item.name}'); document.getElementById('searchResults').style.display='none';">${item.name}</li>`;
-      });
-      html += "</ul>";
-      searchResults.innerHTML = html;
-      searchResults.style.display = "block";
+  const searchButton = document.getElementById("searchBtn");
+  const copyLastOrderButton = document.getElementById("copyLastOrderBtn");
+
+  cartButton?.addEventListener("click", showCartModal);
+  clearCartButton?.addEventListener("click", clearCart);
+  applyTipButton?.addEventListener("click", applyTip);
+  closeCartButton?.addEventListener("click", hideCartModal);
+
+  if (searchInput instanceof HTMLInputElement) {
+    searchInput.addEventListener("input", () => {
+      performSearch(searchInput.value);
+    });
+
+    searchInput.addEventListener("keydown", (event) => {
+      if (event.key !== "Enter") return;
+
+      const matches = performSearch(searchInput.value);
+      if (!matches.length) return;
+
+      event.preventDefault();
+      closeSearchResults();
+      highlightGame(matches[0].name);
     });
   }
-  updateCartCount();
 
-  // Animate fade-in sections on scroll
-  const fadeSections = document.querySelectorAll(".fade-section, .fade-in");
-  function handleFadeIn() {
-    fadeSections.forEach((section) => {
-      const rect = section.getBoundingClientRect();
-      if (rect.top < window.innerHeight - 60) {
-        section.classList.add("visible");
-      }
-    });
-  }
-  handleFadeIn();
-  window.addEventListener("scroll", handleFadeIn);
-  const lastOrderId = localStorage.getItem("lastOrderId");
+  searchButton?.addEventListener("click", () => {
+    if (!(searchInput instanceof HTMLInputElement)) return;
 
-  if (lastOrderId) {
-    const box = document.getElementById("lastOrderBox");
-    const text = document.getElementById("lastOrderIdText");
-    const copyBtn = document.getElementById("copyLastOrderBtn");
-
-    if (box && text && copyBtn) {
-      text.textContent = lastOrderId;
-      box.style.display = "block";
-
-      copyBtn.addEventListener("click", () => {
-        navigator.clipboard.writeText(lastOrderId);
-        copyBtn.textContent = "Copied ✔";
-      });
+    if (!searchInput.value.trim()) {
+      searchInput.focus();
+      return;
     }
+
+    const matches = performSearch(searchInput.value);
+    if (matches.length === 1) {
+      closeSearchResults();
+      highlightGame(matches[0].name);
+    }
+  });
+
+  const lastOrderId = localStorage.getItem("lastOrderId");
+  const lastOrderBox = document.getElementById("lastOrderBox");
+  const lastOrderText = document.getElementById("lastOrderIdText");
+
+  if (lastOrderId && lastOrderBox && lastOrderText) {
+    lastOrderText.textContent = lastOrderId;
+    lastOrderBox.hidden = false;
   }
+
+  copyLastOrderButton?.addEventListener("click", async () => {
+    if (!lastOrderId) return;
+
+    await navigator.clipboard.writeText(lastOrderId);
+    copyLastOrderButton.textContent = "Copied";
+  });
+
+  updateCartCount();
+  renderCart();
 });

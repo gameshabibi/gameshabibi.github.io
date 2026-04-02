@@ -5,6 +5,7 @@ const PAYMENT_ID = "prashantsingh896@ybl";
 function generateQRCode(amount) {
   const qrContainer = document.getElementById("qrCode");
   const payButton = document.getElementById("payButton");
+  if (!qrContainer || !payButton) return;
 
   if (amount <= 0) {
     qrContainer.innerHTML = "";
@@ -12,16 +13,20 @@ function generateQRCode(amount) {
     return;
   }
 
-  const paymentData = `upi://pay?pa=${PAYMENT_ID}&pn=MyShop&am=${amount.toFixed(
-    2
-  )}&cu=INR&tn=Order Payment`;
+  const paymentData = `upi://pay?${new URLSearchParams({
+    pa: PAYMENT_ID,
+    pn: "Games Habibi",
+    am: amount.toFixed(2),
+    cu: "INR",
+    tn: "Games Habibi Order Payment",
+  }).toString()}`;
 
   // Using QR Code API (Google Charts API)
   const qrCodeURL = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(
     paymentData
   )}`;
 
-  qrContainer.innerHTML = `<img src="${qrCodeURL}" alt="Payment QR Code" class="w-full h-auto">`;
+  qrContainer.innerHTML = `<img src="${qrCodeURL}" alt="Payment QR Code">`;
   payButton.innerHTML = `<a href="${paymentData}" class="btn">Pay Now</a>`;
 }
 
@@ -30,6 +35,7 @@ function showLoader(text = "Sending order…") {
   const overlay = document.getElementById("loaderOverlay");
   const icon = document.getElementById("loaderIcon");
   const label = document.getElementById("loaderText");
+  if (!overlay || !icon || !label) return;
 
   // 🔄 RESET to spinner every time
   icon.className = "spinner";
@@ -42,6 +48,7 @@ function showLoader(text = "Sending order…") {
 function showSuccess(message = "Order received!") {
   const icon = document.getElementById("loaderIcon");
   const label = document.getElementById("loaderText");
+  if (!icon || !label) return;
 
   icon.className = "loader-icon loader-success";
   icon.innerHTML = "✔";
@@ -54,6 +61,7 @@ function showError(message = "Order failed. Try again.") {
   const overlay = document.getElementById("loaderOverlay");
   const icon = document.getElementById("loaderIcon");
   const label = document.getElementById("loaderText");
+  if (!overlay || !icon || !label) return;
 
   overlay.style.display = "flex"; // ✅ MAKE IT VISIBLE
 
@@ -69,125 +77,130 @@ function showError(message = "Order failed. Try again.") {
 }
 
 function hideLoader() {
-  document.getElementById("loaderOverlay").style.display = "none";
+  const overlay = document.getElementById("loaderOverlay");
+  if (overlay) overlay.style.display = "none";
 }
 
-document.getElementById("orderForm").addEventListener("submit", async (e) => {
-  e.preventDefault();
+const orderForm = document.getElementById("orderForm");
 
-  console.log("Submitting", cart);
+if (orderForm) {
+  orderForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
 
-  if (cart.length === 0) {
-    playErrorFeedback();
-    showError("Cart is empty");
-    return;
-  }
+    console.log("Submitting", cart);
 
-  const form = e.target;
-  const name = form.name.value;
-  const email = form.email.value;
-  const paymentFile = form.payment.files[0];
-
-  if (!paymentFile) {
-    playErrorFeedback();
-    showError("Upload payment screenshot");
-    return;
-  }
-
-  if (!paymentFile.type.startsWith("image/")) {
-    playErrorFeedback();
-    showError("Only image files are allowed");
-    return;
-  }
-
-  const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 MB
-  if (paymentFile.size > MAX_FILE_SIZE) {
-    playErrorFeedback();
-    showError("Payment screenshot must be under 5 MB");
-    return;
-  }
-
-  disableSubmit();
-  showLoader("Sending order…");
-
-  const games = cart.map((item) => `${item.game} x ${item.qty}`).join(", ");
-
-  const BOT_TOKEN = "8246672302:AAFP8NvVADdAuJPQKGXtvhUP5d65Hl51a0U";
-  const CHAT_ID = "5822439843";
-
-  const orderId = "ORD-" + Date.now().toString().slice(-6);
-
-  const caption = (
-    "🛒 New Order\n\n" +
-    "🆔 Order ID: " +
-    orderId +
-    "\n" +
-    "👤 Name: " +
-    name +
-    "\n" +
-    "🎮 Games: " +
-    games +
-    "\n" +
-    "📧 Email: " +
-    email
-  ).slice(0, 1000);
-
-  const data = new FormData();
-  data.append("chat_id", CHAT_ID);
-  data.append("photo", paymentFile);
-  data.append("caption", caption);
-
-  try {
-    const res = await fetch(
-      `https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`,
-      { method: "POST", body: data }
-    );
-
-    const result = await res.json();
-    console.log(result);
-
-    if (!result.ok) {
-      throw new Error(result.description || "Telegram error");
+    if (cart.length === 0) {
+      playErrorFeedback();
+      showError("Cart is empty");
+      return;
     }
 
-    document.getElementById("loaderText").innerHTML = `
-  <strong>Order received!</strong><br>
-  <div class="order-id">
-    Order ID: <b>${orderId}</b>
-  </div>
-  <button id="copyOrderIdBtn" class="btn" style="margin-top:10px;">
-    Copy Order ID
-  </button>
-`;
+    const form = e.target;
+    const name = form.name.value;
+    const email = form.email.value;
+    const paymentFile = form.payment.files[0];
 
-    setTimeout(() => {
-      const copyBtn = document.getElementById("copyOrderIdBtn");
-      if (copyBtn) {
-        copyBtn.addEventListener("click", () => {
-          navigator.clipboard.writeText(orderId);
-          copyBtn.textContent = "Copied ✔";
-        });
+    if (!paymentFile) {
+      playErrorFeedback();
+      showError("Upload payment screenshot");
+      return;
+    }
+
+    if (!paymentFile.type.startsWith("image/")) {
+      playErrorFeedback();
+      showError("Only image files are allowed");
+      return;
+    }
+
+    const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 MB
+    if (paymentFile.size > MAX_FILE_SIZE) {
+      playErrorFeedback();
+      showError("Payment screenshot must be under 5 MB");
+      return;
+    }
+
+    disableSubmit();
+    showLoader("Sending order...");
+
+    const games = cart.map((item) => `${item.game} x ${item.qty}`).join(", ");
+
+    const BOT_TOKEN = "8246672302:AAFP8NvVADdAuJPQKGXtvhUP5d65Hl51a0U";
+    const CHAT_ID = "5822439843";
+
+    const orderId = "ORD-" + Date.now().toString().slice(-6);
+
+    const caption = (
+      "🛒 New Order\n\n" +
+      "🆔 Order ID: " +
+      orderId +
+      "\n" +
+      "👤 Name: " +
+      name +
+      "\n" +
+      "🎮 Games: " +
+      games +
+      "\n" +
+      "📧 Email: " +
+      email
+    ).slice(0, 1000);
+
+    const data = new FormData();
+    data.append("chat_id", CHAT_ID);
+    data.append("photo", paymentFile);
+    data.append("caption", caption);
+
+    try {
+      const res = await fetch(
+        `https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`,
+        { method: "POST", body: data }
+      );
+
+      const result = await res.json();
+      console.log(result);
+
+      if (!result.ok) {
+        throw new Error(result.description || "Telegram error");
       }
-    }, 100);
 
-    playSuccessFeedback();
+      document.getElementById("loaderText").innerHTML = `
+        <strong>Order received!</strong><br>
+        <div class="order-id">
+          Order ID: <b>${orderId}</b>
+        </div>
+        <button id="copyOrderIdBtn" class="btn copy-order-btn" type="button">
+          Copy Order ID
+        </button>
+      `;
 
-    localStorage.setItem("lastOrderId", orderId);
+      setTimeout(() => {
+        const copyBtn = document.getElementById("copyOrderIdBtn");
+        if (copyBtn) {
+          copyBtn.addEventListener("click", () => {
+            navigator.clipboard.writeText(orderId);
+            copyBtn.textContent = "Copied";
+          });
+        }
+      }, 100);
 
-    setTimeout(() => {
-      hideLoader();
-      hideCartModal();
-      form.reset();
-      clearCart();
-      enableSubmit();
-      window.location.reload();
-    }, 3000);
-  } catch (err) {
-    console.error("Telegram error:", err);
-    playErrorFeedback();
-    showError(err.message || "Order failed");
-  }
-});
+      playSuccessFeedback();
+
+      localStorage.setItem("lastOrderId", orderId);
+
+      setTimeout(() => {
+        hideLoader();
+        hideCartModal();
+        form.reset();
+        clearCart();
+        enableSubmit();
+        window.location.reload();
+      }, 3000);
+    } catch (err) {
+      console.error("Telegram error:", err);
+      playErrorFeedback();
+      showError(err.message || "Order failed");
+    }
+  });
+}
 
 // OPTIONAL: validate image size immediately on file select
 const paymentInput = document.querySelector('input[name="payment"]');
