@@ -11,6 +11,7 @@ const totalFormatter = new Intl.NumberFormat("en-IN", {
 });
 
 let revealObserver;
+let wasMobileViewport = window.matchMedia("(max-width: 47.99em)").matches;
 
 function setMobileHeaderMenuState(shouldOpen) {
   const header = document.querySelector(".site-header");
@@ -44,6 +45,20 @@ function setActiveCartStep(targetId) {
     const isActive = button instanceof HTMLElement && button.dataset.cartStep === targetId;
     button.classList.toggle("is-active", isActive);
   });
+}
+
+function getActiveCartStepId() {
+  const activeButton = document.querySelector(".cart-step-tab.is-active");
+  if (activeButton instanceof HTMLElement && activeButton.dataset.cartStep) {
+    return activeButton.dataset.cartStep;
+  }
+
+  const visibleSection = document.querySelector(".cart-panel-group.is-step-visible");
+  if (visibleSection instanceof HTMLElement && visibleSection.id) {
+    return visibleSection.id;
+  }
+
+  return "cartSummaryStep";
 }
 
 function showCartStep(targetId) {
@@ -813,10 +828,16 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   window.addEventListener("resize", () => {
-    if (!window.matchMedia("(max-width: 47.99em)").matches) {
+    const isMobileViewport = window.matchMedia("(max-width: 47.99em)").matches;
+
+    if (!isMobileViewport) {
       hideMobileHeaderMenu();
     }
-    showCartStep("cartSummaryStep");
+
+    if (isMobileViewport !== wasMobileViewport) {
+      showCartStep(getActiveCartStepId());
+      wasMobileViewport = isMobileViewport;
+    }
   });
 
   if (searchInput instanceof HTMLInputElement) {
