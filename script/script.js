@@ -12,6 +12,67 @@ const totalFormatter = new Intl.NumberFormat("en-IN", {
 
 let revealObserver;
 let wasMobileViewport = window.matchMedia("(max-width: 47.99em)").matches;
+let lastKnownScrollY = 0;
+
+function setDesktopHeaderVisibility(shouldShow) {
+  const header = document.querySelector(".site-header");
+  if (!header) return;
+
+  header.classList.toggle("is-hidden", !shouldShow);
+}
+
+function getHeaderHideTrigger() {
+  const serviceCards = document.querySelectorAll(".contain .game-card");
+  const triggerCard =
+    serviceCards[3] instanceof HTMLElement
+      ? serviceCards[3]
+      : serviceCards[serviceCards.length - 1];
+
+  if (!(triggerCard instanceof HTMLElement)) {
+    return null;
+  }
+
+  return triggerCard;
+}
+
+function syncDesktopHeaderOnScroll() {
+  const isMobileViewport = window.matchMedia("(max-width: 47.99em)").matches;
+  const header = document.querySelector(".site-header");
+
+  if (!(header instanceof HTMLElement)) return;
+
+  if (isMobileViewport) {
+    setDesktopHeaderVisibility(true);
+    lastKnownScrollY = window.scrollY;
+    return;
+  }
+
+  if (header.classList.contains("is-menu-open")) {
+    setDesktopHeaderVisibility(true);
+    lastKnownScrollY = window.scrollY;
+    return;
+  }
+
+  const currentScrollY = window.scrollY;
+  const triggerCard = getHeaderHideTrigger();
+  const isScrollingDown = currentScrollY > lastKnownScrollY;
+  const triggerRect =
+    triggerCard instanceof HTMLElement ? triggerCard.getBoundingClientRect() : null;
+  const hasPassedServicesMenu =
+    triggerRect instanceof DOMRect
+      ? triggerRect.bottom <= header.offsetHeight + 8
+      : false;
+
+  if (!hasPassedServicesMenu || currentScrollY <= 24) {
+    setDesktopHeaderVisibility(true);
+  } else if (isScrollingDown) {
+    setDesktopHeaderVisibility(false);
+  } else {
+    setDesktopHeaderVisibility(true);
+  }
+
+  lastKnownScrollY = currentScrollY;
+}
 
 function setMobileHeaderMenuState(shouldOpen) {
   const header = document.querySelector(".site-header");
@@ -800,6 +861,7 @@ document.addEventListener("DOMContentLoaded", () => {
   renderGames(games);
   renderServices(services);
   initializeRevealAnimations();
+  lastKnownScrollY = window.scrollY;
 
   const cartButton = document.getElementById("cartBtn");
   const clearCartButton = document.getElementById("clearCartBtn");
@@ -838,7 +900,11 @@ document.addEventListener("DOMContentLoaded", () => {
       showCartStep(getActiveCartStepId());
       wasMobileViewport = isMobileViewport;
     }
+
+    syncDesktopHeaderOnScroll();
   });
+
+  window.addEventListener("scroll", syncDesktopHeaderOnScroll, { passive: true });
 
   if (searchInput instanceof HTMLInputElement) {
     searchInput.addEventListener("input", () => {
@@ -891,4 +957,5 @@ document.addEventListener("DOMContentLoaded", () => {
   updateCartCount();
   renderCart();
   showCartStep("cartSummaryStep");
+  syncDesktopHeaderOnScroll();
 });

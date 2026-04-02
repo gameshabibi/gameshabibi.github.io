@@ -173,6 +173,17 @@ button {
   background: rgba(6, 14, 28, 0.72);
   backdrop-filter: blur(1.3rem);
   border-bottom: 0.0625rem solid rgba(138, 177, 232, 0.08);
+  transition:
+    transform 260ms ease,
+    opacity 220ms ease,
+    background-color 220ms ease;
+  will-change: transform;
+}
+
+.site-header.is-hidden {
+  transform: translateY(calc(-100% - 0.5rem));
+  opacity: 0;
+  pointer-events: none;
 }
 
 .header-inner,
@@ -1380,6 +1391,13 @@ main {
   transform: translateY(0);
 }
 
+.site-header.is-hidden,
+.site-header.fade-in.visible.is-hidden {
+  transform: translateY(calc(-100% - 0.5rem));
+  opacity: 0;
+  pointer-events: none;
+}
+
 @keyframes spin {
   to {
     transform: rotate(1turn);
@@ -1400,9 +1418,13 @@ main {
 }
 
 @media (min-width: 48em) {
+  .site-header {
+    padding-block: clamp(0.14rem, 0.38vw, 0.24rem);
+  }
+
   .header-inner {
-    grid-template-columns: auto 1fr minmax(22rem, 28rem) auto;
-    gap: 1rem;
+    grid-template-columns: auto minmax(0, 1fr) minmax(15rem, 22vw) auto;
+    gap: clamp(0.28rem, 0.48vw, 0.38rem);
   }
 
   .site-nav {
@@ -1414,13 +1436,50 @@ main {
     min-inline-size: 0;
   }
 
+  .brand-lockup {
+    gap: clamp(0.3rem, 0.45vw, 0.42rem);
+  }
+
+  .brand-mark {
+    inline-size: clamp(2.5rem, 2.8vw, 3rem);
+    block-size: clamp(2.5rem, 2.8vw, 3rem);
+    border-radius: clamp(0.82rem, 0.95vw, 1rem);
+  }
+
+  .site-nav a {
+    padding: clamp(0.22rem, 0.32vw, 0.3rem) clamp(0.46rem, 0.62vw, 0.6rem);
+  }
+
+  .search-shell {
+    padding: clamp(0.14rem, 0.24vw, 0.18rem);
+    border-radius: clamp(0.72rem, 0.78vw, 0.82rem);
+  }
+
+  #searchInput,
+  #searchBtn,
+  #cartBtn {
+    min-block-size: clamp(2.05rem, 2.2vw, 2.25rem);
+  }
+
+  #searchInput {
+    padding-inline: clamp(0.64rem, 0.74vw, 0.76rem);
+  }
+
   #cartBtn {
     grid-column: 4;
+    padding-inline: clamp(0.66rem, 0.78vw, 0.84rem);
   }
 
   .header-meta {
     grid-template-columns: auto 1fr;
     align-items: center;
+    gap: clamp(0.24rem, 0.42vw, 0.32rem);
+    padding-top: clamp(0.12rem, 0.24vw, 0.18rem);
+  }
+
+  .last-order-card,
+  .header-note {
+    padding: clamp(0.34rem, 0.48vw, 0.42rem) clamp(0.56rem, 0.72vw, 0.68rem);
   }
 
   .hero-grid,
