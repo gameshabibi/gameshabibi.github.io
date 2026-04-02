@@ -307,10 +307,7 @@ const games = [
     name: "Grand Theft Auto V",
     p: {
       genre: "1st - online , Shared with Rockstar",
-      variants: [
-        { name: "In your steam account", price: 299 },
-        { name: "Shared Steam Account", price: 149 },
-      ],
+      variants: [{ name: "Shared Steam Account", price: 129 }],
     },
   },
   {
