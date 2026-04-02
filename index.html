@@ -58,7 +58,25 @@
           </span>
         </a>
 
-        <nav class="site-nav" aria-label="Primary navigation">
+        <button
+          id="mobileMenuToggle"
+          class="menu-toggle"
+          type="button"
+          aria-label="Open header menu"
+          aria-expanded="false"
+          aria-controls="mobileHeaderNav mobileHeaderMeta"
+        >
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+
+        <button id="cartBtn" class="btn cart-button" type="button">
+          Cart
+          <span id="cartCount" class="cart-count">0</span>
+        </button>
+
+        <nav id="mobileHeaderNav" class="site-nav" aria-label="Primary navigation">
           <a href="#games">Catalog</a>
           <a href="#how-it-works">How It Works</a>
           <a href="#about">About</a>
@@ -80,15 +98,10 @@
             </button>
             <div id="searchResults" class="search-results" hidden></div>
           </div>
-
-          <button id="cartBtn" class="btn cart-button" type="button">
-            Cart
-            <span id="cartCount" class="cart-count">0</span>
-          </button>
         </div>
       </div>
 
-      <div class="container header-meta">
+      <div id="mobileHeaderMeta" class="container header-meta">
         <div id="lastOrderBox" class="last-order-card" hidden>
           <p class="meta-label">Last order</p>
           <b id="lastOrderIdText"></b>
@@ -350,8 +363,32 @@
           </button>
         </div>
 
+        <div class="cart-mobile-nav" aria-label="Mobile checkout steps">
+          <button
+            class="cart-step-tab is-active"
+            type="button"
+            data-cart-step="cartSummaryStep"
+          >
+            Cart
+          </button>
+          <button
+            class="cart-step-tab"
+            type="button"
+            data-cart-step="paymentStep"
+          >
+            Pay
+          </button>
+          <button
+            class="cart-step-tab"
+            type="button"
+            data-cart-step="orderStep"
+          >
+            Form
+          </button>
+        </div>
+
         <div class="cart-modal-body">
-          <section class="cart-panel-group cart-summary-panel">
+          <section id="cartSummaryStep" class="cart-panel-group cart-summary-panel">
             <div class="cart-step-heading">
               <span class="step-number step-inline">01</span>
               <div>
@@ -378,7 +415,7 @@
             </button>
           </section>
 
-          <section class="cart-panel-group payment-panel">
+          <section id="paymentStep" class="cart-panel-group payment-panel">
             <div class="cart-step-heading">
               <span class="step-number step-inline">02</span>
               <div>
@@ -391,7 +428,7 @@
             <div id="payButton" class="pay-button-wrap"></div>
           </section>
 
-          <section class="cart-panel-group order-panel form">
+          <section id="orderStep" class="cart-panel-group order-panel form">
             <div class="cart-step-heading">
               <span class="step-number step-inline">03</span>
               <div>

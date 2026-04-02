@@ -12,6 +12,78 @@ const totalFormatter = new Intl.NumberFormat("en-IN", {
 
 let revealObserver;
 
+function setMobileHeaderMenuState(shouldOpen) {
+  const header = document.querySelector(".site-header");
+  const toggle = document.getElementById("mobileMenuToggle");
+  const isMobileViewport = window.matchMedia("(max-width: 47.99em)").matches;
+
+  if (!header || !toggle) return;
+
+  const isOpen = Boolean(shouldOpen) && isMobileViewport;
+  header.classList.toggle("is-menu-open", isOpen);
+  toggle.setAttribute("aria-expanded", String(isOpen));
+  toggle.setAttribute(
+    "aria-label",
+    isOpen ? "Close header menu" : "Open header menu"
+  );
+}
+
+function hideMobileHeaderMenu() {
+  setMobileHeaderMenuState(false);
+}
+
+function toggleMobileHeaderMenu() {
+  const header = document.querySelector(".site-header");
+  const isOpen = header?.classList.contains("is-menu-open");
+  setMobileHeaderMenuState(!isOpen);
+}
+
+function setActiveCartStep(targetId) {
+  const stepButtons = document.querySelectorAll(".cart-step-tab");
+  stepButtons.forEach((button) => {
+    const isActive = button instanceof HTMLElement && button.dataset.cartStep === targetId;
+    button.classList.toggle("is-active", isActive);
+  });
+}
+
+function showCartStep(targetId) {
+  const isMobileViewport = window.matchMedia("(max-width: 47.99em)").matches;
+  const stepSections = document.querySelectorAll(".cart-panel-group");
+
+  stepSections.forEach((section) => {
+    if (!(section instanceof HTMLElement)) return;
+    section.classList.toggle("is-step-visible", !isMobileViewport || section.id === targetId);
+  });
+
+  setActiveCartStep(targetId);
+}
+
+function scrollCartSection(targetId) {
+  const modalBody = document.querySelector(".cart-modal-body");
+  const targetSection = document.getElementById(targetId);
+  const isMobileViewport = window.matchMedia("(max-width: 47.99em)").matches;
+
+  if (!(modalBody instanceof HTMLElement) || !(targetSection instanceof HTMLElement)) {
+    return;
+  }
+
+  if (isMobileViewport) {
+    showCartStep(targetId);
+    modalBody.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+    return;
+  }
+
+  const top = targetSection.offsetTop - modalBody.offsetTop;
+  modalBody.scrollTo({
+    top,
+    behavior: "smooth",
+  });
+  showCartStep(targetId);
+}
+
 function formatPrice(value) {
   return `₹${currencyFormatter.format(Number(value) || 0)}`;
 }
@@ -482,6 +554,7 @@ function showCartModal() {
   modal.classList.add("is-open");
   modal.setAttribute("aria-hidden", "false");
   document.body.classList.add("is-locked");
+  scrollCartSection("cartSummaryStep");
 
   const closeButton = document.getElementById("closeCart");
   closeButton?.focus();
@@ -704,6 +777,7 @@ document.addEventListener("keydown", (event) => {
   if (event.key === "Escape") {
     closeSearchResults();
     hideCartModal();
+    hideMobileHeaderMenu();
   }
 });
 
@@ -716,14 +790,34 @@ document.addEventListener("DOMContentLoaded", () => {
   const clearCartButton = document.getElementById("clearCartBtn");
   const applyTipButton = document.getElementById("applyTipBtn");
   const closeCartButton = document.getElementById("closeCart");
+  const mobileMenuToggle = document.getElementById("mobileMenuToggle");
   const searchInput = document.getElementById("searchInput");
   const searchButton = document.getElementById("searchBtn");
   const copyLastOrderButton = document.getElementById("copyLastOrderBtn");
+  const mobileNavLinks = document.querySelectorAll(".site-nav a");
+  const cartStepButtons = document.querySelectorAll(".cart-step-tab");
 
   cartButton?.addEventListener("click", showCartModal);
   clearCartButton?.addEventListener("click", clearCart);
   applyTipButton?.addEventListener("click", applyTip);
   closeCartButton?.addEventListener("click", hideCartModal);
+  mobileMenuToggle?.addEventListener("click", toggleMobileHeaderMenu);
+  mobileNavLinks.forEach((link) => {
+    link.addEventListener("click", hideMobileHeaderMenu);
+  });
+  cartStepButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      if (!(button instanceof HTMLElement)) return;
+      scrollCartSection(button.dataset.cartStep || "");
+    });
+  });
+
+  window.addEventListener("resize", () => {
+    if (!window.matchMedia("(max-width: 47.99em)").matches) {
+      hideMobileHeaderMenu();
+    }
+    showCartStep("cartSummaryStep");
+  });
 
   if (searchInput instanceof HTMLInputElement) {
     searchInput.addEventListener("input", () => {
@@ -775,4 +869,5 @@ document.addEventListener("DOMContentLoaded", () => {
 
   updateCartCount();
   renderCart();
+  showCartStep("cartSummaryStep");
 });
