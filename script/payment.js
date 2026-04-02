@@ -81,6 +81,136 @@ function hideLoader() {
   if (overlay) overlay.style.display = "none";
 }
 
+function completeSuccessfulOrder(form, orderId) {
+  const loaderText = document.getElementById("loaderText");
+
+  if (loaderText) {
+    loaderText.innerHTML = `
+      <strong>Order received!</strong><br>
+      <div class="order-id">
+        Order ID: <b>${orderId}</b>
+      </div>
+      <button id="copyOrderIdBtn" class="btn copy-order-btn" type="button">
+        Copy Order ID
+      </button>
+    `;
+  }
+
+  window.setTimeout(() => {
+    const copyBtn = document.getElementById("copyOrderIdBtn");
+    if (copyBtn) {
+      copyBtn.addEventListener("click", () => {
+        navigator.clipboard.writeText(orderId);
+        copyBtn.textContent = "Copied";
+      });
+    }
+  }, 100);
+
+  playSuccessFeedback();
+  localStorage.setItem("lastOrderId", orderId);
+
+  window.setTimeout(() => {
+    hideLoader();
+    hideCartModal();
+    form.reset();
+    clearCart();
+    enableSubmit();
+    window.location.reload();
+  }, 3000);
+}
+
+function submitOrderWithIframeFallback(form, endpoint, chatId, caption, paymentInput) {
+  return new Promise((resolve, reject) => {
+    if (!(paymentInput instanceof HTMLInputElement)) {
+      reject(new Error("Payment screenshot field is missing"));
+      return;
+    }
+
+    const iframe = document.createElement("iframe");
+    const frameName = `telegramUploadFrame-${Date.now()}`;
+    const hiddenChatId = document.createElement("input");
+    const hiddenCaption = document.createElement("input");
+    const originalAction = form.getAttribute("action");
+    const originalMethod = form.getAttribute("method");
+    const originalTarget = form.getAttribute("target");
+    const originalPaymentName = paymentInput.name;
+    let settled = false;
+
+    iframe.name = frameName;
+    iframe.hidden = true;
+    iframe.style.display = "none";
+
+    hiddenChatId.type = "hidden";
+    hiddenChatId.name = "chat_id";
+    hiddenChatId.value = chatId;
+
+    hiddenCaption.type = "hidden";
+    hiddenCaption.name = "caption";
+    hiddenCaption.value = caption;
+
+    const cleanup = () => {
+      paymentInput.name = originalPaymentName;
+      if (originalAction === null) {
+        form.removeAttribute("action");
+      } else {
+        form.setAttribute("action", originalAction);
+      }
+
+      if (originalMethod === null) {
+        form.removeAttribute("method");
+      } else {
+        form.setAttribute("method", originalMethod);
+      }
+
+      if (originalTarget === null) {
+        form.removeAttribute("target");
+      } else {
+        form.setAttribute("target", originalTarget);
+      }
+
+      hiddenChatId.remove();
+      hiddenCaption.remove();
+      iframe.remove();
+    };
+
+    const finish = (ok, errorMessage) => {
+      if (settled) return;
+      settled = true;
+      cleanup();
+
+      if (ok) {
+        resolve();
+      } else {
+        reject(new Error(errorMessage || "Fallback order submission failed"));
+      }
+    };
+
+    iframe.addEventListener(
+      "load",
+      () => {
+        window.setTimeout(() => finish(true), 250);
+      },
+      { once: true }
+    );
+
+    document.body.appendChild(iframe);
+    form.append(hiddenChatId, hiddenCaption);
+
+    paymentInput.name = "photo";
+    form.setAttribute("action", endpoint);
+    form.setAttribute("method", "POST");
+    form.setAttribute("target", frameName);
+
+    window.setTimeout(() => finish(true), 2500);
+
+    try {
+      HTMLFormElement.prototype.submit.call(form);
+    } catch (error) {
+      finish(false, error.message);
+    }
+  });
+}
+
 const orderForm = document.getElementById("orderForm");
 
 if (orderForm) {
@@ -99,6 +229,7 @@ if (orderForm) {
     const name = form.name.value;
     const email = form.email.value;
     const paymentFile = form.payment.files[0];
+    const paymentInput = form.querySelector('input[name="payment"]');
 
     if (!paymentFile) {
       playErrorFeedback();
@@ -161,41 +292,30 @@ if (orderForm) {
       if (!result.ok) {
         throw new Error(result.description || "Telegram error");
       }
-
-      document.getElementById("loaderText").innerHTML = `
-        <strong>Order received!</strong><br>
-        <div class="order-id">
-          Order ID: <b>${orderId}</b>
-        </div>
-        <button id="copyOrderIdBtn" class="btn copy-order-btn" type="button">
-          Copy Order ID
-        </button>
-      `;
-
-      setTimeout(() => {
-        const copyBtn = document.getElementById("copyOrderIdBtn");
-        if (copyBtn) {
-          copyBtn.addEventListener("click", () => {
-            navigator.clipboard.writeText(orderId);
-            copyBtn.textContent = "Copied";
-          });
-        }
-      }, 100);
-
-      playSuccessFeedback();
-
-      localStorage.setItem("lastOrderId", orderId);
-
-      setTimeout(() => {
-        hideLoader();
-        hideCartModal();
-        form.reset();
-        clearCart();
-        enableSubmit();
-        window.location.reload();
-      }, 3000);
+      completeSuccessfulOrder(form, orderId);
     } catch (err) {
       console.error("Telegram error:", err);
+
+      const shouldUseFallback =
+        err instanceof TypeError ||
+        String(err?.message || "").toLowerCase().includes("failed to fetch");
+
+      if (shouldUseFallback) {
+        try {
+          await submitOrderWithIframeFallback(
+            form,
+            `https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`,
+            CHAT_ID,
+            caption,
+            paymentInput
+          );
+          completeSuccessfulOrder(form, orderId);
+          return;
+        } catch (fallbackError) {
+          console.error("Telegram fallback error:", fallbackError);
+        }
+      }
+
       playErrorFeedback();
       showError(err.message || "Order failed");
     }
