@@ -1,5 +1,46 @@
 let cart = [];
 let tip = 0;
+let appliedCoupon = null;
+
+function loadCartFromStorage() {
+  try {
+    const data = localStorage.getItem("gh_cart");
+    if (!data) return [];
+    const parsed = JSON.parse(data);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+}
+
+function saveCartToStorage() {
+  try {
+    localStorage.setItem("gh_cart", JSON.stringify(cart));
+  } catch (err) {
+    console.warn("Failed to save cart", err);
+  }
+}
+
+function loadCouponFromStorage() {
+  try {
+    const code = localStorage.getItem("gh_coupon");
+    appliedCoupon = code ? code.trim().toUpperCase() : null;
+  } catch {
+    appliedCoupon = null;
+  }
+}
+
+function saveCouponToStorage() {
+  try {
+    if (appliedCoupon) {
+      localStorage.setItem("gh_coupon", appliedCoupon);
+    } else {
+      localStorage.removeItem("gh_coupon");
+    }
+  } catch (err) {
+    console.warn("Failed to save coupon", err);
+  }
+}
 
 const currencyFormatter = new Intl.NumberFormat("en-IN", {
   maximumFractionDigits: 0,
@@ -24,9 +65,9 @@ function setDesktopHeaderVisibility(shouldShow) {
 function getHeaderHideTrigger() {
   const serviceCards = document.querySelectorAll(".contain .game-card");
   const triggerCard =
-    serviceCards[3] instanceof HTMLElement
-      ? serviceCards[3]
-      : serviceCards[serviceCards.length - 1];
+    serviceCards[3] instanceof HTMLElement ?
+      serviceCards[3]
+    : serviceCards[serviceCards.length - 1];
 
   if (!(triggerCard instanceof HTMLElement)) {
     return null;
@@ -57,11 +98,13 @@ function syncDesktopHeaderOnScroll() {
   const triggerCard = getHeaderHideTrigger();
   const isScrollingDown = currentScrollY > lastKnownScrollY;
   const triggerRect =
-    triggerCard instanceof HTMLElement ? triggerCard.getBoundingClientRect() : null;
+    triggerCard instanceof HTMLElement ?
+      triggerCard.getBoundingClientRect()
+    : null;
   const hasPassedServicesMenu =
-    triggerRect instanceof DOMRect
-      ? triggerRect.bottom <= header.offsetHeight + 8
-      : false;
+    triggerRect instanceof DOMRect ?
+      triggerRect.bottom <= header.offsetHeight + 8
+    : false;
 
   if (!hasPassedServicesMenu || currentScrollY <= 24) {
     setDesktopHeaderVisibility(true);
@@ -86,7 +129,7 @@ function setMobileHeaderMenuState(shouldOpen) {
   toggle.setAttribute("aria-expanded", String(isOpen));
   toggle.setAttribute(
     "aria-label",
-    isOpen ? "Close header menu" : "Open header menu"
+    isOpen ? "Close header menu" : "Open header menu",
   );
 }
 
@@ -103,7 +146,8 @@ function toggleMobileHeaderMenu() {
 function setActiveCartStep(targetId) {
   const stepButtons = document.querySelectorAll(".cart-step-tab");
   stepButtons.forEach((button) => {
-    const isActive = button instanceof HTMLElement && button.dataset.cartStep === targetId;
+    const isActive =
+      button instanceof HTMLElement && button.dataset.cartStep === targetId;
     button.classList.toggle("is-active", isActive);
   });
 }
@@ -114,7 +158,9 @@ function getActiveCartStepId() {
     return activeButton.dataset.cartStep;
   }
 
-  const visibleSection = document.querySelector(".cart-panel-group.is-step-visible");
+  const visibleSection = document.querySelector(
+    ".cart-panel-group.is-step-visible",
+  );
   if (visibleSection instanceof HTMLElement && visibleSection.id) {
     return visibleSection.id;
   }
@@ -128,7 +174,10 @@ function showCartStep(targetId) {
 
   stepSections.forEach((section) => {
     if (!(section instanceof HTMLElement)) return;
-    section.classList.toggle("is-step-visible", !isMobileViewport || section.id === targetId);
+    section.classList.toggle(
+      "is-step-visible",
+      !isMobileViewport || section.id === targetId,
+    );
   });
 
   setActiveCartStep(targetId);
@@ -139,7 +188,10 @@ function scrollCartSection(targetId) {
   const targetSection = document.getElementById(targetId);
   const isMobileViewport = window.matchMedia("(max-width: 47.99em)").matches;
 
-  if (!(modalBody instanceof HTMLElement) || !(targetSection instanceof HTMLElement)) {
+  if (
+    !(modalBody instanceof HTMLElement) ||
+    !(targetSection instanceof HTMLElement)
+  ) {
     return;
   }
 
@@ -225,7 +277,8 @@ function buildGameCardMarkup(item) {
   const genre = escapeHTML(item.p.genre);
   const link = escapeHTML(item.link);
   const img = escapeHTML(item.img);
-  const hasVariants = Array.isArray(item.p.variants) && item.p.variants.length > 0;
+  const hasVariants =
+    Array.isArray(item.p.variants) && item.p.variants.length > 0;
 
   if (!hasVariants) {
     return `
@@ -268,7 +321,7 @@ function buildGameCardMarkup(item) {
         >
           ${escapeHTML(variant.name)} | ${formatPrice(variant.price)}
         </option>
-      `
+      `,
     )
     .join("");
 
@@ -432,7 +485,8 @@ function updateVariantPrice(select) {
   if (!card || !priceLabel || !option) return;
 
   const price = formatPrice(option.dataset.price);
-  const durationPrefix = priceLabel.classList.contains("xbox") ? "1 month" : option.value;
+  const durationPrefix =
+    priceLabel.classList.contains("xbox") ? "1 month" : option.value;
   priceLabel.textContent = `${durationPrefix} | ${price}`;
   priceLabel.classList.add("updated");
   window.setTimeout(() => priceLabel.classList.remove("updated"), 220);
@@ -468,6 +522,7 @@ function addToCart(game, price, isGame = false, isDiscountEligible = false) {
     cart.push({ game, price, qty: 1, isGame, isDiscountEligible });
   }
 
+  saveCartToStorage();
   updateCartCount();
   updateGameInputField();
   renderCart();
@@ -484,8 +539,9 @@ function updateGameInputField() {
   const field = document.getElementById("gameInput");
   if (!field) return;
 
-  field.value = cart.length
-    ? cart.map((item) => `${item.game} x ${item.qty}`).join(", ")
+  field.value =
+    cart.length ?
+      cart.map((item) => `${item.game} x ${item.qty}`).join(", ")
     : "";
 }
 
@@ -494,6 +550,27 @@ function getDiscountRate(gameCount) {
   if (gameCount >= 3) return 0.4;
   if (gameCount >= 2) return 0.25;
   return 0;
+}
+
+function applyCouponCode(code) {
+  const normalized = code.trim().toUpperCase();
+  if (!normalized) {
+    showCartToast("Please enter a coupon code.");
+    return;
+  }
+
+  // Coupon functionality is disabled in this release.
+  showCartToast("Coupon functionality is currently disabled.");
+}
+
+function clearCoupon() {
+  appliedCoupon = null;
+  saveCouponToStorage();
+  renderCart();
+}
+
+function hasCoupon() {
+  return typeof appliedCoupon === "string" && appliedCoupon.length > 0;
 }
 
 function renderCart() {
@@ -509,6 +586,12 @@ function renderCart() {
       </div>
     `;
     cartTotal.innerHTML = "";
+
+    const orderDetails = document.getElementById("orderDetails");
+    if (orderDetails) {
+      orderDetails.innerHTML = "";
+    }
+
     generateQRCode(0);
     updateGameInputField();
     return;
@@ -560,24 +643,24 @@ function renderCart() {
       <strong>${formatTotal(subtotal)}</strong>
     </div>
     ${
-      discountRate > 0
-        ? `
+      discountRate > 0 ?
+        `
           <div class="cart-total-row discount-line">
             <span>Steam account discount (${Math.round(discountRate * 100)}%)</span>
             <strong>- ${formatTotal(discountAmount)}</strong>
           </div>
         `
-        : ""
+      : ""
     }
     ${
-      tip > 0
-        ? `
+      tip > 0 ?
+        `
           <div class="cart-total-row">
             <span>Tip</span>
             <strong>${formatTotal(tip)}</strong>
           </div>
         `
-        : ""
+      : ""
     }
     <div class="cart-total-primary">
       <span>Total</span>
@@ -586,11 +669,27 @@ function renderCart() {
   `;
 
   generateQRCode(finalTotal);
+
+  const orderDetails = document.getElementById("orderDetails");
+  if (orderDetails) {
+    orderDetails.innerHTML = `
+      <div class="order-details-card">
+        <h3>Order Details</h3>
+        <p>${cart.length} item${cart.length === 1 ? "" : "s"} in cart</p>
+        <p>Discount: ${formatTotal(discountAmount)}</p>
+        <p>Tip: ${formatTotal(tip)}</p>
+        <p>Coupon: ${hasCoupon() ? appliedCoupon : "None"}</p>
+        <p><strong>Payable: ${formatTotal(finalTotal)}</strong></p>
+      </div>
+    `;
+  }
+
   updateGameInputField();
 }
 
 function removeFromCart(index) {
   cart.splice(index, 1);
+  saveCartToStorage();
   renderCart();
   updateCartCount();
 }
@@ -598,12 +697,18 @@ function removeFromCart(index) {
 function clearCart() {
   cart = [];
   tip = 0;
+  appliedCoupon = null;
 
   const tipInput = document.getElementById("tipAmount");
   if (tipInput) tipInput.value = "0";
 
-  renderCart();
+  const couponInput = document.getElementById("couponCode");
+  if (couponInput) couponInput.value = "";
+
+  saveCartToStorage();
+  saveCouponToStorage();
   updateCartCount();
+  renderCart();
 }
 
 function applyTip() {
@@ -619,30 +724,42 @@ function applyTip() {
     tip = value;
   }
 
+  saveCartToStorage();
   renderCart();
 }
 
 function showCartModal() {
-  const modal = document.getElementById("cartModal");
-  if (!modal) return;
-
-  renderCart();
-  modal.classList.add("is-open");
-  modal.setAttribute("aria-hidden", "false");
-  document.body.classList.add("is-locked");
-  scrollCartSection("cartSummaryStep");
-
-  const closeButton = document.getElementById("closeCart");
-  closeButton?.focus();
+  // No modal is used; this path remains for backward compatibility.
+  window.location.href = "html/cart.html";
 }
 
 function hideCartModal() {
   const modal = document.getElementById("cartModal");
-  if (!modal) return;
+  if (modal) {
+    modal.classList.remove("is-open");
+    modal.setAttribute("aria-hidden", "true");
+  }
 
-  modal.classList.remove("is-open");
-  modal.setAttribute("aria-hidden", "true");
   document.body.classList.remove("is-locked");
+}
+
+function addUpsellOption(name, price) {
+  const found = cart.find((item) => item.game === name);
+  if (found) {
+    found.qty += 1;
+  } else {
+    cart.push({
+      game: name,
+      price,
+      qty: 1,
+      isGame: false,
+      isDiscountEligible: false,
+    });
+  }
+
+  updateCartCount();
+  renderCart();
+  showCartToast(`${name} added to cart`);
 }
 
 function showCartToast(message) {
@@ -704,7 +821,7 @@ function renderSearchResults(matches) {
           <strong>${escapeHTML(item.name)}</strong>
           <span>${escapeHTML(item.type)}</span>
         </button>
-      `
+      `,
     )
     .join("");
 
@@ -750,7 +867,7 @@ function initializeRevealAnimations() {
         revealObserver.unobserve(entry.target);
       });
     },
-    { threshold: 0.16, rootMargin: "0% 0% -10% 0%" }
+    { threshold: 0.16, rootMargin: "0% 0% -10% 0%" },
   );
 
   items.forEach((item) => revealObserver.observe(item));
@@ -788,19 +905,22 @@ document.addEventListener("click", (event) => {
     const option = select.options[select.selectedIndex];
     const selectedName = `${card.dataset.name} (${option.value})`;
     const price = parseFloat(option.dataset.price || "0");
-    const isDiscountEligible = option.value.toLowerCase() === "in your steam account";
+    const isDiscountEligible =
+      option.value.toLowerCase() === "in your steam account";
 
     addToCart(selectedName, price, true, isDiscountEligible);
     return;
   }
 
-  const addStandardButton = target.closest(".add-to-cart-btn, .add-service-btn");
+  const addStandardButton = target.closest(
+    ".add-to-cart-btn, .add-service-btn",
+  );
   if (addStandardButton instanceof HTMLButtonElement) {
     addToCart(
       addStandardButton.dataset.name || "",
       parseFloat(addStandardButton.dataset.price || "0"),
       addStandardButton.classList.contains("add-to-cart-btn"),
-      false
+      false,
     );
     return;
   }
@@ -808,8 +928,9 @@ document.addEventListener("click", (event) => {
   const donationButton = target.closest(".add-donation-btn");
   if (donationButton) {
     const donationInput = document.getElementById("donateAmount");
-    const donationValue = donationInput instanceof HTMLInputElement
-      ? Math.max(parseFloat(donationInput.value || "10") || 10, 1)
+    const donationValue =
+      donationInput instanceof HTMLInputElement ?
+        Math.max(parseFloat(donationInput.value || "10") || 10, 1)
       : 10;
 
     addToCart("Donation", donationValue, false, false);
@@ -823,7 +944,23 @@ document.addEventListener("click", (event) => {
     if (!(select instanceof HTMLSelectElement)) return;
 
     const option = select.options[select.selectedIndex];
-    addToCart(option.value, parseFloat(option.dataset.price || "0"), false, false);
+    addToCart(
+      option.value,
+      parseFloat(option.dataset.price || "0"),
+      false,
+      false,
+    );
+    return;
+  }
+
+  const upsellButton = target.closest(".add-upsell-btn");
+  if (upsellButton) {
+    const offerName =
+      upsellButton.getAttribute("data-offer-name") || "Priority Activation";
+    const offerPrice = parseFloat(
+      upsellButton.getAttribute("data-offer-price") || "0",
+    );
+    addUpsellOption(offerName, offerPrice);
     return;
   }
 
@@ -858,6 +995,9 @@ document.addEventListener("keydown", (event) => {
 });
 
 document.addEventListener("DOMContentLoaded", () => {
+  cart = loadCartFromStorage();
+  loadCouponFromStorage();
+
   renderGames(games);
   renderServices(services);
   initializeRevealAnimations();
@@ -878,6 +1018,19 @@ document.addEventListener("DOMContentLoaded", () => {
   clearCartButton?.addEventListener("click", clearCart);
   applyTipButton?.addEventListener("click", applyTip);
   closeCartButton?.addEventListener("click", hideCartModal);
+
+  // Coupon controls are currently disabled (will be re-enabled later).
+  // const applyCouponButton = document.getElementById("applyCouponBtn");
+  // const couponInput = document.getElementById("couponCode");
+
+  // applyCouponButton?.addEventListener("click", () => {
+  //   if (!(couponInput instanceof HTMLInputElement)) return;
+  //   applyCouponCode(couponInput.value);
+  // });
+
+  // if (couponInput instanceof HTMLInputElement && appliedCoupon) {
+  //   couponInput.value = appliedCoupon;
+  // }
   mobileMenuToggle?.addEventListener("click", toggleMobileHeaderMenu);
   mobileNavLinks.forEach((link) => {
     link.addEventListener("click", hideMobileHeaderMenu);
@@ -904,7 +1057,9 @@ document.addEventListener("DOMContentLoaded", () => {
     syncDesktopHeaderOnScroll();
   });
 
-  window.addEventListener("scroll", syncDesktopHeaderOnScroll, { passive: true });
+  window.addEventListener("scroll", syncDesktopHeaderOnScroll, {
+    passive: true,
+  });
 
   if (searchInput instanceof HTMLInputElement) {
     searchInput.addEventListener("input", () => {

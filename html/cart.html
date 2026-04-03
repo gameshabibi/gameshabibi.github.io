@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Games Habibi cart page - modern checkout and order summary"
+    />
+    <title>Games Habibi | Cart</title>
+    <link rel="stylesheet" href="../css/style.css" />
+  </head>
+  <body>
+    <header class="site-header fade-in">
+      <div class="container header-inner">
+        <a
+          class="brand-lockup"
+          href="../index.html"
+          aria-label="Games Habibi home"
+        >
+          <span class="brand-mark">GH</span>
+          <span class="brand-copy">
+            <span class="brand-kicker">Instant digital delivery</span>
+            <span class="brand-name">Games Habibi</span>
+          </span>
+        </a>
+
+        <a class="btn" href="../index.html">Back to Store</a>
+      </div>
+    </header>
+
+    <main class="cart-page container fade-in">
+      <section class="cart-overview">
+        <div class="cart-page-title">
+          <h1>Your cart</h1>
+          <p>
+            Review items, apply special offers, and complete your order with
+            fast UPI payment.
+          </p>
+        </div>
+
+        <div class="cart-stage-card">
+          <h2>Order details</h2>
+          <div id="orderDetails" class="order-details"></div>
+        </div>
+
+        <div class="cart-stage-card">
+          <h2>Upsell offers</h2>
+          <ul class="upsell-list">
+            <li>
+              <strong>Priority activation</strong>
+              <span>₹49</span>
+              <button
+                class="btn add-upsell-btn"
+                data-offer-name="Priority activation"
+                data-offer-price="49"
+                type="button"
+              >
+                Add
+              </button>
+            </li>
+          </ul>
+        </div>
+
+        <!--
+        <div class="cart-stage-card">
+          <h2>Coupon code</h2>
+          <div class="coupon-input-row">
+            <input
+              id="couponCode"
+              type="text"
+              placeholder="Enter coupon code"
+              autocomplete="off"
+            />
+            <button id="applyCouponBtn" class="btn btn-secondary" type="button">
+              Apply
+            </button>
+          </div>
+          <p id="couponStatus" class="coupon-status">
+            Available coupons: HABIBI10, GAMER24, LEVELUP
+          </p>
+        </div>
+        -->
+      </section>
+
+      <section class="cart-details">
+        <div class="cart-summary-card">
+          <h2>Cart items</h2>
+          <div id="cartItems" class="cart-items-list"></div>
+        </div>
+
+        <aside class="cart-checkout-card">
+          <h2>Pricing summary</h2>
+          <div id="cartTotal" class="cart-total-card"></div>
+
+          <div id="tipSection" class="tip-card">
+            <label for="tipAmount">Tip (optional)</label>
+            <div class="tip-row">
+              <input type="number" id="tipAmount" min="0" value="0" />
+              <button id="applyTipBtn" class="btn btn-secondary" type="button">
+                Apply
+              </button>
+            </div>
+          </div>
+
+          <button id="clearCartBtn" class="btn btn-tertiary" type="button">
+            Clear Cart
+          </button>
+
+          <div id="qrCode" class="qr-shell"></div>
+          <div id="payButton" class="pay-button-wrap"></div>
+
+          <form id="orderForm" enctype="multipart/form-data" class="order-form">
+            <h3>Finalize order</h3>
+            <div class="field-group">
+              <label for="customerName">Your name</label>
+              <input
+                type="text"
+                id="customerName"
+                name="name"
+                placeholder="Your name"
+                required
+              />
+            </div>
+            <div class="field-group">
+              <label for="customerEmail">Your email</label>
+              <input
+                type="email"
+                id="customerEmail"
+                name="email"
+                placeholder="you@example.com"
+                required
+              />
+            </div>
+            <div class="field-group">
+              <label for="paymentProof">Payment screenshot</label>
+              <input
+                type="file"
+                id="paymentProof"
+                name="payment"
+                accept="image/*"
+                required
+              />
+            </div>
+            <div class="field-group">
+              <label for="gameInput">Cart items</label>
+              <textarea
+                id="gameInput"
+                name="games"
+                placeholder="Cart items will appear here"
+                readonly
+                required
+              ></textarea>
+            </div>
+            <button
+              type="submit"
+              id="orderSubmitBtn"
+              class="btn btn-block form-submit"
+            >
+              Submit Order
+            </button>
+          </form>
+        </aside>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-inner">
+        <div>
+          <p class="footer-brand">Games Habibi</p>
+          <p class="footer-copy">
+            Fast checkout, transparent totals, and quick support.
+          </p>
+        </div>
+        <div class="footer-links">
+          <a href="privacy.html">Privacy</a>
+          <a href="terms.html">Terms</a>
+          <a href="shipping.html">Shipping</a>
+          <a href="cancellation.html">Refunds</a>
+          <a href="contact.html">Contact</a>
+        </div>
+      </div>
+    </footer>
+
+    <script src="../script/product.js"></script>
+    <!-- Coupon module disabled for now; implement later -->
+    <!-- <script src="../script/coupon.js"></script> -->
+    <script src="../script/script.js"></script>
+    <script src="../script/payment.js"></script>
+
+    <div id="toastContainer" aria-live="polite" aria-atomic="true"></div>
+
+    <div id="loaderOverlay" class="loader-overlay">
+      <div class="loader-box">
+        <div id="loaderIcon" class="spinner"></div>
+        <p id="loaderText">Processing...</p>
+      </div>
+    </div>
+  </body>
+</html>

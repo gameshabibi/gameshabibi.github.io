@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -76,7 +76,11 @@
           <span id="cartCount" class="cart-count">0</span>
         </button>
 
-        <nav id="mobileHeaderNav" class="site-nav" aria-label="Primary navigation">
+        <nav
+          id="mobileHeaderNav"
+          class="site-nav"
+          aria-label="Primary navigation"
+        >
           <a href="#games">Catalog</a>
           <a href="#how-it-works">How It Works</a>
           <a href="#about">About</a>
@@ -251,7 +255,9 @@
         <div class="container about-grid">
           <div class="about-copy">
             <p class="eyebrow">About Games Habibi</p>
-            <h2>A storefront built around clarity, trust, and fast follow-up.</h2>
+            <h2>
+              A storefront built around clarity, trust, and fast follow-up.
+            </h2>
             <p>
               Games Habibi focuses on digital game access and memberships with a
               direct, support-first buying experience. The site keeps browsing
@@ -338,163 +344,6 @@
         </div>
       </section>
     </main>
-
-    <div id="cartModal" class="cart-modal" aria-hidden="true">
-      <button
-        class="cart-backdrop"
-        type="button"
-        data-cart-close
-        aria-label="Close cart"
-      ></button>
-
-      <div
-        class="cart-modal-content"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="cartTitle"
-      >
-        <div class="cart-modal-head">
-          <div>
-            <p class="meta-label">Checkout</p>
-            <h2 id="cartTitle">Review cart and submit order</h2>
-          </div>
-          <button class="close" id="closeCart" type="button" aria-label="Close">
-            &times;
-          </button>
-        </div>
-
-        <div class="cart-mobile-nav" aria-label="Mobile checkout steps">
-          <button
-            class="cart-step-tab is-active"
-            type="button"
-            data-cart-step="cartSummaryStep"
-          >
-            Cart
-          </button>
-          <button
-            class="cart-step-tab"
-            type="button"
-            data-cart-step="paymentStep"
-          >
-            Pay
-          </button>
-          <button
-            class="cart-step-tab"
-            type="button"
-            data-cart-step="orderStep"
-          >
-            Form
-          </button>
-        </div>
-
-        <div class="cart-modal-body">
-          <section id="cartSummaryStep" class="cart-panel-group cart-summary-panel">
-            <div class="cart-step-heading">
-              <span class="step-number step-inline">01</span>
-              <div>
-                <h3>Cart summary</h3>
-                <p>Check totals, bundle savings, and remove anything you do not need.</p>
-              </div>
-            </div>
-
-            <div id="cartItems" class="cart-items-list"></div>
-            <div id="cartTotal" class="cart-total-card"></div>
-
-            <div id="tipSection" class="tip-card">
-              <label for="tipAmount">Optional tip in INR</label>
-              <div class="tip-row">
-                <input type="number" id="tipAmount" min="0" value="0" />
-                <button id="applyTipBtn" class="btn btn-secondary" type="button">
-                  Apply
-                </button>
-              </div>
-            </div>
-
-            <button id="clearCartBtn" class="btn btn-tertiary" type="button">
-              Clear Cart
-            </button>
-          </section>
-
-          <section id="paymentStep" class="cart-panel-group payment-panel">
-            <div class="cart-step-heading">
-              <span class="step-number step-inline">02</span>
-              <div>
-                <h3>Pay with UPI</h3>
-                <p>Scan the QR on another device or open the payment link on mobile.</p>
-              </div>
-            </div>
-
-            <div id="qrCode" class="qr-shell"></div>
-            <div id="payButton" class="pay-button-wrap"></div>
-          </section>
-
-          <section id="orderStep" class="cart-panel-group order-panel form">
-            <div class="cart-step-heading">
-              <span class="step-number step-inline">03</span>
-              <div>
-                <h3>Send order details</h3>
-                <p>Upload your payment screenshot so Games Habibi can verify the order.</p>
-              </div>
-            </div>
-
-            <form id="orderForm" enctype="multipart/form-data">
-              <div class="field-group">
-                <label for="customerName">Your name</label>
-                <input
-                  type="text"
-                  id="customerName"
-                  name="name"
-                  placeholder="Enter your name"
-                  required
-                />
-              </div>
-
-              <div class="field-group field-group-wide">
-                <label for="gameInput">Items in your order</label>
-                <input
-                  type="text"
-                  id="gameInput"
-                  name="games"
-                  placeholder="Cart items appear here"
-                  required
-                  readonly
-                />
-              </div>
-
-              <div class="field-group field-group-wide">
-                <label for="paymentProof">Payment screenshot</label>
-                <input
-                  type="file"
-                  id="paymentProof"
-                  name="payment"
-                  accept="image/*"
-                  required
-                />
-              </div>
-
-              <div class="field-group">
-                <label for="customerEmail">Your email</label>
-                <input
-                  type="email"
-                  id="customerEmail"
-                  name="email"
-                  placeholder="Enter your email"
-                  required
-                />
-              </div>
-
-              <button
-                type="submit"
-                id="orderSubmitBtn"
-                class="btn btn-block form-submit"
-              >
-                Submit Order
-              </button>
-            </form>
-          </section>
-        </div>
-      </div>
-    </div>
 
     <footer class="site-footer">
       <div class="container footer-inner">

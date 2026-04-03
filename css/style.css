@@ -1095,6 +1095,200 @@ main {
   -webkit-overflow-scrolling: touch;
 }
 
+.cart-page {
+  display: grid;
+  gap: 2rem;
+  padding: 2rem 0;
+  animation: slideInUp 450ms ease-out;
+}
+
+@keyframes slideInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.cart-overview,
+.cart-details {
+  display: grid;
+  gap: 1rem;
+}
+
+.cart-stage-card,
+.cart-summary-card,
+.cart-checkout-card {
+  border-image: linear-gradient(
+      160deg,
+      rgba(64, 204, 255, 1),
+      rgba(93, 175, 255, 0.45)
+    )
+    1;
+}
+
+.cart-stage-card,
+.cart-summary-card,
+.cart-checkout-card,
+.cart-item,
+.order-details-card,
+.upsell-list li,
+.tip-card {
+  transform: translateY(0);
+  will-change: transform, opacity;
+}
+
+.cart-item,
+.order-details-card,
+.upsell-list li {
+  background: linear-gradient(
+    145deg,
+    rgba(8, 18, 40, 0.95),
+    rgba(14, 33, 61, 0.95)
+  );
+  border: 1px solid rgba(115, 226, 255, 0.12);
+  box-shadow: 0 0.8rem 2.3rem rgba(0, 0, 0, 0.33);
+  border-radius: 1rem;
+  padding: 0.85rem;
+  opacity: 0;
+  animation: fadeInScale 420ms ease forwards;
+}
+
+.cart-item {
+  animation-delay: 160ms;
+}
+
+.upsell-list li {
+  animation-delay: 80ms;
+}
+
+.order-details-card {
+  animation-delay: 40ms;
+}
+
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.99);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.cart-page-title h1 {
+  margin: 0;
+  font-size: clamp(1.5rem, 3vw, 2.2rem);
+}
+
+.cart-stage-card,
+.cart-summary-card,
+.cart-checkout-card {
+  background: rgba(9, 16, 28, 0.8);
+  border: 1px solid rgba(127, 228, 255, 0.25);
+  border-radius: 1.25rem;
+  padding: 1rem;
+  box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(4px);
+  overflow: hidden;
+}
+
+.order-details-card,
+.cart-item,
+.upsell-list li,
+.tip-card,
+.field-group {
+  transition:
+    transform 240ms ease,
+    box-shadow 240ms ease;
+}
+
+.order-details-card:hover,
+.cart-item:hover,
+.upsell-list li:hover,
+.tip-card:hover,
+.field-group:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0.3rem 0.8rem rgba(16, 32, 64, 0.35);
+}
+
+.cart-details {
+  grid-template-columns: 1.8fr 1fr;
+  gap: 1rem;
+}
+
+.cart-items-list {
+  max-height: 35rem;
+  overflow-y: auto;
+  display: grid;
+  gap: 0.75rem;
+}
+
+.upsell-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.75rem;
+}
+
+.upsell-list li {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  border-radius: 0.8rem;
+  background: rgba(10, 20, 40, 0.6);
+  border: 1px solid rgba(87, 222, 255, 0.2);
+}
+
+.coupon-input-row {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.coupon-input-row input {
+  flex: 1;
+  border-radius: 0.7rem;
+  padding: 0.6rem;
+  border: 1px solid rgba(127, 228, 255, 0.25);
+  background: rgba(3, 12, 28, 0.75);
+  color: #fff;
+}
+
+.coupon-status {
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  color: #a5f4ff;
+}
+
+.cart-checkout-card {
+  position: sticky;
+  top: 1rem;
+}
+
+.order-form textarea {
+  min-height: 7rem;
+  resize: vertical;
+}
+
+@media (max-width: 900px) {
+  .cart-details {
+    grid-template-columns: 1fr;
+  }
+
+  .cart-checkout-card {
+    position: relative;
+    top: auto;
+  }
+}
+
 .step-number {
   display: inline-flex;
   align-items: center;
@@ -1277,7 +1471,8 @@ main {
   inset: 0;
   z-index: 60;
   display: none;
-  place-items: center;
+  align-items: center;
+  justify-content: center;
   padding: 1rem;
   background: rgba(4, 10, 20, 0.82);
   backdrop-filter: blur(0.8rem);
