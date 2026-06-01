@@ -937,6 +937,9 @@ main {
 .variant-select,
 .xbox-select {
   appearance: none;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   background-image:
     linear-gradient(45deg, transparent 50%, rgba(127, 228, 255, 0.9) 50%),
     linear-gradient(135deg, rgba(127, 228, 255, 0.9) 50%, transparent 50%);
@@ -947,6 +950,7 @@ main {
     0.35rem 0.35rem,
     0.35rem 0.35rem;
   background-repeat: no-repeat;
+  padding-inline-end: 2rem;
 }
 
 .donation-field {
@@ -2230,61 +2234,108 @@ main {
   }
 
   .catalog-block {
-    padding: 0.85rem;
+    padding: 0.7rem;
+    border-radius: 1.05rem;
   }
 
   .product-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0.75rem;
+    gap: 0.55rem;
   }
 
   .game-card {
-    gap: 0.7rem;
-    padding: 0.75rem;
-    border-radius: 1.1rem;
+    align-content: start;
+    gap: 0.5rem;
+    padding: 0.52rem;
+    border-radius: 0.78rem;
   }
 
   .product-media {
-    aspect-ratio: 1 / 1;
-    border-radius: 0.9rem;
+    aspect-ratio: 4 / 3;
+    border-radius: 0.62rem;
   }
 
   .product-copy {
-    gap: 0.45rem;
+    gap: 0.32rem;
+    min-inline-size: 0;
   }
 
   .product-copy h3 {
-    font-size: 0.92rem;
-    line-height: 1.2;
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    font-size: 0.82rem;
+    line-height: 1.18;
   }
 
-  .product-copy p,
+  .product-copy p {
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    font-size: 0.72rem;
+    line-height: 1.35;
+  }
+
   .product-badge,
   .price-pill,
   .variant-price,
   .xbox,
   .donation-field label {
-    font-size: 0.76rem;
+    font-size: 0.68rem;
+    line-height: 1.2;
   }
 
   .price-row,
   .product-actions {
-    gap: 0.6rem;
+    gap: 0.42rem;
+    min-inline-size: 0;
   }
 
   .product-badge,
   .price-pill,
   .variant-price,
   .xbox {
-    padding: 0.35rem 0.55rem;
+    max-inline-size: 100%;
+    padding: 0.28rem 0.42rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   .variant-select,
   .xbox-select,
   .donation-field input,
   .product-actions .btn {
-    min-block-size: 2.65rem;
-    padding-inline: 0.75rem;
+    min-block-size: 2.2rem;
+    border-radius: 0.72rem;
+    font-size: 0.72rem;
+    line-height: 1.1;
+  }
+
+  .variant-select,
+  .xbox-select {
+    padding-inline: 0.55rem 1.55rem;
+    background-position:
+      calc(100% - 0.85rem) calc(50% - 0.1rem),
+      calc(100% - 0.62rem) calc(50% - 0.1rem);
+    background-size:
+      0.28rem 0.28rem,
+      0.28rem 0.28rem;
+  }
+
+  .product-actions .btn {
+    padding-inline: 0.55rem;
+    box-shadow: 0 0.65rem 1.3rem rgba(23, 154, 255, 0.18);
+  }
+
+  .donation-field {
+    gap: 0.35rem;
+  }
+
+  .donation-field input {
+    padding-inline: 0.55rem;
   }
 
   .cart-item {
