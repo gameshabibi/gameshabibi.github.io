@@ -62,6 +62,18 @@ const games = [
     },
   },
   {
+    link: "#",
+    img: "https://images.igdb.com/igdb/image/upload/t_cover_big/cobc5n.webp",
+    name: "Forza Horizon 6",
+    p: {
+      genre: "Racing",
+      variants: [
+        { name: "In your steam account", price: 299 },
+        { name: "Shared Steam account", price: 149 },
+      ],
+    },
+  },
+  {
     link: "https://www.igdb.com/games/cricket-26",
     img: "https://images.igdb.com/igdb/image/upload/t_cover_big/coav6j.webp",
     name: "Cricket 26",
