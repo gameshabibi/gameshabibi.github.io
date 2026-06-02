@@ -18,6 +18,15 @@ const services = [
       price: 149,
     },
   },
+  {
+    link: "#",
+    img: "https://img.utdstc.com/icon/30d/267/30d267e7deb1e63463da546dc005988b83d084f36ad11aefc454668792d1b959:600",
+    name: "8 Ball Pool Mod",
+    p: {
+      genre: "AutoPlay,NO Ban , 1 day",
+      price: 10,
+    },
+  },
 ];
 /*
  {
