@@ -2,7 +2,8 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#0D0A1A" />
+    <meta name="theme-color" content="#0D0A1A" />
     <meta
       name="description"
       content="Games Habibi cart page - modern checkout and order summary"
@@ -11,6 +12,10 @@
     <link rel="stylesheet" href="../css/style.css" />
   </head>
   <body>
+    <div class="notice-bar">
+      🚨 Fast checkout | Safe UPI payment | Order ID for support
+    </div>
+
     <header class="site-header fade-in">
       <div class="container header-inner">
         <a
@@ -107,8 +112,11 @@
             Clear Cart
           </button>
 
-          <div id="qrCode" class="qr-shell"></div>
-          <div id="payButton" class="pay-button-wrap"></div>
+          <div class="upi-checkout-card">
+            <h3>🔐 UPI Payment</h3>
+            <div id="qrCode" class="qr-shell"></div>
+            <div id="payButton" class="pay-button-wrap"></div>
+          </div>
 
           <form id="orderForm" enctype="multipart/form-data" class="order-form">
             <h3>Finalize order</h3>

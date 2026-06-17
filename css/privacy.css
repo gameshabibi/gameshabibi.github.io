@@ -1,17 +1,21 @@
+@import url("https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Grotesk:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap");
+
 :root {
   color-scheme: dark;
-  --font-heading: "Sora", sans-serif;
-  --font-body: "Plus Jakarta Sans", sans-serif;
-  --surface-base: #07111f;
-  --surface-panel: rgba(8, 18, 34, 0.88);
-  --surface-panel-strong: rgba(12, 24, 44, 0.94);
+  --font-heading: "Bebas Neue", sans-serif;
+  --font-body: "Space Grotesk", sans-serif;
+  --font-data: "DM Mono", monospace;
+  --surface-base: #0d0a1a;
+  --surface-panel: rgba(13, 10, 26, 0.88);
+  --surface-panel-strong: rgba(18, 14, 35, 0.94);
   --text-primary: #f1f7ff;
   --text-secondary: #b0bfd6;
   --text-muted: #8293ad;
-  --accent: #7fe4ff;
-  --mint: #70f1c7;
-  --border-soft: rgba(138, 177, 232, 0.14);
-  --border-strong: rgba(140, 228, 255, 0.28);
+  --accent: #f5a623;
+  --accent-purple: #7b2fff;
+  --mint: #00ffb3;
+  --border-soft: rgba(245, 166, 35, 0.14);
+  --border-strong: rgba(123, 47, 255, 0.28);
   --shadow-soft: 0 1rem 2.5rem rgba(2, 7, 15, 0.32);
   --shadow-strong: 0 2rem 5rem rgba(2, 7, 15, 0.45);
   --radius-md: 1.2rem;
@@ -40,9 +44,17 @@ body {
   font-family: var(--font-body);
   color: var(--text-primary);
   background:
-    radial-gradient(circle at top left, rgba(40, 196, 255, 0.16), transparent 32%),
-    radial-gradient(circle at top right, rgba(112, 241, 199, 0.14), transparent 24%),
-    linear-gradient(180deg, #07111f 0%, #08101d 48%, #050b14 100%);
+    radial-gradient(
+      circle at top left,
+      rgba(245, 166, 35, 0.12),
+      transparent 32%
+    ),
+    radial-gradient(
+      circle at top right,
+      rgba(123, 47, 255, 0.14),
+      transparent 24%
+    ),
+    linear-gradient(180deg, #0d0a1a 0%, #0f0811 48%, #080513 100%);
   line-height: 1.7;
   overflow-x: clip;
 }
@@ -75,14 +87,14 @@ a {
   inset: auto auto 76% -12%;
   inline-size: 22rem;
   block-size: 22rem;
-  background: rgba(40, 196, 255, 0.18);
+  background: rgba(245, 166, 35, 0.2);
 }
 
 .ambient-two {
   inset: 6% -8% auto auto;
   inline-size: 20rem;
   block-size: 20rem;
-  background: rgba(112, 241, 199, 0.14);
+  background: rgba(123, 47, 255, 0.14);
 }
 
 .ambient-grid {
@@ -90,8 +102,12 @@ a {
   border-radius: 0;
   filter: none;
   background-image:
-    linear-gradient(rgba(140, 228, 255, 0.05) 0.0625rem, transparent 0.0625rem),
-    linear-gradient(90deg, rgba(140, 228, 255, 0.05) 0.0625rem, transparent 0.0625rem);
+    linear-gradient(rgba(245, 166, 35, 0.05) 0.0625rem, transparent 0.0625rem),
+    linear-gradient(
+      90deg,
+      rgba(123, 47, 255, 0.05) 0.0625rem,
+      transparent 0.0625rem
+    );
   background-size: 5rem 5rem;
   mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.55), transparent);
 }
@@ -103,7 +119,7 @@ a {
   padding-block: 1rem;
   background: rgba(6, 14, 28, 0.72);
   backdrop-filter: blur(1.3rem);
-  border-bottom: 0.0625rem solid rgba(138, 177, 232, 0.08);
+  border-bottom: 0.0625rem solid rgba(245, 166, 35, 0.08);
 }
 
 .header-inner,
@@ -133,8 +149,8 @@ a {
   block-size: 3rem;
   border-radius: 1rem;
   background:
-    linear-gradient(145deg, rgba(127, 228, 255, 0.22), rgba(40, 196, 255, 0.08)),
-    rgba(8, 18, 34, 0.84);
+    linear-gradient(145deg, rgba(245, 166, 35, 0.22), rgba(123, 47, 255, 0.08)),
+    rgba(13, 10, 26, 0.84);
   border: 0.0625rem solid var(--border-strong);
   box-shadow: var(--shadow-soft);
   font-family: var(--font-heading);
@@ -208,7 +224,7 @@ a {
 
 .site-nav a:hover,
 .site-nav a:focus-visible {
-  border-color: rgba(140, 228, 255, 0.18);
+  border-color: rgba(245, 166, 35, 0.18);
   background: rgba(18, 32, 56, 0.72);
 }
 
@@ -245,7 +261,11 @@ a {
   inset: -28% auto auto 60%;
   inline-size: 10rem;
   block-size: 10rem;
-  background: radial-gradient(circle, rgba(127, 228, 255, 0.24), transparent 65%);
+  background: radial-gradient(
+    circle,
+    rgba(123, 47, 255, 0.24),
+    transparent 65%
+  );
   pointer-events: none;
 }
 
@@ -381,7 +401,7 @@ a {
 
 .site-footer {
   padding-block: 1.8rem max(1.8rem, env(safe-area-inset-bottom));
-  border-top: 0.0625rem solid rgba(138, 177, 232, 0.08);
+  border-top: 0.0625rem solid rgba(245, 166, 35, 0.08);
   background: rgba(5, 11, 21, 0.94);
 }
 
