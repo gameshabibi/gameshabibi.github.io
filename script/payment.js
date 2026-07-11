@@ -23,11 +23,11 @@ function generateQRCode(amount) {
 
   // Using QR Code API (Google Charts API)
   const qrCodeURL = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(
-    paymentData
+    paymentData,
   )}`;
 
   qrContainer.innerHTML = `<img src="${qrCodeURL}" alt="Payment QR Code">`;
-  payButton.innerHTML = `<a href="${paymentData}" class="btn">Pay Now</a>`;
+  payButton.innerHTML = `<a href="../image.png" target="_blank" class="btn">OR Pay By Qr Code</a>`;
 }
 
 //form
@@ -130,7 +130,13 @@ function completeSuccessfulOrder(form, orderId) {
   }, 3000);
 }
 
-function submitOrderWithIframeFallback(form, endpoint, chatId, caption, paymentInput) {
+function submitOrderWithIframeFallback(
+  form,
+  endpoint,
+  chatId,
+  caption,
+  paymentInput,
+) {
   return new Promise((resolve, reject) => {
     if (!(paymentInput instanceof HTMLInputElement)) {
       reject(new Error("Payment screenshot field is missing"));
@@ -201,7 +207,7 @@ function submitOrderWithIframeFallback(form, endpoint, chatId, caption, paymentI
       () => {
         window.setTimeout(() => finish(true), 250);
       },
-      { once: true }
+      { once: true },
     );
 
     document.body.appendChild(iframe);
@@ -294,7 +300,7 @@ if (orderForm) {
     try {
       const res = await fetch(
         `https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`,
-        { method: "POST", body: data }
+        { method: "POST", body: data },
       );
 
       const result = await res.json();
@@ -309,7 +315,9 @@ if (orderForm) {
 
       const shouldUseFallback =
         err instanceof TypeError ||
-        String(err?.message || "").toLowerCase().includes("failed to fetch");
+        String(err?.message || "")
+          .toLowerCase()
+          .includes("failed to fetch");
 
       if (shouldUseFallback) {
         try {
@@ -318,7 +326,7 @@ if (orderForm) {
             `https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`,
             CHAT_ID,
             caption,
-            paymentInput
+            paymentInput,
           );
           completeSuccessfulOrder(form, orderId);
           return;
