@@ -429,6 +429,7 @@
     <!-- Interactive Slide-over Cart Drawer -->
     <div id="cartDrawerBackdrop" class="cart-drawer-backdrop" aria-hidden="true"></div>
     <aside id="cartDrawer" class="cart-drawer" role="dialog" aria-modal="true" aria-label="Shopping Cart" aria-hidden="true">
+      <div class="drawer-drag-pill" aria-hidden="true"></div>
       <div class="cart-drawer-header">
         <div class="drawer-title-group">
           <h2>Your Cart</h2>
@@ -511,5 +512,41 @@
         <p id="loaderText">Processing...</p>
       </div>
     </div>
+
+    <!-- Sticky Mobile Thumb Navigation Bar (Only on viewports <= 48em) -->
+    <nav class="mobile-bottom-nav" aria-label="Mobile Navigation Bar">
+      <a href="#top" class="mobile-nav-item active" id="mobNavHome">
+        <svg class="mob-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+          <polyline points="9 22 9 12 15 12 15 22"></polyline>
+        </svg>
+        <span>Store</span>
+      </a>
+      <a href="#games" class="mobile-nav-item" id="mobNavCatalog">
+        <svg class="mob-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="6" width="20" height="12" rx="2"></rect>
+          <path d="M6 12h4m-2-2v4m7-2h.01m3 0h.01"></path>
+        </svg>
+        <span>Catalog</span>
+      </a>
+      <button type="button" class="mobile-nav-item" id="mobNavSearch" aria-label="Search catalog">
+        <svg class="mob-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <span>Search</span>
+      </button>
+      <button type="button" class="mobile-nav-item mobile-cart-nav" id="mobNavCart" aria-label="Open cart">
+        <div class="mob-cart-badge-wrap">
+          <svg class="mob-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="9" cy="21" r="1"></circle>
+            <circle cx="20" cy="21" r="1"></circle>
+            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+          </svg>
+          <span id="mobCartCount" class="mob-cart-count">0</span>
+        </div>
+        <span>Cart</span>
+      </button>
+    </nav>
   </body>
 </html>

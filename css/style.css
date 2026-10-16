@@ -2256,13 +2256,13 @@ main {
   }
 
   .search-shell #searchInput {
-    min-block-size: 2.5rem;
-    font-size: 0.85rem;
+    min-block-size: 2.65rem;
+    font-size: 16px; /* Prevents iOS Safari auto-zoom on focus */
   }
 
   .search-shell .btn {
-    min-block-size: 2.5rem;
-    padding-inline: 0.85rem;
+    min-block-size: 2.65rem;
+    padding-inline: 0.95rem;
   }
 
   .btn,
@@ -2743,10 +2743,10 @@ main {
   .xbox-select,
   .donation-field input,
   .product-actions .btn {
-    min-block-size: 2.2rem;
-    border-radius: 0.72rem;
-    font-size: 0.72rem;
-    line-height: 1.1;
+    min-block-size: 2.65rem; /* 42-44px touch-friendly target */
+    border-radius: 0.8rem;
+    font-size: 0.84rem;
+    line-height: 1.2;
   }
 
   .variant-select,
@@ -3176,12 +3176,124 @@ main {
   }
 
   .cart-drawer-header {
-    padding: 1rem 1.2rem;
+    padding: 0.8rem 1.2rem 1rem;
     border-radius: 1.5rem 1.5rem 0 0;
   }
 
   .cart-drawer-body {
     padding: 1rem 1.2rem max(1.5rem, env(safe-area-inset-bottom));
+  }
+}
+
+/* Mobile Bottom Navigation Bar & Drawer Drag Pill */
+.drawer-drag-pill {
+  display: none;
+}
+
+.mobile-bottom-nav {
+  display: none;
+}
+
+@media (max-width: 48em) {
+  body {
+    padding-bottom: calc(4.8rem + env(safe-area-inset-bottom, 0px));
+  }
+
+  .drawer-drag-pill {
+    display: block;
+    width: 2.8rem;
+    height: 0.32rem;
+    background: rgba(255, 255, 255, 0.25);
+    border-radius: 999rem;
+    margin: 0.75rem auto 0.15rem;
+    flex-shrink: 0;
+  }
+
+  .mobile-bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: calc(4rem + env(safe-area-inset-bottom, 0px));
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    background: rgba(10, 7, 22, 0.94);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-top: 1px solid rgba(245, 166, 35, 0.2);
+    box-shadow: 0 -0.5rem 2.5rem rgba(0, 0, 0, 0.5);
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    align-items: center;
+    z-index: 990;
+  }
+
+  .mobile-nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.22rem;
+    color: var(--text-muted);
+    font-size: 0.72rem;
+    font-weight: 500;
+    text-decoration: none;
+    background: transparent;
+    border: none;
+    padding: 0.4rem 0;
+    cursor: pointer;
+    transition: color 180ms ease, transform 180ms ease;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .mobile-nav-item:active {
+    transform: scale(0.92);
+  }
+
+  .mobile-nav-item.active,
+  .mobile-nav-item:hover {
+    color: var(--accent);
+  }
+
+  .mob-nav-icon {
+    width: 1.35rem;
+    height: 1.35rem;
+  }
+
+  .mob-cart-badge-wrap {
+    position: relative;
+    display: inline-flex;
+  }
+
+  .mob-cart-count {
+    position: absolute;
+    top: -0.35rem;
+    right: -0.65rem;
+    background: var(--accent-strong);
+    color: #06040e;
+    font-family: var(--font-data);
+    font-size: 0.68rem;
+    font-weight: 700;
+    padding: 0.1rem 0.38rem;
+    border-radius: 999rem;
+    min-width: 1rem;
+    text-align: center;
+    line-height: 1.1;
+    box-shadow: 0 0.2rem 0.5rem rgba(0, 0, 0, 0.5);
+  }
+
+  #toastContainer {
+    bottom: calc(4.8rem + env(safe-area-inset-bottom, 0px)) !important;
+  }
+
+  /* Tactile touch feedback for mobile */
+  .game-card:active {
+    transform: scale(0.985);
+  }
+
+  .btn:active,
+  .filter-pill:active {
+    transform: scale(0.95);
   }
 }
 

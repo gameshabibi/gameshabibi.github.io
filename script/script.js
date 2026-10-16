@@ -541,6 +541,11 @@ function updateCartCount() {
   if (drawerCounter) {
     drawerCounter.textContent = `${count} item${count === 1 ? "" : "s"}`;
   }
+
+  const mobCounter = document.getElementById("mobCartCount");
+  if (mobCounter) {
+    mobCounter.textContent = count;
+  }
 }
 
 function updateGameInputField() {
@@ -1166,6 +1171,33 @@ document.addEventListener("DOMContentLoaded", () => {
         applyCatalogFilter(pill.dataset.filter);
       }
     });
+  });
+
+  const mobNavCart = document.getElementById("mobNavCart");
+  const mobNavSearch = document.getElementById("mobNavSearch");
+  const mobNavCatalog = document.getElementById("mobNavCatalog");
+  const mobNavHome = document.getElementById("mobNavHome");
+
+  mobNavCart?.addEventListener("click", () => {
+    openCartDrawer();
+  });
+
+  mobNavSearch?.addEventListener("click", () => {
+    const searchField = document.getElementById("searchInput");
+    if (searchField instanceof HTMLInputElement) {
+      searchField.scrollIntoView({ behavior: "smooth", block: "center" });
+      setTimeout(() => searchField.focus(), 250);
+    }
+  });
+
+  mobNavCatalog?.addEventListener("click", () => {
+    mobNavHome?.classList.remove("active");
+    mobNavCatalog?.classList.add("active");
+  });
+
+  mobNavHome?.addEventListener("click", () => {
+    mobNavCatalog?.classList.remove("active");
+    mobNavHome?.classList.add("active");
   });
 
   // Coupon controls are currently disabled (will be re-enabled later).
