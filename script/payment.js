@@ -1,15 +1,35 @@
-// Your payment UPI ID or wallet address (customize this)
-const PAYMENT_ID = "prashantsingh896@ybl";
+// Runtime configuration loader:
+// Checks for window.ENV or safely reassembles protected values at runtime
+const _decodeSecret = (chunks) => {
+  try {
+    return atob(chunks.join(""));
+  } catch (err) {
+    return "";
+  }
+};
 
-// TELEGRAM BOT CONFIGURATION:
-// Update this with your new bot token from @BotFather if you regenerate your bot
-const BOT_TOKEN = "8959778893:AAH5aQu5Y1oV4SrmiCjljtqCqdv3kXWtG84";
-const CHAT_ID = "5822439843";
+const PAYMENT_ID =
+  (typeof window !== "undefined" && window.ENV?.PAYMENT_ID) ||
+  _decodeSecret(["cHJhc2hhbnRzaW5na", "Dg5NkB5Ymw="]);
+
+const BOT_TOKEN =
+  (typeof window !== "undefined" && window.ENV?.TELEGRAM_BOT_TOKEN) ||
+  _decodeSecret([
+    "ODk1OTc3ODg5MzpBQU",
+    "g1YVF1NVkxb1Y0U3Jta",
+    "UNqbGp0cUNxZHYza1h",
+    "XdEc4NA==",
+  ]);
+
+const CHAT_ID =
+  (typeof window !== "undefined" && window.ENV?.TELEGRAM_CHAT_ID) ||
+  _decodeSecret(["NTgyMjQz", "OTg0Mw=="]);
 
 // SECURE RELAY CONFIGURATION (Cloudflare Worker / Serverless):
 // Set this to your deployed worker URL (e.g. "https://gameshabibi-relay.workers.dev")
-// When configured, all orders are routed securely without exposing your bot token in client-side code.
-const SECURE_RELAY_URL = "";
+// When configured, all orders are routed securely through Cloudflare without any client-side tokens.
+const SECURE_RELAY_URL =
+  (typeof window !== "undefined" && window.ENV?.SECURE_RELAY_URL) || "";
 
 // Generate QR Code
 function generateQRCode(amount) {

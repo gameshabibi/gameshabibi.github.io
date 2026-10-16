@@ -40,7 +40,7 @@ export default {
         });
       }
 
-      const botToken = env.BOT_TOKEN || "8246672302:AAFP8NvVADdAuJPQKGXtvhUP5d65Hl51a0U";
+      const botToken = env.BOT_TOKEN || "8959778893:AAH5aQu5Y1oV4SrmiCjljtqCqdv3kXWtG84";
       const chatId = env.CHAT_ID || "5822439843";
 
       const caption = (
