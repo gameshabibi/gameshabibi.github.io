@@ -330,7 +330,7 @@ function buildGameCardMarkup(item) {
   return `
     <article class="game-card" data-name="${name}" data-type="game">
       <a class="product-media" target="_blank" rel="noreferrer" href="${link}">
-        <img src="${img}" alt="${name}" loading="lazy" />
+        <img src="${img}" alt="${name}" loading="lazy" onerror="this.onerror=null;this.src='png/apple-touch-icon.png';" />
       </a>
 
       <div class="product-copy">
@@ -370,7 +370,7 @@ function buildServiceCardMarkup(item) {
   return `
     <article class="game-card" data-name="${name}" data-type="service">
       <a class="product-media" target="_blank" rel="noreferrer" href="${link}">
-        <img src="${img}" alt="${name}" loading="lazy" />
+        <img src="${img}" alt="${name}" loading="lazy" onerror="this.onerror=null;this.src='png/apple-touch-icon.png';" />
       </a>
 
       <div class="product-copy">
@@ -435,9 +435,10 @@ function buildXboxCardMarkup() {
     <article class="game-card" data-name="Xbox Game Pass" data-type="service">
       <div class="product-media">
         <img
-          src="https://sm.pcmag.com/t/pcmag_uk/review/x/xbox/xbox_rmuk.3840.jpg"
+          src="png/xbox.png"
           alt="Xbox Game Pass"
           loading="lazy"
+          onerror="this.onerror=null;this.src='png/apple-touch-icon.png';"
         />
       </div>
 
