@@ -37,10 +37,10 @@
   --space-lg: 1.8rem;
   --space-xl: 2.4rem;
   --space-2xl: 3.4rem;
-  --space-3xl: clamp(4rem, 8vw, 7rem);
+  --space-3xl: clamp(1.8rem, 3.5vw, 2.8rem);
   --container-inline: clamp(1rem, 3vw, 2rem);
   --max-width: 90rem;
-  --title-xl: clamp(2.4rem, 6vw, 5rem);
+  --title-xl: clamp(2rem, 3.6vw, 3.2rem);
   --title-lg: clamp(1.8rem, 3.8vw, 3.2rem);
   --title-md: clamp(1.25rem, 2vw, 1.8rem);
   --body-lg: clamp(1rem, 1.4vw, 1.12rem);
@@ -175,7 +175,7 @@ button {
   position: sticky;
   top: 0;
   z-index: 20;
-  padding-block: 0.72rem;
+  padding-block: clamp(0.35rem, 0.5vw, 0.48rem);
   background: linear-gradient(
     180deg,
     rgba(6, 14, 28, 0.82),
@@ -587,8 +587,11 @@ button {
 }
 
 .header-meta {
-  align-items: start;
-  padding-top: 1rem;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding-top: 0.35rem;
 }
 
 .last-order-card,
@@ -628,14 +631,35 @@ button {
 }
 
 .last-order-card {
-  display: grid;
-  gap: 0.85rem;
-  padding: 1rem;
-  max-inline-size: 22rem;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 0.35rem 0.8rem;
+  max-inline-size: 100%;
+  border-radius: 999rem;
+}
+
+.last-order-card .meta-label {
+  margin: 0;
+  font-size: 0.75rem;
+}
+
+.last-order-card b {
+  font-size: 0.82rem;
+  font-family: var(--font-data);
+}
+
+.last-order-card .btn {
+  min-block-size: 1.85rem;
+  padding-inline: 0.65rem;
+  font-size: 0.78rem;
 }
 
 .header-note {
-  padding: 1rem 1.15rem;
+  padding: 0.35rem 0.85rem;
+  border-radius: 999rem;
+  font-size: 0.85rem;
   color: var(--text-secondary);
 }
 
@@ -652,10 +676,16 @@ main {
 }
 
 .hero {
-  padding-top: clamp(4rem, 8vw, 6.5rem);
+  padding-top: clamp(1rem, 2vw, 1.6rem);
+  padding-bottom: clamp(1rem, 2vw, 1.8rem);
 }
 
-.hero-grid,
+.hero-grid {
+  display: grid;
+  gap: 1.25rem;
+  align-items: start;
+}
+
 .catalog-shell {
   display: grid;
   gap: 1.4rem;
@@ -663,7 +693,7 @@ main {
 
 .hero-copy {
   display: grid;
-  gap: 1.2rem;
+  gap: 0.75rem;
   align-content: start;
 }
 
@@ -671,12 +701,12 @@ main {
   display: inline-flex;
   align-items: center;
   inline-size: fit-content;
-  padding: 0.55rem 0.9rem;
+  padding: 0.35rem 0.75rem;
   border-radius: 999rem;
   background: rgba(0, 255, 179, 0.12);
   border: 0.0625rem solid rgba(0, 255, 179, 0.28);
   color: #a0ffe6;
-  font-size: var(--body-sm);
+  font-size: 0.8rem;
   font-weight: 600;
 }
 
@@ -693,7 +723,8 @@ main {
 
 .hero h1 {
   font-size: var(--title-xl);
-  max-inline-size: 14ch;
+  max-inline-size: 26ch;
+  line-height: 1.05;
 }
 
 .hero-text,
@@ -711,6 +742,12 @@ main {
 .cart-step-heading p {
   color: var(--text-secondary);
   font-size: var(--body-lg);
+}
+
+.hero-text {
+  max-inline-size: 58ch;
+  font-size: clamp(0.92rem, 1.1vw, 1rem);
+  line-height: 1.5;
 }
 
 .hero-text,
@@ -735,18 +772,20 @@ main {
 }
 
 .trust-strip {
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 11rem), 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 10rem), 1fr));
+  gap: 0.5rem;
 }
 
 .trust-strip span {
   display: inline-flex;
   align-items: center;
-  gap: 0.6rem;
-  padding: 0.85rem 1rem;
-  border-radius: 1rem;
+  gap: 0.45rem;
+  padding: 0.45rem 0.75rem;
+  border-radius: 0.75rem;
   background: rgba(14, 26, 47, 0.72);
   border: 0.0625rem solid rgba(255, 255, 255, 0.05);
   color: var(--text-secondary);
+  font-size: 0.82rem;
 }
 
 /* Arcade Bazaar Notice Bar */
@@ -754,7 +793,7 @@ main {
   position: sticky;
   top: 0;
   z-index: 19;
-  padding: 0.72rem var(--container-inline);
+  padding: 0.4rem var(--container-inline);
   background: linear-gradient(
     90deg,
     var(--accent) 0%,
@@ -764,7 +803,7 @@ main {
   text-align: center;
   color: #04101c;
   font-family: var(--font-data);
-  font-size: 0.88rem;
+  font-size: 0.82rem;
   font-weight: 700;
   letter-spacing: 0.05em;
   box-shadow: 0 0.5rem 1.5rem rgba(245, 166, 35, 0.2);
@@ -779,13 +818,13 @@ main {
 /* Live Ticker Strip */
 .live-ticker {
   position: relative;
-  padding: 0.95rem 0;
+  padding: 0.55rem 0;
   background: rgba(123, 47, 255, 0.08);
   border: 0.0625rem solid rgba(123, 47, 255, 0.15);
   border-left: 0;
   border-right: 0;
   overflow: hidden;
-  margin-block: 1.5rem;
+  margin-block: 0.85rem;
 }
 
 .live-ticker::before {
@@ -1006,9 +1045,26 @@ main {
 .spotlight-card {
   position: relative;
   display: grid;
-  gap: 1rem;
-  padding: clamp(1.5rem, 3vw, 2rem);
+  gap: 0.65rem;
+  padding: clamp(1rem, 1.8vw, 1.35rem);
   overflow: hidden;
+}
+
+.spotlight-card h2 {
+  font-size: clamp(1.2rem, 1.6vw, 1.45rem);
+  line-height: 1.15;
+  margin: 0;
+}
+
+.spotlight-card p {
+  font-size: 0.88rem;
+  line-height: 1.45;
+  margin: 0;
+}
+
+.preview-stack {
+  display: grid;
+  gap: 0.5rem;
 }
 
 .spotlight-card::before,
@@ -1031,9 +1087,21 @@ main {
 
 .mini-panel {
   display: grid;
-  gap: 0.3rem;
-  padding: 1rem;
-  border-radius: 1.25rem;
+  gap: 0.15rem;
+  padding: 0.55rem 0.8rem;
+  border-radius: 0.85rem;
+}
+
+.mini-panel .mini-label {
+  font-size: 0.72rem;
+}
+
+.mini-panel strong {
+  font-size: 1.05rem;
+}
+
+.mini-panel span {
+  font-size: 0.8rem;
 }
 
 .mini-panel strong,
@@ -1053,8 +1121,8 @@ main {
 .section-heading,
 .catalog-header {
   display: grid;
-  gap: 0.65rem;
-  margin-bottom: 1.4rem;
+  gap: 0.4rem;
+  margin-bottom: 0.9rem;
 }
 
 .section-heading h2 {
@@ -2030,21 +2098,25 @@ main {
   }
 
   .header-meta {
-    grid-template-columns: auto 1fr;
+    display: flex;
     align-items: center;
-    gap: clamp(0.45rem, 0.72vw, 0.75rem);
-    padding-top: clamp(0.42rem, 0.72vw, 0.62rem);
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding-top: 0.25rem;
   }
 
   .last-order-card,
   .header-note {
-    padding: clamp(0.48rem, 0.7vw, 0.62rem) clamp(0.72rem, 0.95vw, 0.9rem);
-    border-radius: clamp(0.86rem, 1vw, 1.08rem);
+    padding: clamp(0.35rem, 0.5vw, 0.45rem) clamp(0.65rem, 0.8vw, 0.8rem);
+    border-radius: 999rem;
   }
 
   .last-order-card {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
     gap: 0.42rem;
-    max-inline-size: 13.5rem;
+    max-inline-size: fit-content;
   }
 
   .last-order-card .meta-label,
@@ -2059,10 +2131,15 @@ main {
   }
 
   .header-note {
-    font-size: clamp(0.86rem, 1vw, 1rem);
+    font-size: clamp(0.82rem, 0.9vw, 0.88rem);
   }
 
-  .hero-grid,
+  .hero-grid {
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+    align-items: start;
+    gap: 1.25rem;
+  }
+
   .about-grid {
     grid-template-columns: minmax(0, 1.12fr) minmax(0, 0.88fr);
     align-items: center;
@@ -2374,11 +2451,12 @@ main {
   }
 
   .hero {
-    padding-top: 3.1rem;
+    padding-top: 1.25rem;
+    padding-bottom: 1.4rem;
   }
 
   .hero-copy {
-    gap: 0.95rem;
+    gap: 0.75rem;
   }
 
   .hero h1 {
@@ -2812,15 +2890,15 @@ main {
 
 /* Category Filter Bar */
 .catalog-filter-bar {
-  margin-block: 1rem 1.6rem;
+  margin-block: 0.5rem 1rem;
 }
 
 .catalog-filter-scroll {
   display: flex;
   align-items: center;
-  gap: 0.65rem;
+  gap: 0.55rem;
   overflow-x: auto;
-  padding-block: 0.35rem 0.6rem;
+  padding-block: 0.2rem 0.4rem;
   scrollbar-width: none;
   -webkit-overflow-scrolling: touch;
 }
