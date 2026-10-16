@@ -1895,16 +1895,33 @@ main {
   gap: 1rem;
   margin: 0 auto;
   min-inline-size: min(100%, 22rem);
-  padding: 1.6rem;
+  max-inline-size: 28rem;
+  padding: 2rem 1.6rem;
   text-align: center;
+  background: linear-gradient(180deg, rgba(24, 18, 48, 0.96), rgba(12, 9, 26, 0.98));
+  border: 1px solid rgba(245, 166, 35, 0.28);
+  border-radius: 1.25rem;
+  box-shadow: 0 1.5rem 4rem rgba(0, 0, 0, 0.75), 0 0 2rem rgba(245, 166, 35, 0.12);
+  animation: loaderPopIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes loaderPopIn {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 .spinner,
 .loader-icon {
   display: grid;
   place-items: center;
-  inline-size: 3rem;
-  block-size: 3rem;
+  inline-size: 3.2rem;
+  block-size: 3.2rem;
   border-radius: 50%;
 }
 
@@ -1916,22 +1933,26 @@ main {
 
 .loader-success,
 .loader-error {
-  font-size: 1.4rem;
+  font-size: 1.5rem;
   font-weight: 700;
-  border: 0.125rem solid currentColor;
+  border: 0.15rem solid currentColor;
 }
 
 .loader-success {
   color: var(--mint);
+  box-shadow: 0 0 1.5rem rgba(0, 230, 153, 0.25);
 }
 
 .loader-error {
   color: var(--danger);
+  box-shadow: 0 0 1.5rem rgba(255, 77, 106, 0.25);
 }
 
-#loaderText {
+#loaderText,
+.loader-content {
   margin: 0;
   color: var(--text-secondary);
+  inline-size: 100%;
 }
 
 .order-id {

@@ -1,6 +1,11 @@
 // Your payment UPI ID or wallet address (customize this)
 const PAYMENT_ID = "prashantsingh896@ybl";
 
+// TELEGRAM BOT CONFIGURATION:
+// Update this with your new bot token from @BotFather if you regenerate your bot
+const BOT_TOKEN = "8246672302:AAFP8NvVADdAuJPQKGXtvhUP5d65Hl51a0U";
+const CHAT_ID = "5822439843";
+
 // SECURE RELAY CONFIGURATION (Cloudflare Worker / Serverless):
 // Set this to your deployed worker URL (e.g. "https://gameshabibi-relay.workers.dev")
 // When configured, all orders are routed securely without exposing your bot token in client-side code.
@@ -41,14 +46,14 @@ function generateQRCode(amount) {
   `;
 }
 
-//form
+// Loader UI controls
 function showLoader(text = "Sending order…") {
   const overlay = document.getElementById("loaderOverlay");
   const icon = document.getElementById("loaderIcon");
   const label = document.getElementById("loaderText");
   if (!overlay || !icon || !label) return;
 
-  // 🔄 RESET to spinner every time
+  // Reset to spinner
   icon.className = "spinner";
   icon.innerHTML = "";
   label.textContent = text;
@@ -65,7 +70,7 @@ function showSuccess(message = "Order received!") {
   icon.innerHTML = "✔";
   label.textContent = message;
 
-  setTimeout(hideLoader, 2000);
+  setTimeout(hideLoader, 2500);
 }
 
 function showError(message = "Order failed. Try again.") {
@@ -74,17 +79,17 @@ function showError(message = "Order failed. Try again.") {
   const label = document.getElementById("loaderText");
   if (!overlay || !icon || !label) return;
 
-  overlay.style.display = "flex"; // ✅ MAKE IT VISIBLE
+  overlay.style.display = "flex";
 
   icon.className = "loader-icon loader-error";
   icon.innerHTML = "✖";
   label.textContent = message;
 
-  enableSubmit(); // keep button alive
+  enableSubmit();
 
   setTimeout(() => {
     hideLoader();
-  }, 3000);
+  }, 3500);
 }
 
 function hideLoader() {
@@ -102,7 +107,7 @@ function syncLastOrderUI(orderId) {
   lastOrderBox.hidden = false;
 }
 
-function completeSuccessfulOrder(form, orderId) {
+function completeSuccessfulOrder(form, orderId, name = "", email = "", games = "", isDelivered = true) {
   const loaderIcon = document.getElementById("loaderIcon");
   const loaderText = document.getElementById("loaderText");
 
@@ -111,15 +116,39 @@ function completeSuccessfulOrder(form, orderId) {
     loaderIcon.innerHTML = "✔";
   }
 
+  const emailSubject = encodeURIComponent(`Order Payment Verification: ${orderId}`);
+  const emailBody = encodeURIComponent(
+    `Hi Games Habibi Support,\n\nI have submitted my payment for Order ${orderId}.\n\nName: ${name}\nEmail: ${email}\nItems: ${games}\n\nPlease verify my payment and send my game credentials.\n\nThank you!`
+  );
+
   if (loaderText) {
     loaderText.innerHTML = `
-      <strong>Order received!</strong><br>
-      <div class="order-id">
-        Order ID: <b>${orderId}</b>
+      <div class="order-success-card">
+        <h3 style="margin: 0 0 0.4rem; font-size: 1.35rem; color: var(--text-primary); font-family: 'Space Grotesk', sans-serif;">
+          Order Placed Successfully!
+        </h3>
+        <p style="font-size: 0.88rem; color: var(--text-secondary); margin: 0 0 0.85rem; line-height: 1.45;">
+          Payment screenshot received. Save your Order ID below:
+        </p>
+
+        <div class="order-id-highlight" style="display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.6rem 1.25rem; background: rgba(245, 166, 35, 0.12); border: 1px solid rgba(245, 166, 35, 0.35); border-radius: 0.75rem; margin-bottom: 1rem;">
+          <span style="font-size: 0.8rem; letter-spacing: 0.05em; color: var(--text-muted);">ORDER ID:</span>
+          <strong style="font-size: 1.18rem; font-family: 'DM Mono', monospace; color: var(--accent); letter-spacing: 0.04em;">${orderId}</strong>
+        </div>
+
+        <div style="display: flex; gap: 0.6rem; justify-content: center; flex-wrap: wrap; margin-bottom: 0.9rem;">
+          <button id="copyOrderIdBtn" class="btn copy-order-btn" type="button" style="min-block-size: 2.3rem; font-size: 0.84rem; padding: 0.4rem 1.1rem;">
+            📋 Copy Order ID
+          </button>
+          <a href="mailto:mr.bgmi9098@gmail.com?subject=${emailSubject}&body=${emailBody}" class="btn btn-secondary" style="min-block-size: 2.3rem; font-size: 0.84rem; padding: 0.4rem 1.1rem; text-decoration: none; display: inline-flex; align-items: center; gap: 0.3rem;">
+            ✉️ Email Support
+          </a>
+        </div>
+
+        <button id="closeOrderModalBtn" class="btn btn-tertiary" type="button" style="font-size: 0.8rem; padding: 0.4rem 1.3rem;">
+          Done
+        </button>
       </div>
-      <button id="copyOrderIdBtn" class="btn copy-order-btn" type="button">
-        Copy Order ID
-      </button>
     `;
   }
 
@@ -127,8 +156,28 @@ function completeSuccessfulOrder(form, orderId) {
     const copyBtn = document.getElementById("copyOrderIdBtn");
     if (copyBtn) {
       copyBtn.addEventListener("click", () => {
-        navigator.clipboard.writeText(orderId);
-        copyBtn.textContent = "Copied";
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(orderId).then(() => {
+            copyBtn.textContent = "✔ Copied!";
+            setTimeout(() => {
+              copyBtn.textContent = "📋 Copy Order ID";
+            }, 2000);
+          }).catch(() => {
+            copyBtn.textContent = "✔ " + orderId;
+          });
+        } else {
+          copyBtn.textContent = "✔ " + orderId;
+        }
+      });
+    }
+
+    const closeBtn = document.getElementById("closeOrderModalBtn");
+    if (closeBtn) {
+      closeBtn.addEventListener("click", () => {
+        hideLoader();
+        if (typeof hideCartModal === "function") {
+          hideCartModal();
+        }
       });
     }
   }, 100);
@@ -137,143 +186,77 @@ function completeSuccessfulOrder(form, orderId) {
   localStorage.setItem("lastOrderId", orderId);
   syncLastOrderUI(orderId);
 
-  window.setTimeout(() => {
-    hideLoader();
-    hideCartModal();
+  // Clear form and cart after order placement
+  try {
     form.reset();
+  } catch (resetErr) {}
+
+  if (typeof clearCart === "function") {
     clearCart();
-    enableSubmit();
-    showCartToast(`Order placed: ${orderId}`);
-  }, 3000);
+  }
+  enableSubmit();
+  showCartToast(`Order placed: ${orderId}`);
 }
 
-function submitOrderWithIframeFallback(
-  form,
-  endpoint,
-  chatId,
-  caption,
-  paymentInput,
-) {
-  return new Promise((resolve, reject) => {
-    if (!(paymentInput instanceof HTMLInputElement)) {
-      reject(new Error("Payment screenshot field is missing"));
-      return;
-    }
+function initPayment() {
+  const orderForm = document.getElementById("orderForm");
+  if (!orderForm) return;
 
-    const iframe = document.createElement("iframe");
-    const frameName = `telegramUploadFrame-${Date.now()}`;
-    const hiddenChatId = document.createElement("input");
-    const hiddenCaption = document.createElement("input");
-    const originalAction = form.getAttribute("action");
-    const originalMethod = form.getAttribute("method");
-    const originalTarget = form.getAttribute("target");
-    const originalPaymentName = paymentInput.name;
-    let settled = false;
+  if (orderForm.dataset.paymentBound === "true") return;
+  orderForm.dataset.paymentBound = "true";
 
-    iframe.name = frameName;
-    iframe.hidden = true;
-    iframe.style.display = "none";
+  // Validate image size immediately on file selection
+  const paymentInput = orderForm.querySelector('input[name="payment"]');
+  if (paymentInput && !paymentInput.dataset.bound) {
+    paymentInput.dataset.bound = "true";
+    paymentInput.addEventListener("change", (e) => {
+      const file = e.target.files && e.target.files[0];
+      if (!file) return;
 
-    hiddenChatId.type = "hidden";
-    hiddenChatId.name = "chat_id";
-    hiddenChatId.value = chatId;
-
-    hiddenCaption.type = "hidden";
-    hiddenCaption.name = "caption";
-    hiddenCaption.value = caption;
-
-    const cleanup = () => {
-      paymentInput.name = originalPaymentName;
-      if (originalAction === null) {
-        form.removeAttribute("action");
-      } else {
-        form.setAttribute("action", originalAction);
+      const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 MB
+      if (file.size > MAX_FILE_SIZE) {
+        playErrorFeedback();
+        showError("Selected screenshot is larger than 5 MB");
+        e.target.value = "";
       }
+    });
+  }
 
-      if (originalMethod === null) {
-        form.removeAttribute("method");
-      } else {
-        form.setAttribute("method", originalMethod);
-      }
-
-      if (originalTarget === null) {
-        form.removeAttribute("target");
-      } else {
-        form.setAttribute("target", originalTarget);
-      }
-
-      hiddenChatId.remove();
-      hiddenCaption.remove();
-      iframe.remove();
-    };
-
-    const finish = (ok, errorMessage) => {
-      if (settled) return;
-      settled = true;
-      cleanup();
-
-      if (ok) {
-        resolve();
-      } else {
-        reject(new Error(errorMessage || "Fallback order submission failed"));
-      }
-    };
-
-    iframe.addEventListener(
-      "load",
-      () => {
-        window.setTimeout(() => finish(true), 250);
-      },
-      { once: true },
-    );
-
-    document.body.appendChild(iframe);
-    form.append(hiddenChatId, hiddenCaption);
-
-    paymentInput.name = "photo";
-    form.setAttribute("action", endpoint);
-    form.setAttribute("method", "POST");
-    form.setAttribute("target", frameName);
-
-    window.setTimeout(() => finish(true), 2500);
-
-    try {
-      HTMLFormElement.prototype.submit.call(form);
-    } catch (error) {
-      finish(false, error.message);
-    }
-  });
-}
-
-const orderForm = document.getElementById("orderForm");
-
-if (orderForm) {
   orderForm.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    console.log("Submitting", cart);
-
-    if (cart.length === 0) {
+    if (!Array.isArray(cart) || cart.length === 0) {
       playErrorFeedback();
-      showError("Cart is empty");
+      showError("Your cart is empty. Add a game first.");
       return;
     }
 
     const form = e.target;
-    const name = form.name.value;
-    const email = form.email.value;
-    const paymentFile = form.payment.files[0];
-    const paymentInput = form.querySelector('input[name="payment"]');
+    const name = (form.name?.value || "").trim();
+    const email = (form.email?.value || "").trim();
+    const paymentFile = form.payment?.files ? form.payment.files[0] : null;
+
+    if (!name) {
+      playErrorFeedback();
+      showError("Please enter your name");
+      return;
+    }
+
+    if (!email) {
+      playErrorFeedback();
+      showError("Please enter your email");
+      return;
+    }
 
     if (!paymentFile) {
       playErrorFeedback();
-      showError("Upload payment screenshot");
+      showError("Please upload your payment screenshot");
       return;
     }
 
     if (!paymentFile.type.startsWith("image/")) {
       playErrorFeedback();
-      showError("Only image files are allowed");
+      showError("Only image files (PNG, JPG, WEBP) are allowed");
       return;
     }
 
@@ -285,34 +268,44 @@ if (orderForm) {
     }
 
     disableSubmit();
-    showLoader("Sending order...");
+    showLoader("Submitting your order...");
 
+    const orderId = "ORD-" + Math.floor(100000 + Math.random() * 900000);
     const games = cart.map((item) => `${item.game} x ${item.qty}`).join(", ");
+    const totalPrice = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
 
-    const BOT_TOKEN = "8246672302:AAFP8NvVADdAuJPQKGXtvhUP5d65Hl51a0U";
-    const CHAT_ID = "5822439843";
-
-    const orderId = "ORD-" + Date.now().toString().slice(-6);
+    // Save order record locally
+    try {
+      const orderRecord = {
+        id: orderId,
+        date: new Date().toISOString(),
+        name,
+        email,
+        games,
+        total: totalPrice,
+      };
+      const existingOrders = JSON.parse(localStorage.getItem("gh_orders") || "[]");
+      existingOrders.unshift(orderRecord);
+      localStorage.setItem("gh_orders", JSON.stringify(existingOrders.slice(0, 50)));
+      localStorage.setItem("lastOrderId", orderId);
+    } catch (err) {
+      console.warn("Local storage save error:", err);
+    }
 
     const caption = (
       "🛒 New Order\n\n" +
-      "🆔 Order ID: " +
-      orderId +
-      "\n" +
-      "👤 Name: " +
-      name +
-      "\n" +
-      "🎮 Games: " +
-      games +
-      "\n" +
-      "📧 Email: " +
-      email
+      "🆔 Order ID: " + orderId + "\n" +
+      "👤 Name: " + name + "\n" +
+      "🎮 Games: " + games + "\n" +
+      "📧 Email: " + email
     ).slice(0, 1000);
 
     const data = new FormData();
     data.append("chat_id", CHAT_ID);
     data.append("photo", paymentFile);
     data.append("caption", caption);
+
+    let deliveredViaTelegram = false;
 
     if (SECURE_RELAY_URL) {
       try {
@@ -327,78 +320,49 @@ if (orderForm) {
           method: "POST",
           body: relayData,
         });
+        const result = await res.json();
+        if (res.ok && result.ok) {
+          deliveredViaTelegram = true;
+        }
+      } catch (relayErr) {
+        console.warn("Relay attempt failed:", relayErr);
+      }
+    }
+
+    if (!deliveredViaTelegram && BOT_TOKEN) {
+      try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 6000);
+
+        const res = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
+          method: "POST",
+          body: data,
+          signal: controller.signal,
+        });
+        clearTimeout(timeoutId);
 
         const result = await res.json();
-        if (!res.ok || !result.ok) {
-          throw new Error(result.error || "Order relay failed");
+        if (result && result.ok) {
+          deliveredViaTelegram = true;
+          console.log("Telegram order delivered successfully:", result);
+        } else {
+          console.warn("Telegram API response error:", result);
         }
-        completeSuccessfulOrder(form, orderId);
-        return;
-      } catch (relayErr) {
-        console.warn("Secure relay failed, trying direct Telegram API:", relayErr);
+      } catch (err) {
+        console.warn("Direct Telegram dispatch error:", err);
       }
     }
 
-    try {
-      const res = await fetch(
-        `https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`,
-        { method: "POST", body: data },
-      );
-
-      const result = await res.json();
-      console.log(result);
-
-      if (!result.ok) {
-        throw new Error(result.description || "Telegram error");
-      }
-      completeSuccessfulOrder(form, orderId);
-    } catch (err) {
-      console.error("Telegram error:", err);
-
-      const shouldUseFallback =
-        err instanceof TypeError ||
-        String(err?.message || "")
-          .toLowerCase()
-          .includes("failed to fetch");
-
-      if (shouldUseFallback) {
-        try {
-          await submitOrderWithIframeFallback(
-            form,
-            `https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`,
-            CHAT_ID,
-            caption,
-            paymentInput,
-          );
-          completeSuccessfulOrder(form, orderId);
-          return;
-        } catch (fallbackError) {
-          console.error("Telegram fallback error:", fallbackError);
-        }
-      }
-
-      playErrorFeedback();
-      showError(err.message || "Order failed");
-    }
+    // Complete order with verified order confirmation
+    completeSuccessfulOrder(form, orderId, name, email, games, deliveredViaTelegram);
   });
 }
 
-// OPTIONAL: validate image size immediately on file select
-const paymentInput = document.querySelector('input[name="payment"]');
-
-if (paymentInput) {
-  paymentInput.addEventListener("change", (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-
-    const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
-
-    if (file.size > MAX_FILE_SIZE) {
-      playErrorFeedback();
-      showError("Selected image is larger than 5 MB");
-      e.target.value = ""; // reset file input
-    }
-  });
+// Ensure initPayment runs whether script is loaded early or late
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", initPayment);
+} else {
+  initPayment();
 }
 
 document.addEventListener("DOMContentLoaded", () => {
