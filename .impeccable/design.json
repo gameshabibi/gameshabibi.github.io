@@ -1,0 +1,145 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-17T03:46:00.000Z",
+  "title": "Design System: Games Habibi",
+  "extensions": {
+    "colorMeta": {
+      "primary": {
+        "role": "primary",
+        "displayName": "Cyber Amber",
+        "canonical": "#f5a623",
+        "tonalRamp": ["#3a2400", "#633f00", "#945e00", "#c77f00", "#f5a623", "#f8ba4e", "#facf7d", "#fde9bf"]
+      },
+      "secondary": {
+        "role": "secondary",
+        "displayName": "Electric Violet",
+        "canonical": "#7b2fff",
+        "tonalRamp": ["#1c004a", "#32007f", "#5200c4", "#7b2fff", "#9957ff", "#b785ff", "#d5b5ff", "#f0e6ff"]
+      },
+      "tertiary": {
+        "role": "tertiary",
+        "displayName": "Mint Pulse",
+        "canonical": "#00ffb3",
+        "tonalRamp": ["#003825", "#006141", "#009464", "#00c988", "#00ffb3", "#47ffc5", "#85ffd9", "#c7ffed"]
+      },
+      "neutral-bg": {
+        "role": "neutral",
+        "displayName": "Deep Void Indigo",
+        "canonical": "#0d0a1a",
+        "tonalRamp": ["#05040a", "#0d0a1a", "#15102a", "#1e173c", "#281f4e", "#352967", "#443583", "#5643a3"]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display (Bebas Neue)",
+        "purpose": "Hero titles and major sale section headings."
+      },
+      "title": {
+        "displayName": "Title (Space Grotesk)",
+        "purpose": "Card titles, component headings, and modal titles."
+      },
+      "body": {
+        "displayName": "Body (Space Grotesk)",
+        "purpose": "Readable descriptions, instructions, and policy text."
+      },
+      "label": {
+        "displayName": "Label (DM Mono)",
+        "purpose": "Currency, badges, SKU codes, and order IDs."
+      }
+    },
+    "shadows": [
+      {
+        "name": "card-rest",
+        "value": "0 1rem 2.5rem rgba(2, 7, 15, 0.3)",
+        "purpose": "Rest elevation for cards."
+      },
+      {
+        "name": "card-hover",
+        "value": "0 1.5rem 3.5rem rgba(2, 7, 15, 0.45)",
+        "purpose": "Hover micro-lift for actionable catalog cards."
+      },
+      {
+        "name": "btn-action",
+        "value": "0 1rem 2.5rem rgba(245, 166, 35, 0.22)",
+        "purpose": "Warm ambient lift beneath primary action buttons."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease-standard",
+        "value": "cubic-bezier(0.4, 0, 0.2, 1)",
+        "purpose": "Default easing for card and button hover transitions."
+      }
+    ],
+    "breakpoints": [
+      { "name": "sm", "value": "640px" },
+      { "name": "md", "value": "768px" },
+      { "name": "lg", "value": "1024px" },
+      { "name": "xl", "value": "1280px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Action Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Conversion CTA for Add to Cart, Checkout, and Pay Now.",
+      "html": "<button class=\"ds-btn-primary\">ADD TO CART • ₹499</button>",
+      "css": ".ds-btn-primary { display: inline-flex; align-items: center; justify-content: center; min-block-size: 3rem; padding: 0.75rem 1.4rem; border: none; border-radius: 999rem; background: linear-gradient(135deg, #f5a623, #ff9e00); color: #04101c; font-family: 'Space Grotesk', sans-serif; font-size: 0.95rem; font-weight: 700; cursor: pointer; box-shadow: 0 1rem 2.5rem rgba(245, 166, 35, 0.22); transition: transform 0.2s ease, box-shadow 0.2s ease; } .ds-btn-primary:hover { transform: translateY(-2px); box-shadow: 0 1.35rem 2.8rem rgba(245, 166, 35, 0.32); } .ds-btn-primary:focus-visible { outline: 2px solid #f5a623; outline-offset: 3px; }"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Secondary actions like Clear Cart, View Details, or Apply.",
+      "html": "<button class=\"ds-btn-secondary\">APPLY TIP</button>",
+      "css": ".ds-btn-secondary { display: inline-flex; align-items: center; justify-content: center; min-block-size: 2.8rem; padding: 0.6rem 1.25rem; border: 1px solid rgba(245, 166, 35, 0.25); border-radius: 999rem; background: rgba(18, 32, 56, 0.75); color: #f1f7ff; font-family: 'Space Grotesk', sans-serif; font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: transform 0.2s ease, background 0.2s ease; } .ds-btn-secondary:hover { transform: translateY(-2px); background: rgba(25, 45, 80, 0.85); border-color: rgba(245, 166, 35, 0.4); } .ds-btn-secondary:focus-visible { outline: 2px solid #f5a623; outline-offset: 3px; }"
+    },
+    {
+      "name": "Catalog Card",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "Standard game tile with thumbnail, title, price, and CTA.",
+      "html": "<div class=\"ds-card\"><div class=\"ds-card-badge\">INSTANT UPI</div><h3 class=\"ds-card-title\">Cyberpunk 2077</h3><div class=\"ds-card-price\">₹499 <span class=\"ds-card-orig\">₹2,999</span></div></div>",
+      "css": ".ds-card { position: relative; padding: 1.25rem; border-radius: 1.2rem; background: rgba(13, 10, 26, 0.88); border: 1px solid rgba(245, 166, 35, 0.14); color: #f1f7ff; font-family: 'Space Grotesk', sans-serif; box-shadow: 0 1rem 2.5rem rgba(2, 7, 15, 0.3); } .ds-card-badge { display: inline-block; padding: 0.2rem 0.55rem; border-radius: 999rem; background: rgba(0, 255, 179, 0.15); color: #00ffb3; font-family: 'DM Mono', monospace; font-size: 0.75rem; font-weight: 600; margin-bottom: 0.5rem; } .ds-card-title { font-size: 1.25rem; font-weight: 600; margin: 0 0 0.5rem 0; color: #f1f7ff; } .ds-card-price { font-size: 1.15rem; font-weight: 700; color: #f5a623; font-family: 'DM Mono', monospace; } .ds-card-orig { font-size: 0.85rem; color: #8293ad; text-decoration: line-through; margin-left: 0.4rem; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "Cyber Arcade Bazaar",
+    "overview": "Games Habibi merges the high-energy thrill of midnight gaming arcades with a modern, high-trust digital storefront. The aesthetic embraces deep atmospheric voids (#0d0a1a) illuminated by amber (#f5a623) and electric violet (#7b2fff) accents, balancing youthful gaming enthusiasm with the clarity required for financial transactions.",
+    "keyCharacteristics": [
+      "Atmospheric Gaming Dark: Deep indigo-tinted void backdrop with warm amber action highlights.",
+      "Punchy Headline Stacks: Tall, condensed display titles paired with monospaced metadata badges.",
+      "Frictionless Action Rails: High-visibility pill CTAs for adding to cart and triggering instant UPI QR payments."
+    ],
+    "rules": [
+      {
+        "name": "The 10% Amber Rule",
+        "body": "The primary amber (#f5a623) is reserved for direct conversion actions (Add to Cart, Checkout, Pay Now). It should never be used as large background fills or continuous decorative borders.",
+        "section": "colors"
+      },
+      {
+        "name": "The Readable Contrast Rule",
+        "body": "Never place Starlight White (#f1f7ff) or Slate Blue (#b0bfd6) text directly over glowing amber (#f5a623) or light ambient gradients; buttons on amber must use deep dark ink (#04101c) to maintain WCAG AA compliance.",
+        "section": "typography"
+      },
+      {
+        "name": "The Natural Shadow Rule",
+        "body": "Prohibit zero-offset colored glow halos around text and containers. Use natural Y-offset directional shadows with subtle opacity.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do maintain a strict 4.5:1 text-to-background contrast ratio on all buttons and labels.",
+      "Do respect user preferences with @media (prefers-reduced-motion: reduce) by calming infinite marquee and ambient animations.",
+      "Do provide distinct, high-contrast :focus-visible indicators on all interactive buttons and form inputs.",
+      "Do preserve minimum 44px tap targets for mobile checkout."
+    ],
+    "donts": [
+      "Don't use light text over light yellow or amber gradient fills.",
+      "Don't nest card containers inside other cards, creating visual clutter.",
+      "Don't use zero-offset colored blur halos (\"dark-glow\") as primary design elements.",
+      "Don't let child text content touch the outer border box without at least 12px container inset padding."
+    ]
+  }
+}
