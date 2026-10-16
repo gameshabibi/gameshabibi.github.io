@@ -288,6 +288,32 @@ function getAssetPath(path) {
   return (isSub ? "../" : "") + path;
 }
 
+function handleImageFallback(imgEl, fallbackUrl) {
+  if (!imgEl) return;
+  const currentSrc = imgEl.src || "";
+
+  // If .jpg failed, try .png
+  if (currentSrc.includes(".jpg") && !imgEl.dataset.triedPng) {
+    imgEl.dataset.triedPng = "true";
+    imgEl.src = currentSrc.replace(/\.jpg(\?.*)?$/i, (match, query) => ".png" + (query || ""));
+    return;
+  }
+
+  // If .png failed and not fallback logo, try .jpg
+  if (
+    currentSrc.includes(".png") &&
+    !imgEl.dataset.triedJpg &&
+    !currentSrc.includes("apple-touch-icon")
+  ) {
+    imgEl.dataset.triedJpg = "true";
+    imgEl.src = currentSrc.replace(/\.png(\?.*)?$/i, (match, query) => ".jpg" + (query || ""));
+    return;
+  }
+
+  imgEl.onerror = null;
+  imgEl.src = fallbackUrl;
+}
+
 function buildGameCardMarkup(item) {
   const name = escapeHTML(item.name);
   const genre = escapeHTML(item.p.genre);
@@ -301,7 +327,7 @@ function buildGameCardMarkup(item) {
     return `
       <article class="game-card" data-name="${name}" data-type="game">
         <a class="product-media" target="_blank" rel="noreferrer" href="${link}">
-          <img src="${img}" alt="${name}" loading="lazy" onerror="this.onerror=null;this.src='${fallback}';" />
+          <img src="${img}" alt="${name}" loading="lazy" onerror="handleImageFallback(this, '${fallback}');" />
         </a>
 
         <div class="product-copy">
@@ -345,7 +371,7 @@ function buildGameCardMarkup(item) {
   return `
     <article class="game-card" data-name="${name}" data-type="game">
       <a class="product-media" target="_blank" rel="noreferrer" href="${link}">
-        <img src="${img}" alt="${name}" loading="lazy" onerror="this.onerror=null;this.src='${fallback}';" />
+        <img src="${img}" alt="${name}" loading="lazy" onerror="handleImageFallback(this, '${fallback}');" />
       </a>
 
       <div class="product-copy">
@@ -386,7 +412,7 @@ function buildServiceCardMarkup(item) {
   return `
     <article class="game-card" data-name="${name}" data-type="service">
       <a class="product-media" target="_blank" rel="noreferrer" href="${link}">
-        <img src="${img}" alt="${name}" loading="lazy" onerror="this.onerror=null;this.src='${fallback}';" />
+        <img src="${img}" alt="${name}" loading="lazy" onerror="handleImageFallback(this, '${fallback}');" />
       </a>
 
       <div class="product-copy">
@@ -457,7 +483,7 @@ function buildXboxCardMarkup() {
           src="${xboxImg}"
           alt="Xbox Game Pass"
           loading="lazy"
-          onerror="this.onerror=null;this.src='${fallback}';"
+          onerror="handleImageFallback(this, '${fallback}');"
         />
       </div>
 

@@ -262,7 +262,7 @@ const games = [
   },
   {
     link: "https://store.steampowered.com/app/2893850/Assassins_Creed_Shadows/",
-    img: "png/games/assassins-creed-shadows.jpg",
+    img: "png/games/assassins-creed-shadows.png",
     name: "Assassin's Creed Shadows",
     p: {
       genre: "Feudal Japan, Stealth, Action RPG",
@@ -274,7 +274,7 @@ const games = [
   },
   {
     link: "https://store.steampowered.com/app/2770240/Mafia_The_Old_Country/",
-    img: "png/games/mafia-the-old-country.jpg",
+    img: "png/games/mafia-the-old-country.png",
     name: "Mafia: The Old Country",
     p: {
       genre: "Crime Drama, Historical Action",
@@ -286,7 +286,7 @@ const games = [
   },
   {
     link: "https://store.steampowered.com/app/2427700/WUCHANG_Fallen_Feathers/",
-    img: "png/games/wuchang-fallen-feathers.jpg",
+    img: "png/games/wuchang-fallen-feathers.png",
     name: "Wuchang: Fallen Feathers",
     p: {
       genre: "Dark Fantasy, Soulslike Action",
