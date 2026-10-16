@@ -274,11 +274,26 @@ function playSuccessFeedback() {
   }
 }
 
+function getAssetPath(path) {
+  if (!path) return "";
+  if (
+    path.startsWith("http://") ||
+    path.startsWith("https://") ||
+    path.startsWith("/") ||
+    path.startsWith("../")
+  ) {
+    return path;
+  }
+  const isSub = window.location.pathname.includes("/html/");
+  return (isSub ? "../" : "") + path;
+}
+
 function buildGameCardMarkup(item) {
   const name = escapeHTML(item.name);
   const genre = escapeHTML(item.p.genre);
   const link = escapeHTML(item.link);
-  const img = escapeHTML(item.img);
+  const img = escapeHTML(getAssetPath(item.img));
+  const fallback = escapeHTML(getAssetPath("png/apple-touch-icon.png"));
   const hasVariants =
     Array.isArray(item.p.variants) && item.p.variants.length > 0;
 
@@ -286,7 +301,7 @@ function buildGameCardMarkup(item) {
     return `
       <article class="game-card" data-name="${name}" data-type="game">
         <a class="product-media" target="_blank" rel="noreferrer" href="${link}">
-          <img src="${img}" alt="${name}" loading="lazy" />
+          <img src="${img}" alt="${name}" loading="lazy" onerror="this.onerror=null;this.src='${fallback}';" />
         </a>
 
         <div class="product-copy">
@@ -330,7 +345,7 @@ function buildGameCardMarkup(item) {
   return `
     <article class="game-card" data-name="${name}" data-type="game">
       <a class="product-media" target="_blank" rel="noreferrer" href="${link}">
-        <img src="${img}" alt="${name}" loading="lazy" onerror="this.onerror=null;this.src='png/apple-touch-icon.png';" />
+        <img src="${img}" alt="${name}" loading="lazy" onerror="this.onerror=null;this.src='${fallback}';" />
       </a>
 
       <div class="product-copy">
@@ -365,12 +380,13 @@ function buildServiceCardMarkup(item) {
   const name = escapeHTML(item.name);
   const genre = escapeHTML(item.p.genre);
   const link = escapeHTML(item.link);
-  const img = escapeHTML(item.img);
+  const img = escapeHTML(getAssetPath(item.img));
+  const fallback = escapeHTML(getAssetPath("png/apple-touch-icon.png"));
 
   return `
     <article class="game-card" data-name="${name}" data-type="service">
       <a class="product-media" target="_blank" rel="noreferrer" href="${link}">
-        <img src="${img}" alt="${name}" loading="lazy" onerror="this.onerror=null;this.src='png/apple-touch-icon.png';" />
+        <img src="${img}" alt="${name}" loading="lazy" onerror="this.onerror=null;this.src='${fallback}';" />
       </a>
 
       <div class="product-copy">
@@ -398,10 +414,11 @@ function buildServiceCardMarkup(item) {
 }
 
 function buildDonationCardMarkup() {
+  const donateImg = escapeHTML(getAssetPath("png/donate2.png"));
   return `
     <article class="game-card" data-name="Donation" data-type="service">
       <div class="product-media">
-        <img src="png/donate2.png" alt="Donation" loading="lazy" />
+        <img src="${donateImg}" alt="Donation" loading="lazy" />
       </div>
 
       <div class="product-copy">
@@ -431,14 +448,16 @@ function buildDonationCardMarkup() {
 }
 
 function buildXboxCardMarkup() {
+  const xboxImg = escapeHTML(getAssetPath("png/xbox.png"));
+  const fallback = escapeHTML(getAssetPath("png/apple-touch-icon.png"));
   return `
     <article class="game-card" data-name="Xbox Game Pass" data-type="service">
       <div class="product-media">
         <img
-          src="png/xbox.png"
+          src="${xboxImg}"
           alt="Xbox Game Pass"
           loading="lazy"
-          onerror="this.onerror=null;this.src='png/apple-touch-icon.png';"
+          onerror="this.onerror=null;this.src='${fallback}';"
         />
       </div>
 
