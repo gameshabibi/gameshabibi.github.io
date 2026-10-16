@@ -3,7 +3,7 @@ const PAYMENT_ID = "prashantsingh896@ybl";
 
 // TELEGRAM BOT CONFIGURATION:
 // Update this with your new bot token from @BotFather if you regenerate your bot
-const BOT_TOKEN = "8246672302:8959778893:AAH5aQu5Y1oV4SrmiCjljtqCqdv3kXWtG84";
+const BOT_TOKEN = "8959778893:AAH5aQu5Y1oV4SrmiCjljtqCqdv3kXWtG84";
 const CHAT_ID = "5822439843";
 
 // SECURE RELAY CONFIGURATION (Cloudflare Worker / Serverless):
