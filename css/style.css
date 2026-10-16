@@ -1857,7 +1857,7 @@ main {
   inset-block-end: max(1rem, env(safe-area-inset-bottom));
   display: grid;
   gap: 0.75rem;
-  z-index: 50;
+  z-index: 10002;
   pointer-events: none;
 }
 
@@ -1880,7 +1880,7 @@ main {
 .loader-overlay {
   position: fixed;
   inset: 0;
-  z-index: 60;
+  z-index: 10001;
   display: none;
   align-items: center;
   justify-content: center;

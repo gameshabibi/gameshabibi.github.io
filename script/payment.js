@@ -103,7 +103,13 @@ function syncLastOrderUI(orderId) {
 }
 
 function completeSuccessfulOrder(form, orderId) {
+  const loaderIcon = document.getElementById("loaderIcon");
   const loaderText = document.getElementById("loaderText");
+
+  if (loaderIcon) {
+    loaderIcon.className = "loader-icon loader-success";
+    loaderIcon.innerHTML = "✔";
+  }
 
   if (loaderText) {
     loaderText.innerHTML = `
