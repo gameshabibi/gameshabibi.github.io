@@ -1,0 +1,8 @@
+name = "gameshabibi-order-relay"
+main = "worker.js"
+compatibility_date = "2024-01-01"
+
+[vars]
+# Configure default or set secrets using: npx wrangler secret put BOT_TOKEN
+# BOT_TOKEN = "your_telegram_bot_token"
+# CHAT_ID = "your_telegram_chat_id"

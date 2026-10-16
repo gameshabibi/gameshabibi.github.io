@@ -233,6 +233,23 @@
             </p>
           </div>
 
+          <div class="catalog-filter-bar">
+            <div class="catalog-filter-scroll" role="tablist" aria-label="Catalog filters">
+              <button class="filter-pill active" data-filter="all" type="button" role="tab" aria-selected="true">
+                ✨ All Items
+              </button>
+              <button class="filter-pill" data-filter="personal" type="button" role="tab" aria-selected="false">
+                👤 Personal Account
+              </button>
+              <button class="filter-pill" data-filter="shared" type="button" role="tab" aria-selected="false">
+                👥 Shared Account
+              </button>
+              <button class="filter-pill" data-filter="services" type="button" role="tab" aria-selected="false">
+                📺 Services & Passes
+              </button>
+            </div>
+          </div>
+
           <div class="catalog-shell">
             <article class="catalog-block">
               <div class="catalog-header">
@@ -408,6 +425,83 @@
     <script src="script/product.js"></script>
     <script src="script/script.js"></script>
     <script src="script/payment.js"></script>
+
+    <!-- Interactive Slide-over Cart Drawer -->
+    <div id="cartDrawerBackdrop" class="cart-drawer-backdrop" aria-hidden="true"></div>
+    <aside id="cartDrawer" class="cart-drawer" role="dialog" aria-modal="true" aria-label="Shopping Cart" aria-hidden="true">
+      <div class="cart-drawer-header">
+        <div class="drawer-title-group">
+          <h2>Your Cart</h2>
+          <span id="drawerCartCount" class="drawer-badge">0 items</span>
+        </div>
+        <button id="closeCartDrawerBtn" class="drawer-close-btn" type="button" aria-label="Close cart drawer">
+          &times;
+        </button>
+      </div>
+
+      <div class="cart-drawer-body">
+        <div class="cart-bundle-banner">
+          <span class="banner-icon">🎁</span>
+          <div class="banner-text">
+            <strong>Bundle Savings Active</strong>
+            <span>2 games: 25% OFF • 3 games: 40% OFF • 4+ games: 47% OFF</span>
+          </div>
+        </div>
+
+        <section class="drawer-section">
+          <div class="drawer-section-head">
+            <h3>Cart Items</h3>
+            <button id="clearCartBtn" class="btn-clear-cart" type="button">Clear All</button>
+          </div>
+          <div id="cartItems" class="cart-items-list"></div>
+        </section>
+
+        <section class="drawer-section drawer-tip-section">
+          <label for="tipAmount">Tip (optional storefront support)</label>
+          <div class="tip-row">
+            <input type="number" id="tipAmount" min="0" value="0" placeholder="₹ Tip" />
+            <button id="applyTipBtn" class="btn btn-secondary" type="button">Apply</button>
+          </div>
+        </section>
+
+        <section class="drawer-section drawer-pricing-section">
+          <h3>Pricing Summary</h3>
+          <div id="cartTotal" class="cart-total-card"></div>
+        </section>
+
+        <section class="drawer-section drawer-upi-section">
+          <div class="upi-checkout-card">
+            <h3>🔐 Instant UPI Payment</h3>
+            <p class="upi-subtitle">Scan QR on desktop or tap the UPI button on mobile</p>
+            <div id="qrCode" class="qr-shell"></div>
+            <div id="payButton" class="pay-button-wrap"></div>
+          </div>
+        </section>
+
+        <section class="drawer-section drawer-order-section">
+          <form id="orderForm" enctype="multipart/form-data" class="order-form">
+            <h3>Confirm & Submit Order</h3>
+            <div class="field-group">
+              <label for="customerName">Your name</label>
+              <input type="text" id="customerName" name="name" placeholder="Enter your full name" required />
+            </div>
+            <div class="field-group">
+              <label for="customerEmail">Your email</label>
+              <input type="email" id="customerEmail" name="email" placeholder="you@example.com" required />
+            </div>
+            <div class="field-group">
+              <label for="paymentProof">Payment screenshot</label>
+              <input type="file" id="paymentProof" name="payment" accept="image/*" required />
+              <small class="field-hint">Max file size: 5 MB (PNG, JPG, WEBP)</small>
+            </div>
+            <input type="hidden" id="gameInput" name="games" required />
+            <button type="submit" id="orderSubmitBtn" class="btn btn-block form-submit">
+              Submit Order
+            </button>
+          </form>
+        </section>
+      </div>
+    </aside>
 
     <div id="toastContainer" aria-live="polite" aria-atomic="true"></div>
 

@@ -246,8 +246,9 @@ function enableSubmit() {
 
 function playErrorFeedback() {
   try {
-    const audio = new Audio("/audio/error.wav");
-    audio.volume = 0.4;
+    const isSub = window.location.pathname.includes("/html/");
+    const audio = new Audio(isSub ? "../audio/error.wav" : "audio/error.wav");
+    audio.volume = 0.3;
     audio.play().catch(() => {});
   } catch (error) {
     console.warn("Error sound failed", error);
@@ -260,8 +261,9 @@ function playErrorFeedback() {
 
 function playSuccessFeedback() {
   try {
-    const audio = new Audio("/audio/succ.wav");
-    audio.volume = 0.4;
+    const isSub = window.location.pathname.includes("/html/");
+    const audio = new Audio(isSub ? "../audio/succ.wav" : "audio/succ.wav");
+    audio.volume = 0.3;
     audio.play().catch(() => {});
   } catch (error) {
     console.warn("Success sound failed", error);
@@ -527,12 +529,18 @@ function addToCart(game, price, isGame = false, isDiscountEligible = false) {
   updateGameInputField();
   renderCart();
   showCartToast(`${game} added to cart`);
+  openCartDrawer();
 }
 
 function updateCartCount() {
   const count = cart.reduce((sum, item) => sum + item.qty, 0);
   const counter = document.getElementById("cartCount");
   if (counter) counter.textContent = count;
+
+  const drawerCounter = document.getElementById("drawerCartCount");
+  if (drawerCounter) {
+    drawerCounter.textContent = `${count} item${count === 1 ? "" : "s"}`;
+  }
 }
 
 function updateGameInputField() {
@@ -614,18 +622,39 @@ function renderCart() {
       return `
         <article class="cart-item">
           <div class="cart-line">
-            <strong>${escapeHTML(item.game)}</strong>
-            <span>${item.qty} item${item.qty > 1 ? "s" : ""} | ${formatTotal(itemTotal)}</span>
+            <div class="cart-item-header">
+              <strong class="cart-item-title">${escapeHTML(item.game)}</strong>
+              <span class="cart-item-meta">${formatPrice(item.price)} each</span>
+            </div>
+            <div class="cart-item-row">
+              <div class="cart-qty-group">
+                <button
+                  type="button"
+                  class="qty-btn"
+                  data-qty-action="dec"
+                  data-qty-index="${index}"
+                  aria-label="Decrease quantity"
+                >−</button>
+                <span class="qty-number">${item.qty}</span>
+                <button
+                  type="button"
+                  class="qty-btn"
+                  data-qty-action="inc"
+                  data-qty-index="${index}"
+                  aria-label="Increase quantity"
+                >+</button>
+              </div>
+              <strong class="cart-item-subtotal">${formatTotal(itemTotal)}</strong>
+              <button
+                class="remove-btn"
+                type="button"
+                data-remove-index="${index}"
+                aria-label="Remove ${escapeHTML(item.game)}"
+              >
+                ✕
+              </button>
+            </div>
           </div>
-
-          <button
-            class="remove-btn"
-            type="button"
-            data-remove-index="${index}"
-            aria-label="Remove ${escapeHTML(item.game)}"
-          >
-            Remove
-          </button>
         </article>
       `;
     })
@@ -729,11 +758,94 @@ function applyTip() {
 }
 
 function showCartModal() {
-  // No modal is used; this path remains for backward compatibility.
-  window.location.href = "html/cart.html";
+  const drawer = document.getElementById("cartDrawer");
+  if (drawer) {
+    openCartDrawer();
+  } else {
+    const isSub = window.location.pathname.includes("/html/");
+    window.location.href = isSub ? "cart.html" : "html/cart.html";
+  }
+}
+
+function openCartDrawer() {
+  const drawer = document.getElementById("cartDrawer");
+  const backdrop = document.getElementById("cartDrawerBackdrop");
+  if (!drawer) {
+    const isSub = window.location.pathname.includes("/html/");
+    window.location.href = isSub ? "cart.html" : "html/cart.html";
+    return;
+  }
+
+  drawer.classList.add("is-open");
+  drawer.setAttribute("aria-hidden", "false");
+  backdrop?.classList.add("is-open");
+  backdrop?.setAttribute("aria-hidden", "false");
+  document.body.classList.add("is-locked");
+  renderCart();
+}
+
+function closeCartDrawer() {
+  const drawer = document.getElementById("cartDrawer");
+  const backdrop = document.getElementById("cartDrawerBackdrop");
+  if (!drawer) return;
+
+  drawer.classList.remove("is-open");
+  drawer.setAttribute("aria-hidden", "true");
+  backdrop?.classList.remove("is-open");
+  backdrop?.setAttribute("aria-hidden", "true");
+  document.body.classList.remove("is-locked");
+}
+
+function applyCatalogFilter(filter) {
+  const filterPills = document.querySelectorAll(".filter-pill");
+  filterPills.forEach((pill) => {
+    const isActive = pill.dataset.filter === filter;
+    pill.classList.toggle("active", isActive);
+    pill.setAttribute("aria-selected", String(isActive));
+  });
+
+  const blocks = document.querySelectorAll(".catalog-block");
+  const servicesBlock = blocks[0];
+  const gamesBlock = blocks[1];
+
+  if (filter === "services") {
+    if (servicesBlock) servicesBlock.style.display = "";
+    if (gamesBlock) gamesBlock.style.display = "none";
+    return;
+  }
+
+  if (filter === "personal") {
+    if (servicesBlock) servicesBlock.style.display = "none";
+    if (gamesBlock) gamesBlock.style.display = "";
+    const filteredGames = games.filter((g) =>
+      g.p?.variants?.some((v) =>
+        v.name.toLowerCase().includes("in your steam account"),
+      ),
+    );
+    renderGames(filteredGames);
+    return;
+  }
+
+  if (filter === "shared") {
+    if (servicesBlock) servicesBlock.style.display = "none";
+    if (gamesBlock) gamesBlock.style.display = "";
+    const filteredGames = games.filter((g) =>
+      g.p?.variants?.some((v) =>
+        v.name.toLowerCase().includes("shared steam account"),
+      ),
+    );
+    renderGames(filteredGames);
+    return;
+  }
+
+  // filter === 'all'
+  if (servicesBlock) servicesBlock.style.display = "";
+  if (gamesBlock) gamesBlock.style.display = "";
+  renderGames(games);
 }
 
 function hideCartModal() {
+  closeCartDrawer();
   const modal = document.getElementById("cartModal");
   if (modal) {
     modal.classList.remove("is-open");
@@ -964,6 +1076,28 @@ document.addEventListener("click", (event) => {
     return;
   }
 
+  const qtyButton = target.closest("[data-qty-action]");
+  if (qtyButton instanceof HTMLButtonElement) {
+    const action = qtyButton.dataset.qtyAction;
+    const index = Number(qtyButton.dataset.qtyIndex);
+    if (!Number.isNaN(index) && cart[index]) {
+      if (action === "inc") {
+        cart[index].qty += 1;
+      } else if (action === "dec") {
+        if (cart[index].qty > 1) {
+          cart[index].qty -= 1;
+        } else {
+          cart.splice(index, 1);
+        }
+      }
+      saveCartToStorage();
+      updateCartCount();
+      updateGameInputField();
+      renderCart();
+    }
+    return;
+  }
+
   const removeButton = target.closest("[data-remove-index]");
   if (removeButton instanceof HTMLButtonElement) {
     removeFromCart(Number(removeButton.dataset.removeIndex));
@@ -989,6 +1123,7 @@ document.addEventListener("click", (event) => {
 document.addEventListener("keydown", (event) => {
   if (event.key === "Escape") {
     closeSearchResults();
+    closeCartDrawer();
     hideCartModal();
     hideMobileHeaderMenu();
   }
@@ -1018,6 +1153,20 @@ document.addEventListener("DOMContentLoaded", () => {
   clearCartButton?.addEventListener("click", clearCart);
   applyTipButton?.addEventListener("click", applyTip);
   closeCartButton?.addEventListener("click", hideCartModal);
+
+  const closeDrawerBtn = document.getElementById("closeCartDrawerBtn");
+  const drawerBackdrop = document.getElementById("cartDrawerBackdrop");
+  closeDrawerBtn?.addEventListener("click", closeCartDrawer);
+  drawerBackdrop?.addEventListener("click", closeCartDrawer);
+
+  const filterPills = document.querySelectorAll(".filter-pill");
+  filterPills.forEach((pill) => {
+    pill.addEventListener("click", () => {
+      if (pill instanceof HTMLElement && pill.dataset.filter) {
+        applyCatalogFilter(pill.dataset.filter);
+      }
+    });
+  });
 
   // Coupon controls are currently disabled (will be re-enabled later).
   // const applyCouponButton = document.getElementById("applyCouponBtn");
@@ -1057,7 +1206,18 @@ document.addEventListener("DOMContentLoaded", () => {
     syncDesktopHeaderOnScroll();
   });
 
-  window.addEventListener("scroll", syncDesktopHeaderOnScroll, {
+  let isScrollTicking = false;
+  const throttledScrollHandler = () => {
+    if (!isScrollTicking) {
+      window.requestAnimationFrame(() => {
+        syncDesktopHeaderOnScroll();
+        isScrollTicking = false;
+      });
+      isScrollTicking = true;
+    }
+  };
+
+  window.addEventListener("scroll", throttledScrollHandler, {
     passive: true,
   });
 

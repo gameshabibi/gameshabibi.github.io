@@ -2,13 +2,22 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="theme-color" content="#0D0A1A" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
     <meta name="theme-color" content="#0D0A1A" />
     <meta
       name="description"
       content="Games Habibi cart page - modern checkout and order summary"
     />
     <title>Games Habibi | Cart</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Grotesk:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="../css/style.css" />
   </head>
   <body>
@@ -150,16 +159,7 @@
                 required
               />
             </div>
-            <div class="field-group">
-              <label for="gameInput">Cart items</label>
-              <textarea
-                id="gameInput"
-                name="games"
-                placeholder="Cart items will appear here"
-                readonly
-                required
-              ></textarea>
-            </div>
+            <input type="hidden" id="gameInput" name="games" required />
             <button
               type="submit"
               id="orderSubmitBtn"

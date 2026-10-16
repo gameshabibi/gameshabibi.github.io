@@ -123,13 +123,39 @@ a {
 }
 
 .header-inner,
-.site-nav,
 .policy-layout,
 .footer-inner,
 .support-pills,
 .info-grid {
   display: grid;
   gap: 1rem;
+}
+
+.site-nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.75rem;
+}
+
+.site-nav a {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.4rem 0.85rem;
+  border-radius: 999rem;
+  background: rgba(18, 32, 56, 0.6);
+  border: 0.0625rem solid rgba(245, 166, 35, 0.15);
+  font-size: 0.85rem;
+  transition:
+    background-color 200ms ease,
+    border-color 200ms ease,
+    transform 200ms ease;
+}
+
+.site-nav a:hover {
+  background: rgba(245, 166, 35, 0.18);
+  border-color: rgba(245, 166, 35, 0.4);
+  transform: translateY(-1px);
 }
 
 .header-inner {
@@ -435,6 +461,12 @@ a {
 @media (max-width: 47.99em) {
   .site-nav {
     order: 3;
+    gap: 0.35rem 0.5rem;
+  }
+
+  .site-nav a {
+    font-size: 0.78rem;
+    padding: 0.3rem 0.65rem;
   }
 }
 

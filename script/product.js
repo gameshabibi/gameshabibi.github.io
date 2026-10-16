@@ -1,10 +1,10 @@
 const services = [
   {
     link: "#",
-    img: "/png/youtube.png",
-    name: "YoutubePremium",
+    img: "png/youtube.png",
+    name: "YouTube Premium",
     p: {
-      genre: "background play,PIP",
+      genre: "Ad-free, Background play, PiP",
       price: 59,
     },
   },
@@ -14,7 +14,7 @@ const services = [
     img: "png/netflix.png",
     name: "Netflix Premium",
     p: {
-      genre: "4k , 1 month",
+      genre: "4K Ultra HD, 1 Month",
       price: 149,
     },
   },
@@ -23,7 +23,7 @@ const services = [
     img: "https://img.utdstc.com/icon/30d/267/30d267e7deb1e63463da546dc005988b83d084f36ad11aefc454668792d1b959:600",
     name: "8 Ball Pool Mod",
     p: {
-      genre: "AutoPlay,NO Ban , 1 day",
+      genre: "AutoPlay, Anti-Ban, 1 Day",
       price: 10,
     },
   },
@@ -61,7 +61,7 @@ const games = [
   {
     link: "#",
     img: "https://images.igdb.com/igdb/image/upload/t_cover_big/co3ofx.webp",
-    name: "Forza horizon 5",
+    name: "Forza Horizon 5",
     p: {
       genre: "Racing",
       variants: [
@@ -169,12 +169,12 @@ const games = [
   {
     link: "",
     img: "https://www.gamespot.com/a/uploads/original/1595/15950357/4378598-residentevilgames.jpg",
-    name: "resident evil bundle",
+    name: "Resident Evil Bundle",
     p: {
-      genre: "shooting",
+      genre: "Survival Horror, Action",
       variants: [
         {
-          name: "re-0 , re-1, re-4 (remake) , re -5 ,re-6, re-7 , re-8",
+          name: "RE 0, 1, 4 Remake, 5, 6, 7, 8 (Complete Bundle)",
           price: 349,
         },
       ],
@@ -207,7 +207,7 @@ const games = [
   {
     link: "https://www.igdb.com/games/the-last-of-us",
     img: "https://images.igdb.com/igdb/image/upload/t_cover_big/co1r7f.webp",
-    name: "The last of us",
+    name: "The Last of Us Part I",
     p: {
       genre: "Shooter, Adventure",
       variants: [
@@ -219,7 +219,7 @@ const games = [
   {
     link: "https://www.igdb.com/games/marvels-spider-man-miles-morales",
     img: "https://images.igdb.com/igdb/image/upload/t_cover_big/co2dwe.webp",
-    name: "Spider Man Miles Morals",
+    name: "Marvel's Spider-Man: Miles Morales",
     p: {
       genre: "Shooter, Adventure",
       variants: [
@@ -456,9 +456,9 @@ const games = [
   {
     link: "#",
     img: "https://images.igdb.com/igdb/image/upload/t_cover_big/co8uu1.webp",
-    name: "Resident all variant",
+    name: "Resident Evil: All Variants",
     p: {
-      genre: "Companion",
+      genre: "Survival Horror",
       variants: [
         { name: "In your steam account", price: 299 },
         { name: "Shared Steam Account", price: 149 },
@@ -545,8 +545,8 @@ const games = [
     p: {
       genre: "Action RPG",
       variants: [
+        { name: "In your steam account", price: 299 },
         { name: "Shared Steam Account", price: 149 },
-        { name: "ONLY 1 Variant", price: 149 },
       ],
     },
   },

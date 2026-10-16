@@ -1,6 +1,11 @@
 // Your payment UPI ID or wallet address (customize this)
 const PAYMENT_ID = "prashantsingh896@ybl";
 
+// SECURE RELAY CONFIGURATION (Cloudflare Worker / Serverless):
+// Set this to your deployed worker URL (e.g. "https://gameshabibi-relay.workers.dev")
+// When configured, all orders are routed securely without exposing your bot token in client-side code.
+const SECURE_RELAY_URL = "";
+
 // Generate QR Code
 function generateQRCode(amount) {
   const qrContainer = document.getElementById("qrCode");
@@ -27,7 +32,13 @@ function generateQRCode(amount) {
   )}`;
 
   qrContainer.innerHTML = `<img src="${qrCodeURL}" alt="Payment QR Code">`;
-  payButton.innerHTML = `<a href="../image.png" target="_blank" class="btn">OR Pay By Qr Code</a>`;
+  const qrImagePath = window.location.pathname.includes("/html/")
+    ? "../image.png"
+    : "image.png";
+  payButton.innerHTML = `
+    <a href="${paymentData}" class="btn btn-upi-app">⚡ Pay via UPI App (GPay / PhonePe / Paytm)</a>
+    <a href="${qrImagePath}" target="_blank" rel="noopener noreferrer" class="btn btn-secondary btn-qr-fallback">View Static QR</a>
+  `;
 }
 
 //form
@@ -296,6 +307,31 @@ if (orderForm) {
     data.append("chat_id", CHAT_ID);
     data.append("photo", paymentFile);
     data.append("caption", caption);
+
+    if (SECURE_RELAY_URL) {
+      try {
+        const relayData = new FormData();
+        relayData.append("name", name);
+        relayData.append("email", email);
+        relayData.append("games", games);
+        relayData.append("orderId", orderId);
+        relayData.append("photo", paymentFile);
+
+        const res = await fetch(`${SECURE_RELAY_URL}/order`, {
+          method: "POST",
+          body: relayData,
+        });
+
+        const result = await res.json();
+        if (!res.ok || !result.ok) {
+          throw new Error(result.error || "Order relay failed");
+        }
+        completeSuccessfulOrder(form, orderId);
+        return;
+      } catch (relayErr) {
+        console.warn("Secure relay failed, trying direct Telegram API:", relayErr);
+      }
+    }
 
     try {
       const res = await fetch(
