@@ -1473,6 +1473,26 @@ details[open] .accordion-chevron {
     z-index: 10;
   }
 
+  /* Catalog Section compact mobile */
+  .catalog-section {
+    padding: 1.5rem 0 2.2rem;
+  }
+
+  .section-heading {
+    margin-bottom: 1.2rem;
+  }
+
+  .section-heading h2 {
+    font-size: 1.65rem;
+    line-height: 1.15;
+    margin-bottom: 0.35rem;
+  }
+
+  .section-heading p {
+    font-size: 0.86rem;
+    line-height: 1.45;
+  }
+
   /* Mobile Bottom Navigation */
   .mobile-bottom-nav {
     display: grid;
@@ -1481,14 +1501,14 @@ details[open] .accordion-chevron {
     bottom: 0;
     left: 0;
     right: 0;
-    height: calc(4.2rem + env(safe-area-inset-bottom, 0px));
+    width: 100%;
+    height: calc(3.85rem + env(safe-area-inset-bottom, 0px));
     padding-bottom: env(safe-area-inset-bottom, 0px);
-    background: rgba(13, 10, 26, 0.95);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border-top: 1px solid rgba(245, 166, 35, 0.2);
-    box-shadow: 0 -0.5rem 2rem rgba(0, 0, 0, 0.5);
+    background: #0d0a1a !important;
+    border-top: 1px solid rgba(245, 166, 35, 0.25);
+    box-shadow: 0 -0.5rem 2rem rgba(0, 0, 0, 0.7);
     z-index: 990;
+    -webkit-tap-highlight-color: transparent;
   }
 
   .mobile-nav-item {
@@ -1499,12 +1519,28 @@ details[open] .accordion-chevron {
     gap: 0.2rem;
     color: var(--text-muted);
     font-size: 0.72rem;
-    font-weight: 500;
+    font-weight: 600;
+    text-decoration: none;
+    outline: none;
+    border: none;
+    background: none;
+    -webkit-tap-highlight-color: transparent;
+    transition: color 0.15s ease, transform 0.1s ease;
   }
 
-  .mobile-nav-item.active,
-  .mobile-nav-item:hover {
+  .mobile-nav-item:focus,
+  .mobile-nav-item:focus-visible {
+    outline: none !important;
+    box-shadow: none !important;
+  }
+
+  .mobile-nav-item.active {
     color: var(--accent);
+    font-weight: 700;
+  }
+
+  .mobile-nav-item:active {
+    transform: scale(0.94);
   }
 
   .site-nav {

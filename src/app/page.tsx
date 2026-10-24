@@ -35,6 +35,8 @@ export default function HomePage() {
         <Hero />
         <Ticker />
         <Catalog
+          isHomeView
+          limit={6}
           searchQuery={searchQuery}
           onRequestGame={handleOpenRequest}
         />

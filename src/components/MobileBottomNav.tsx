@@ -36,7 +36,7 @@ export function MobileBottomNav({ onFocusSearch }: { onFocusSearch?: () => void 
           <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
           <polyline points="9 22 9 12 15 12 15 22"></polyline>
         </svg>
-        <span>Store</span>
+        <span>Home</span>
       </Link>
 
       <Link
@@ -58,28 +58,6 @@ export function MobileBottomNav({ onFocusSearch }: { onFocusSearch?: () => void 
           <path d="M6 12h4m-2-2v4m7-2h.01m3 0h.01"></path>
         </svg>
         <span>Catalog</span>
-      </Link>
-
-      <Link
-        href="/orders"
-        onClick={triggerHaptic}
-        className={`mobile-nav-item ${pathname === "/orders" ? "active" : ""}`}
-      >
-        <svg
-          width="20"
-          height="20"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
-          <line x1="3" y1="6" x2="21" y2="6"></line>
-          <path d="M16 10a4 4 0 0 1-8 0"></path>
-        </svg>
-        <span>Orders {pastOrders.length > 0 ? `(${pastOrders.length})` : ""}</span>
       </Link>
 
       <Link
@@ -124,6 +102,28 @@ export function MobileBottomNav({ onFocusSearch }: { onFocusSearch?: () => void 
           )}
         </div>
         <span>Cart</span>
+      </Link>
+
+      <Link
+        href="/orders"
+        onClick={triggerHaptic}
+        className={`mobile-nav-item ${pathname === "/orders" ? "active" : ""}`}
+      >
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <path d="M16 10a4 4 0 0 1-8 0"></path>
+        </svg>
+        <span>Orders {pastOrders.length > 0 ? `(${pastOrders.length})` : ""}</span>
       </Link>
     </nav>
   );
