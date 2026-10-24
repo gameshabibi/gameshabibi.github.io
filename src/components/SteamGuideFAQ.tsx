@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 
 export function SteamGuideFAQ() {
-  const [activeTab, setActiveTab] = useState<"shared" | "personal" | "faq">("shared");
+  const [activeTab, setActiveTab] = useState<"comparison" | "guide" | "faq">("comparison");
   const [openFaq, setOpenFaq] = useState<number | null>(null);
 
   const toggleFaq = (idx: number) => {
@@ -13,23 +13,23 @@ export function SteamGuideFAQ() {
   const faqs = [
     {
       q: "Will my main personal Steam account get banned?",
-      a: "No! Absolutely not. Shared accounts are provided as separate, legitimate Steam profiles. You never enter shared credentials into your personal Steam account, and your personal account is 100% safe. Personal account purchases are delivered via official Steam gifts or keys directly to your own library.",
+      a: "No! Absolutely not. Shared and Budget accounts are provided as separate, legitimate Steam profiles. You never enter shared credentials into your personal Steam account, keeping your personal account 100% safe.",
     },
     {
-      q: "How does Shared Account play work?",
-      a: "Once you receive the credentials, log into Steam with the provided account, download the game completely, and switch Steam to Offline Mode (Steam menu → Go Offline). You can now play campaign/story modes with zero interruptions and full progress saved locally on your PC.",
+      q: "How does Shared or Budget Account play work?",
+      a: "Once you receive your credentials, log into Steam with the provided account, download the game completely, and switch Steam to Offline Mode (Steam menu → Go Offline). You can now play campaign/story modes with zero interruptions and full progress saved locally on your PC.",
     },
     {
-      q: "Can I play multiplayer on Shared Accounts?",
-      a: "Shared accounts are optimized for offline single-player stories. For official online multiplayer, choose the 'In Your Steam Account' option during checkout to get direct personal ownership.",
+      q: "Can I play online multiplayer?",
+      a: "Shared and Budget accounts are optimized for offline single-player story campaigns. Switch to Steam Offline Mode after downloading to enjoy completely uninterrupted gameplay without signouts.",
     },
     {
       q: "How fast will I receive my game credentials?",
-      a: "Orders submitted with a valid UPI payment screenshot and UTR are typically fulfilled within 15 to 30 minutes during our active hours (10:00 AM – 11:30 PM IST). You can also ping our Telegram or Instagram with your Order ID for expedited delivery.",
+      a: "Orders submitted with a valid UPI payment screenshot and UTR are typically fulfilled within 15 to 30 minutes during our active hours (10:00 AM – 11:30 PM IST). You can also ping our Telegram with your Order ID for expedited delivery.",
     },
     {
-      q: "What if the login credentials don't work?",
-      a: "Every purchase is backed by our 24-hour instant replacement policy. If any account encounters a login issue, message support with your Order ID and we issue new access immediately.",
+      q: "What is the replacement policy for Budget accounts?",
+      a: "On Budget Friendly accounts (₹69), if a password is ever modified later, an identical replacement account will be provided at a 50% discount. For Shared accounts (₹149), you enjoy lifetime access and instant support.",
     },
   ];
 
@@ -40,7 +40,7 @@ export function SteamGuideFAQ() {
           <p className="eyebrow">Buyer Confidence</p>
           <h2>How It Works & Activation Guide</h2>
           <p>
-            Learn the exact differences between Shared vs. Personal access and how activation works step-by-step.
+            Compare Shared vs. Budget tiers and learn how activation works step-by-step.
           </p>
 
           <div
@@ -59,32 +59,227 @@ export function SteamGuideFAQ() {
           >
             <button
               type="button"
-              className={`filter-pill ${activeTab === "shared" ? "active" : ""}`}
-              onClick={() => setActiveTab("shared")}
-              style={{ padding: "0.45rem 0.85rem", fontSize: "0.82rem" }}
+              className={`filter-pill ${activeTab === "comparison" ? "active" : ""}`}
+              onClick={() => setActiveTab("comparison")}
+              style={{ padding: "0.45rem 1rem", fontSize: "0.84rem" }}
             >
-              👥 Shared (Budget)
+              ⚖️ Shared vs Budget
             </button>
             <button
               type="button"
-              className={`filter-pill ${activeTab === "personal" ? "active" : ""}`}
-              onClick={() => setActiveTab("personal")}
-              style={{ padding: "0.45rem 0.85rem", fontSize: "0.82rem" }}
+              className={`filter-pill ${activeTab === "guide" ? "active" : ""}`}
+              onClick={() => setActiveTab("guide")}
+              style={{ padding: "0.45rem 1rem", fontSize: "0.84rem" }}
             >
-              👤 Personal Steam
+              🎮 Activation Guide
             </button>
             <button
               type="button"
               className={`filter-pill ${activeTab === "faq" ? "active" : ""}`}
               onClick={() => setActiveTab("faq")}
-              style={{ padding: "0.45rem 0.85rem", fontSize: "0.82rem" }}
+              style={{ padding: "0.45rem 1rem", fontSize: "0.84rem" }}
             >
               ❓ FAQs
             </button>
           </div>
         </div>
 
-        {activeTab === "shared" && (
+        {activeTab === "comparison" && (
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
+              gap: "1.6rem",
+              alignItems: "stretch",
+            }}
+          >
+            {/* Shared Account Card */}
+            <div
+              style={{
+                background: "linear-gradient(145deg, rgba(30, 22, 58, 0.9), rgba(18, 14, 38, 0.95))",
+                border: "1px solid rgba(245, 166, 35, 0.35)",
+                borderRadius: "var(--radius-lg, 16px)",
+                padding: "2rem 1.8rem",
+                display: "flex",
+                flexDirection: "column",
+                position: "relative",
+                boxShadow: "0 12px 35px rgba(0,0,0,0.4)",
+              }}
+            >
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem" }}>
+                <span
+                  style={{
+                    background: "rgba(245, 166, 35, 0.15)",
+                    color: "var(--accent-gold, #f59e0b)",
+                    border: "1px solid rgba(245, 166, 35, 0.4)",
+                    padding: "0.25rem 0.75rem",
+                    borderRadius: "999px",
+                    fontSize: "0.78rem",
+                    fontWeight: 700,
+                    textTransform: "uppercase",
+                    letterSpacing: "0.05em",
+                  }}
+                >
+                  ⭐ Most Popular Choice
+                </span>
+                <span style={{ fontSize: "1.45rem", fontWeight: 800, color: "var(--text-primary)" }}>
+                  ₹149 <span style={{ fontSize: "0.82rem", color: "var(--text-muted)", fontWeight: 500 }}>/ game</span>
+                </span>
+              </div>
+
+              <h3 style={{ fontSize: "1.45rem", margin: "0 0 0.4rem", color: "var(--text-primary)", fontFamily: "var(--font-heading)" }}>
+                Shared Steam Account
+              </h3>
+              <p style={{ fontSize: "0.9rem", color: "var(--text-secondary)", margin: "0 0 1.5rem" }}>
+                Our recommended standard tier built for maximum peace of mind and long-term uninterrupted gameplay.
+              </p>
+
+              <div style={{ display: "grid", gap: "1rem", flex: 1 }}>
+                <div style={{ display: "flex", gap: "0.85rem", alignItems: "flex-start" }}>
+                  <span style={{ color: "#10b981", fontSize: "1.2rem", lineHeight: 1 }}>✓</span>
+                  <div>
+                    <strong style={{ display: "block", color: "var(--text-primary)", fontSize: "0.95rem" }}>
+                      Lifetime Access
+                    </strong>
+                    <span style={{ fontSize: "0.86rem", color: "var(--text-secondary)" }}>
+                      Keep the game in your library forever with zero expiration or monthly renewal fees.
+                    </span>
+                  </div>
+                </div>
+
+                <div style={{ display: "flex", gap: "0.85rem", alignItems: "flex-start" }}>
+                  <span style={{ color: "#10b981", fontSize: "1.2rem", lineHeight: 1 }}>✓</span>
+                  <div>
+                    <strong style={{ display: "block", color: "var(--text-primary)", fontSize: "0.95rem" }}>
+                      No Frequent Signouts
+                    </strong>
+                    <span style={{ fontSize: "0.86rem", color: "var(--text-secondary)" }}>
+                      High login stability without abrupt session disconnections or unexpected kicks while playing.
+                    </span>
+                  </div>
+                </div>
+
+                <div style={{ display: "flex", gap: "0.85rem", alignItems: "flex-start" }}>
+                  <span style={{ color: "#10b981", fontSize: "1.2rem", lineHeight: 1 }}>✓</span>
+                  <div>
+                    <strong style={{ display: "block", color: "var(--text-primary)", fontSize: "0.95rem" }}>
+                      OTP Authentic (Steam Guard Verified)
+                    </strong>
+                    <span style={{ fontSize: "0.86rem", color: "var(--text-secondary)" }}>
+                      Protected with official Steam Guard 2FA OTP codes delivered securely to you during initial setup.
+                    </span>
+                  </div>
+                </div>
+
+                <div style={{ display: "flex", gap: "0.85rem", alignItems: "flex-start" }}>
+                  <span style={{ color: "#10b981", fontSize: "1.2rem", lineHeight: 1 }}>✓</span>
+                  <div>
+                    <strong style={{ display: "block", color: "var(--text-primary)", fontSize: "0.95rem" }}>
+                      Offline Campaign & Local Saves
+                    </strong>
+                    <span style={{ fontSize: "0.86rem", color: "var(--text-secondary)" }}>
+                      Full story missions, achievements, and local save files stored safely on your PC.
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Budget Friendly Card */}
+            <div
+              style={{
+                background: "linear-gradient(145deg, rgba(25, 18, 48, 0.9), rgba(16, 12, 32, 0.95))",
+                border: "1px solid rgba(139, 92, 246, 0.35)",
+                borderRadius: "var(--radius-lg, 16px)",
+                padding: "2rem 1.8rem",
+                display: "flex",
+                flexDirection: "column",
+                position: "relative",
+                boxShadow: "0 12px 35px rgba(0,0,0,0.4)",
+              }}
+            >
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem" }}>
+                <span
+                  style={{
+                    background: "rgba(139, 92, 246, 0.15)",
+                    color: "#a78bfa",
+                    border: "1px solid rgba(139, 92, 246, 0.35)",
+                    padding: "0.25rem 0.75rem",
+                    borderRadius: "999px",
+                    fontSize: "0.78rem",
+                    fontWeight: 700,
+                    textTransform: "uppercase",
+                    letterSpacing: "0.05em",
+                  }}
+                >
+                  ⚡ Ultra Budget Option
+                </span>
+                <span style={{ fontSize: "1.45rem", fontWeight: 800, color: "var(--text-primary)" }}>
+                  ₹69 <span style={{ fontSize: "0.82rem", color: "var(--text-muted)", fontWeight: 500 }}>flat / game</span>
+                </span>
+              </div>
+
+              <h3 style={{ fontSize: "1.45rem", margin: "0 0 0.4rem", color: "var(--text-primary)", fontFamily: "var(--font-heading)" }}>
+                Budget Friendly Account
+              </h3>
+              <p style={{ fontSize: "0.9rem", color: "var(--text-secondary)", margin: "0 0 1.5rem" }}>
+                Maximum value tier designed for budget gaming and cost-effective entertainment.
+              </p>
+
+              <div style={{ display: "grid", gap: "1rem", flex: 1 }}>
+                <div style={{ display: "flex", gap: "0.85rem", alignItems: "flex-start" }}>
+                  <span style={{ color: "#f59e0b", fontSize: "1.1rem", lineHeight: 1 }}>ℹ️</span>
+                  <div>
+                    <strong style={{ display: "block", color: "var(--text-primary)", fontSize: "0.95rem" }}>
+                      Password May Change
+                    </strong>
+                    <span style={{ fontSize: "0.86rem", color: "var(--text-secondary)" }}>
+                      Password may change over time. If needed, another same account will be provided with a <strong>50% discount</strong>.
+                    </span>
+                  </div>
+                </div>
+
+                <div style={{ display: "flex", gap: "0.85rem", alignItems: "flex-start" }}>
+                  <span style={{ color: "#f59e0b", fontSize: "1.1rem", lineHeight: 1 }}>ℹ️</span>
+                  <div>
+                    <strong style={{ display: "block", color: "var(--text-primary)", fontSize: "0.95rem" }}>
+                      Signout Notice If Online
+                    </strong>
+                    <span style={{ fontSize: "0.86rem", color: "var(--text-secondary)" }}>
+                      If you stay online, you may face signouts sometimes. Switching to Steam Offline Mode after downloading is recommended.
+                    </span>
+                  </div>
+                </div>
+
+                <div style={{ display: "flex", gap: "0.85rem", alignItems: "flex-start" }}>
+                  <span style={{ color: "#10b981", fontSize: "1.2rem", lineHeight: 1 }}>✓</span>
+                  <div>
+                    <strong style={{ display: "block", color: "var(--text-primary)", fontSize: "0.95rem" }}>
+                      No OTP Required (Share With Friends)
+                    </strong>
+                    <span style={{ fontSize: "0.86rem", color: "var(--text-secondary)" }}>
+                      Zero 2FA OTP delay — login directly with password and easily share among your friends.
+                    </span>
+                  </div>
+                </div>
+
+                <div style={{ display: "flex", gap: "0.85rem", alignItems: "flex-start" }}>
+                  <span style={{ color: "#10b981", fontSize: "1.2rem", lineHeight: 1 }}>✓</span>
+                  <div>
+                    <strong style={{ display: "block", color: "var(--text-primary)", fontSize: "0.95rem" }}>
+                      Official Full Game Download
+                    </strong>
+                    <span style={{ fontSize: "0.86rem", color: "var(--text-secondary)" }}>
+                      Full official game files downloaded directly from Steam servers at high speed.
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {activeTab === "guide" && (
           <div
             style={{
               display: "grid",
@@ -96,7 +291,7 @@ export function SteamGuideFAQ() {
               <span className="step-number">01</span>
               <h3>Receive Login Details</h3>
               <p>
-                Get your verified Steam username and password sent to your email or Telegram chat along with Steam Guard authorization.
+                Get your verified Steam username and password sent to your email or Telegram chat along with activation instructions.
               </p>
             </div>
 
@@ -120,41 +315,7 @@ export function SteamGuideFAQ() {
               <span className="step-number">04</span>
               <h3>Play Forever</h3>
               <p>
-                Enjoy high-budget AAA titles for as low as ₹49 to ₹149 without DRM restrictions or monthly renewal fees.
-              </p>
-            </div>
-          </div>
-        )}
-
-        {activeTab === "personal" && (
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
-              gap: "1.5rem",
-            }}
-          >
-            <div className="step-card">
-              <span className="step-number">01</span>
-              <h3>Provide Your Steam ID</h3>
-              <p>
-                Enter your Steam profile link or 8-digit Friend Code during checkout or in your support follow-up.
-              </p>
-            </div>
-
-            <div className="step-card">
-              <span className="step-number">02</span>
-              <h3>Accept Friend & Gift</h3>
-              <p>
-                Our automated bot or store operator adds you and transfers the digital Steam gift or product key directly to your account.
-              </p>
-            </div>
-
-            <div className="step-card">
-              <span className="step-number">03</span>
-              <h3>Permanent Ownership</h3>
-              <p>
-                The game stays tied to your personal Steam library forever with full cloud saves, multiplayer, updates, and workshop mods.
+                Enjoy high-budget AAA titles for as low as ₹69 to ₹149 without DRM restrictions or monthly renewal fees.
               </p>
             </div>
           </div>
