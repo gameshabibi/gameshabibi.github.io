@@ -7,13 +7,18 @@ import { useCart } from "@/context/CartContext";
 
 export function ProductCard({ product }: { product: ProductItem }) {
   const { addItem } = useCart();
-  // Find default variant: prioritize Shared Steam Account as requested
+  // Find default variant: always select the cheapest available option
   const defaultIdx = () => {
     if (!product.variants || product.variants.length <= 1) return 0;
-    const sharedIdx = product.variants.findIndex((v) =>
-      v.name.toLowerCase().includes("shared") || v.name.toLowerCase().includes("offline")
-    );
-    return sharedIdx !== -1 ? sharedIdx : 0;
+    let minIdx = 0;
+    let minPrice = product.variants[0].price;
+    for (let i = 1; i < product.variants.length; i++) {
+      if (product.variants[i].price < minPrice) {
+        minPrice = product.variants[i].price;
+        minIdx = i;
+      }
+    }
+    return minIdx;
   };
 
   const [selectedVariantIdx, setSelectedVariantIdx] = useState(defaultIdx);
@@ -61,7 +66,7 @@ export function ProductCard({ product }: { product: ProductItem }) {
             {product.variants.map((v, idx) => (
               <option key={idx} value={idx}>
                 {v.name} — ₹{v.price}
-                {v.name.toLowerCase().includes("budget") ? " (Flat ₹69 • No coupons/offers)" : ""}
+                {v.name.toLowerCase().includes("budget") ? " (No Offers)" : ""}
               </option>
             ))}
           </select>

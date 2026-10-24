@@ -365,7 +365,7 @@ export function CartDrawer() {
                       {item.variant && <span>{item.variant}</span>}
                       {item.variant?.toLowerCase().includes("budget") && (
                         <span style={{ fontSize: "0.72rem", color: "var(--accent-gold, #f59e0b)" }}>
-                          ⚡ Flat ₹69 (No coupons/offers)
+                          ⚡ Budget (No Offers)
                         </span>
                       )}
                     </div>
