@@ -12,7 +12,7 @@ interface HeaderProps {
 }
 
 export function Header({ onSearch, onOpenOrders }: HeaderProps) {
-  const { items, openDrawer, pastOrders } = useCart();
+  const { items, pastOrders } = useCart();
   const [searchVal, setSearchVal] = useState("");
   const pathname = usePathname();
 
@@ -73,6 +73,12 @@ export function Header({ onSearch, onOpenOrders }: HeaderProps) {
           >
             Orders {pastOrders.length > 0 ? `(${pastOrders.length})` : ""}
           </Link>
+          <Link
+            href="/cart"
+            className={pathname === "/cart" ? "active" : ""}
+          >
+            Cart {totalItems > 0 ? `(${totalItems})` : ""}
+          </Link>
         </nav>
 
         <div className="header-actions">
@@ -111,15 +117,14 @@ export function Header({ onSearch, onOpenOrders }: HeaderProps) {
             )}
           </div>
 
-          <button
-            type="button"
+          <Link
+            href="/cart"
             className="cart-button desktop-only-cart"
-            onClick={openDrawer}
-            aria-label="Open Shopping Cart"
+            aria-label="View Shopping Cart"
           >
             Cart
             <span className="cart-count">{totalItems}</span>
-          </button>
+          </Link>
         </div>
       </div>
     </header>

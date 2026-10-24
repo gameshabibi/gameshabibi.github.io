@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 import { useCart } from "@/context/CartContext";
 
 export function MobileBottomNav({ onFocusSearch }: { onFocusSearch?: () => void }) {
-  const { items, openDrawer, pastOrders } = useCart();
+  const { items, pastOrders } = useCart();
   const pathname = usePathname();
   const totalQty = items.reduce((sum, item) => sum + item.qty, 0);
 
@@ -82,14 +82,11 @@ export function MobileBottomNav({ onFocusSearch }: { onFocusSearch?: () => void 
         <span>Orders {pastOrders.length > 0 ? `(${pastOrders.length})` : ""}</span>
       </Link>
 
-      <button
-        type="button"
-        className="mobile-nav-item"
-        onClick={() => {
-          triggerHaptic();
-          openDrawer();
-        }}
-        aria-label="Open Shopping Cart"
+      <Link
+        href="/cart"
+        onClick={triggerHaptic}
+        className={`mobile-nav-item ${pathname === "/cart" ? "active" : ""}`}
+        aria-label="View Shopping Cart"
         style={{ position: "relative" }}
       >
         <div style={{ position: "relative", display: "inline-flex" }}>
@@ -127,7 +124,7 @@ export function MobileBottomNav({ onFocusSearch }: { onFocusSearch?: () => void 
           )}
         </div>
         <span>Cart</span>
-      </button>
+      </Link>
     </nav>
   );
 }

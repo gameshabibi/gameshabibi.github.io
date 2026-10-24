@@ -2,7 +2,6 @@ import type { Metadata, Viewport } from "next";
 import { Bebas_Neue, Space_Grotesk, DM_Mono } from "next/font/google";
 import "@/styles/globals.css";
 import { CartProvider } from "@/context/CartContext";
-import { CartDrawer } from "@/components/CartDrawer";
 import { Toast } from "@/components/Toast";
 
 const bebasNeue = Bebas_Neue({
@@ -59,7 +58,6 @@ export default function RootLayout({
             🚨 Limited time: 3-game bundle for ₹538 | <a href="#games">Shop Now</a>
           </div>
           {children}
-          <CartDrawer />
           <Toast />
         </CartProvider>
       </body>
