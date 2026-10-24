@@ -19,6 +19,7 @@ export interface PastOrder {
   games: string;
   total: number;
   utr?: string;
+  coupon?: string;
 }
 
 interface CartContextType {
@@ -29,6 +30,10 @@ interface CartContextType {
   clearCart: () => void;
   tip: number;
   setTip: (amount: number) => void;
+  appliedCoupon: string | null;
+  applyCoupon: (code: string) => { success: boolean; message: string };
+  removeCoupon: () => void;
+  couponDiscount: number;
   isDrawerOpen: boolean;
   openDrawer: () => void;
   closeDrawer: () => void;
@@ -43,11 +48,19 @@ interface CartContextType {
   playFeedback: (type: "success" | "error") => void;
 }
 
+const COUPON_LIST: Record<string, { type: "percent" | "flat"; value: number }> = {
+  HABIBI10: { type: "percent", value: 10 },
+  FIRST50: { type: "flat", value: 50 },
+  GAMER20: { type: "percent", value: 20 },
+  LEVELUP: { type: "percent", value: 15 },
+};
+
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
   const [tip, setTip] = useState<number>(0);
+  const [appliedCoupon, setAppliedCoupon] = useState<string | null>(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
   const [pastOrders, setPastOrders] = useState<PastOrder[]>([]);
   const [toast, setToast] = useState<string | null>(null);
@@ -63,6 +76,10 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       const savedOrders = localStorage.getItem("gh_orders");
       if (savedOrders) {
         setPastOrders(JSON.parse(savedOrders));
+      }
+      const savedCoupon = localStorage.getItem("gh_coupon");
+      if (savedCoupon && COUPON_LIST[savedCoupon]) {
+        setAppliedCoupon(savedCoupon);
       }
     } catch (err) {
       console.warn("Storage load error:", err);
@@ -139,7 +156,36 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const clearCart = () => {
     setItems([]);
     setTip(0);
+    setAppliedCoupon(null);
+    try {
+      localStorage.removeItem("gh_coupon");
+    } catch {}
     showToast("Cart cleared");
+  };
+
+  const applyCoupon = (code: string) => {
+    const clean = code.trim().toUpperCase();
+    if (!clean) {
+      return { success: false, message: "Please enter a coupon code" };
+    }
+    if (COUPON_LIST[clean]) {
+      setAppliedCoupon(clean);
+      try {
+        localStorage.setItem("gh_coupon", clean);
+      } catch {}
+      playFeedback("success");
+      return { success: true, message: `Coupon ${clean} applied!` };
+    }
+    playFeedback("error");
+    return { success: false, message: "Invalid coupon code. Try HABIBI10" };
+  };
+
+  const removeCoupon = () => {
+    setAppliedCoupon(null);
+    try {
+      localStorage.removeItem("gh_coupon");
+    } catch {}
+    showToast("Coupon removed");
   };
 
   const openDrawer = () => setIsDrawerOpen(true);
@@ -166,7 +212,19 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     bundleDiscount = Math.round(steamSum * 0.25);
   }
 
-  const total = Math.max(0, subtotal - bundleDiscount + tip);
+  // Calculate coupon discount
+  let couponDiscount = 0;
+  if (appliedCoupon && COUPON_LIST[appliedCoupon]) {
+    const rule = COUPON_LIST[appliedCoupon];
+    const discountedBase = Math.max(0, subtotal - bundleDiscount);
+    if (rule.type === "percent") {
+      couponDiscount = Math.round((discountedBase * rule.value) / 100);
+    } else {
+      couponDiscount = Math.min(rule.value, discountedBase);
+    }
+  }
+
+  const total = Math.max(0, subtotal - bundleDiscount - couponDiscount + tip);
 
   const saveOrder = (order: PastOrder) => {
     setPastOrders((prev) => {
@@ -189,6 +247,10 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         clearCart,
         tip,
         setTip,
+        appliedCoupon,
+        applyCoupon,
+        removeCoupon,
+        couponDiscount,
         isDrawerOpen,
         openDrawer,
         closeDrawer,

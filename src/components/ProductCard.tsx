@@ -7,7 +7,16 @@ import { useCart } from "@/context/CartContext";
 
 export function ProductCard({ product }: { product: ProductItem }) {
   const { addItem } = useCart();
-  const [selectedVariantIdx, setSelectedVariantIdx] = useState(0);
+  // Find default variant: prioritize Shared Steam Account as requested
+  const defaultIdx = () => {
+    if (!product.variants || product.variants.length <= 1) return 0;
+    const sharedIdx = product.variants.findIndex((v) =>
+      v.name.toLowerCase().includes("shared") || v.name.toLowerCase().includes("offline")
+    );
+    return sharedIdx !== -1 ? sharedIdx : 0;
+  };
+
+  const [selectedVariantIdx, setSelectedVariantIdx] = useState(defaultIdx);
 
   const currentVariant = product.variants ? product.variants[selectedVariantIdx] : null;
   const currentPrice = currentVariant ? currentVariant.price : (product.price || 0);

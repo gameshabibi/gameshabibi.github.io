@@ -17,6 +17,10 @@ export function CartDrawer() {
     clearCart,
     tip,
     setTip,
+    appliedCoupon,
+    applyCoupon,
+    removeCoupon,
+    couponDiscount,
     subtotal,
     bundleDiscount,
     total,
@@ -30,6 +34,8 @@ export function CartDrawer() {
   const [customerName, setCustomerName] = useState<string>("");
   const [customerEmail, setCustomerEmail] = useState<string>("");
   const [customerUtr, setCustomerUtr] = useState<string>("");
+  const [couponInput, setCouponInput] = useState<string>("");
+  const [couponMessage, setCouponMessage] = useState<string>("");
   const [paymentFile, setPaymentFile] = useState<File | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [placedOrderId, setPlacedOrderId] = useState<string | null>(null);
@@ -59,6 +65,16 @@ export function CartDrawer() {
     try {
       sessionStorage.setItem("gh_draft_email", val);
     } catch {}
+  };
+
+  const handleApplyCoupon = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!couponInput.trim()) return;
+    const res = applyCoupon(couponInput);
+    setCouponMessage(res.message);
+    if (res.success) {
+      setCouponInput("");
+    }
   };
 
   // Generate UPI deep link & QR code whenever total changes
@@ -119,6 +135,7 @@ export function CartDrawer() {
     formData.append("name", customerName);
     formData.append("email", customerEmail);
     formData.append("utr", customerUtr || "Not provided");
+    formData.append("coupon", appliedCoupon || "None");
     formData.append("games", gamesSummary);
     formData.append("total", total.toString());
     formData.append("orderId", generatedId);
@@ -146,6 +163,7 @@ export function CartDrawer() {
         games: gamesSummary,
         total,
         utr: customerUtr,
+        coupon: appliedCoupon || undefined,
       });
 
       setPlacedOrderId(generatedId);
@@ -357,6 +375,58 @@ export function CartDrawer() {
                 ))}
               </div>
 
+              {/* Promo / Coupon Code Section */}
+              <div style={{ background: "rgba(25, 18, 48, 0.6)", padding: "0.85rem", borderRadius: "var(--radius-sm)", border: "1px solid rgba(245, 166, 35, 0.12)" }}>
+                <label style={{ display: "block", fontSize: "0.82rem", color: "var(--text-secondary)", marginBottom: "0.35rem" }}>
+                  Have a Promo / Coupon Code?
+                </label>
+                {appliedCoupon ? (
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", background: "rgba(0, 255, 179, 0.1)", border: "1px solid var(--mint)", padding: "0.4rem 0.8rem", borderRadius: "var(--radius-sm)" }}>
+                    <span style={{ color: "var(--mint)", fontWeight: 700, fontSize: "0.88rem", fontFamily: "var(--font-data)" }}>
+                      🏷️ {appliedCoupon} APPLIED (-₹{couponDiscount})
+                    </span>
+                    <button
+                      type="button"
+                      onClick={removeCoupon}
+                      style={{ color: "var(--danger)", fontSize: "0.82rem", fontWeight: 600 }}
+                    >
+                      Remove
+                    </button>
+                  </div>
+                ) : (
+                  <form onSubmit={handleApplyCoupon} style={{ display: "flex", gap: "0.5rem" }}>
+                    <input
+                      type="text"
+                      placeholder="e.g. HABIBI10, FIRST50"
+                      value={couponInput}
+                      onChange={(e) => setCouponInput(e.target.value)}
+                      style={{
+                        flex: 1,
+                        background: "rgba(18, 14, 35, 0.9)",
+                        border: "1px solid var(--border-soft)",
+                        borderRadius: "var(--radius-sm)",
+                        color: "var(--text-primary)",
+                        padding: "0.45rem 0.75rem",
+                        fontSize: "0.85rem",
+                        textTransform: "uppercase",
+                      }}
+                    />
+                    <button
+                      type="submit"
+                      className="btn btn-secondary"
+                      style={{ minHeight: "2.4rem", padding: "0.4rem 1rem", fontSize: "0.82rem" }}
+                    >
+                      Apply
+                    </button>
+                  </form>
+                )}
+                {couponMessage && !appliedCoupon && (
+                  <span style={{ display: "block", fontSize: "0.76rem", color: "var(--warning)", marginTop: "0.35rem" }}>
+                    {couponMessage}
+                  </span>
+                )}
+              </div>
+
               {/* Tip Contribution */}
               <div>
                 <label style={{ fontSize: "0.82rem", color: "var(--text-secondary)" }}>
@@ -386,6 +456,12 @@ export function CartDrawer() {
                   <div className="pricing-row" style={{ color: "var(--mint)" }}>
                     <span>Bundle Discount ({bundleCount} titles)</span>
                     <span>-₹{bundleDiscount}</span>
+                  </div>
+                )}
+                {couponDiscount > 0 && (
+                  <div className="pricing-row" style={{ color: "var(--mint)" }}>
+                    <span>Coupon Discount ({appliedCoupon})</span>
+                    <span>-₹{couponDiscount}</span>
                   </div>
                 )}
                 {tip > 0 && (

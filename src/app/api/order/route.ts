@@ -6,6 +6,7 @@ export async function POST(req: NextRequest) {
     const name = (formData.get("name") as string) || "Customer";
     const email = (formData.get("email") as string) || "Not provided";
     const utr = (formData.get("utr") as string) || "Not provided";
+    const coupon = (formData.get("coupon") as string) || "None";
     const games = (formData.get("games") as string) || "Not specified";
     const total = (formData.get("total") as string) || "0";
     const orderId =
@@ -35,12 +36,14 @@ export async function POST(req: NextRequest) {
       `👤 <b>Customer:</b> ${name}`,
       `📧 <b>Email:</b> ${email}`,
       `💰 <b>Total Paid:</b> ₹${total}`,
+      coupon && coupon !== "None" ? `🏷️ <b>Coupon Applied:</b> <code>${coupon}</code>` : null,
       `🔢 <b>UPI UTR / Ref:</b> <code>${utr}</code>`,
       `📦 <b>Purchased Items:</b>`,
       `${games}`,
       "",
       `⏰ <i>Submitted at: ${timestamp}</i>`,
     ]
+      .filter(Boolean)
       .join("\n")
       .slice(0, 1024);
 

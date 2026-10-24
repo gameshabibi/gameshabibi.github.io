@@ -6,11 +6,12 @@ import { ProductCard } from "./ProductCard";
 
 interface CatalogProps {
   searchQuery?: string;
+  onRequestGame?: (initialTitle?: string) => void;
 }
 
 type FilterType = "all" | "personal" | "shared" | "services" | "under100" | "co-op";
 
-export function Catalog({ searchQuery = "" }: CatalogProps) {
+export function Catalog({ searchQuery = "", onRequestGame }: CatalogProps) {
   const [filter, setFilter] = useState<FilterType>("all");
 
   const filteredItems = useMemo(() => {
@@ -56,13 +57,25 @@ export function Catalog({ searchQuery = "" }: CatalogProps) {
   return (
     <section id="games" className="catalog-section">
       <div className="container">
-        <div className="section-heading">
-          <p className="eyebrow">Storefront</p>
-          <h2>Services, Memberships & Curated Games</h2>
-          <p>
-            Choose between shared budget access or games activated directly in
-            your personal Steam account.
-          </p>
+        <div className="section-heading" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", flexWrap: "wrap", gap: "1rem" }}>
+          <div>
+            <p className="eyebrow">Storefront</p>
+            <h2>Services, Memberships & Curated Games</h2>
+            <p>
+              Choose between shared budget access (default) or games activated directly in your personal Steam account.
+            </p>
+          </div>
+
+          {onRequestGame && (
+            <button
+              type="button"
+              className="btn btn-secondary"
+              onClick={() => onRequestGame(searchQuery)}
+              style={{ fontSize: "0.85rem", padding: "0.45rem 1rem", minHeight: "2.5rem" }}
+            >
+              🎯 Request an Unlisted Game
+            </button>
+          )}
         </div>
 
         <div className="catalog-filter-bar" role="tablist">
@@ -75,17 +88,17 @@ export function Catalog({ searchQuery = "" }: CatalogProps) {
           </button>
           <button
             type="button"
+            className={`filter-pill ${filter === "shared" ? "active" : ""}`}
+            onClick={() => setFilter("shared")}
+          >
+            👥 Shared Steam Account (Budget)
+          </button>
+          <button
+            type="button"
             className={`filter-pill ${filter === "personal" ? "active" : ""}`}
             onClick={() => setFilter("personal")}
           >
             👤 Personal Steam Account
-          </button>
-          <button
-            type="button"
-            className={`filter-pill ${filter === "shared" ? "active" : ""}`}
-            onClick={() => setFilter("shared")}
-          >
-            👥 Shared Steam Account
           </button>
           <button
             type="button"
@@ -114,7 +127,7 @@ export function Catalog({ searchQuery = "" }: CatalogProps) {
           <div
             style={{
               textAlign: "center",
-              padding: "4rem 1rem",
+              padding: "4rem 1.5rem",
               background: "var(--surface-panel)",
               borderRadius: "var(--radius-md)",
               border: "1px solid var(--border-soft)",
@@ -123,13 +136,24 @@ export function Catalog({ searchQuery = "" }: CatalogProps) {
             <p style={{ fontSize: "1.2rem", color: "var(--text-secondary)", margin: "0 0 1rem" }}>
               No games or services found matching &ldquo;{searchQuery}&rdquo;.
             </p>
-            <button
-              type="button"
-              className="btn btn-secondary"
-              onClick={() => setFilter("all")}
-            >
-              Reset Filters
-            </button>
+            <div style={{ display: "flex", gap: "0.8rem", justifyContent: "center", flexWrap: "wrap" }}>
+              {onRequestGame && (
+                <button
+                  type="button"
+                  className="btn"
+                  onClick={() => onRequestGame(searchQuery)}
+                >
+                  🎯 Request &ldquo;{searchQuery || "This Game"}&rdquo; Instantly
+                </button>
+              )}
+              <button
+                type="button"
+                className="btn btn-secondary"
+                onClick={() => setFilter("all")}
+              >
+                Reset Filters
+              </button>
+            </div>
           </div>
         ) : (
           <div className="product-grid">

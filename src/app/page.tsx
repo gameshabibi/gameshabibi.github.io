@@ -6,12 +6,21 @@ import { Header } from "@/components/Header";
 import { Hero } from "@/components/Hero";
 import { Ticker } from "@/components/Ticker";
 import { Catalog } from "@/components/Catalog";
+import { SteamGuideFAQ } from "@/components/SteamGuideFAQ";
 import { MobileBottomNav } from "@/components/MobileBottomNav";
 import { MyOrdersModal } from "@/components/MyOrdersModal";
+import { RequestGameModal } from "@/components/RequestGameModal";
 
 export default function HomePage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [isOrdersOpen, setIsOrdersOpen] = useState(false);
+  const [isRequestOpen, setIsRequestOpen] = useState(false);
+  const [requestedTitle, setRequestedTitle] = useState("");
+
+  const handleOpenRequest = (title?: string) => {
+    setRequestedTitle(title || "");
+    setIsRequestOpen(true);
+  };
 
   return (
     <>
@@ -24,7 +33,13 @@ export default function HomePage() {
       <main>
         <Hero />
         <Ticker />
-        <Catalog searchQuery={searchQuery} />
+        <Catalog
+          searchQuery={searchQuery}
+          onRequestGame={handleOpenRequest}
+        />
+
+        {/* Interactive Steam Guide & FAQ */}
+        <SteamGuideFAQ />
 
         {/* How It Works Section */}
         <section id="how-it-works" className="process-section">
@@ -39,7 +54,7 @@ export default function HomePage() {
                 <span className="step-number">01</span>
                 <h3>Choose your access type</h3>
                 <p>
-                  Pick between shared accounts or direct personal Steam account
+                  Defaults to affordable shared account access or direct personal Steam account
                   activations with upfront pricing.
                 </p>
               </article>
@@ -48,8 +63,8 @@ export default function HomePage() {
                 <span className="step-number">02</span>
                 <h3>Pay with UPI and confirm</h3>
                 <p>
-                  Review bundle discounts, scan the dynamic QR or tap Pay Now on
-                  your UPI app, then upload your screenshot.
+                  Review bundle & coupon discounts, scan the dynamic QR or tap Pay Now on
+                  your UPI app, then upload your screenshot and 12-digit UTR.
                 </p>
               </article>
 
@@ -57,8 +72,8 @@ export default function HomePage() {
                 <span className="step-number">03</span>
                 <h3>Instant Telegram delivery</h3>
                 <p>
-                  Your payment proof and UTR trigger an automated Telegram bot
-                  notification for fast verification and credential dispatch.
+                  Your payment proof and reference ID trigger an automated Telegram bot
+                  alert for rapid credential dispatch.
                 </p>
               </article>
             </div>
@@ -248,6 +263,12 @@ export default function HomePage() {
       <MyOrdersModal
         isOpen={isOrdersOpen}
         onClose={() => setIsOrdersOpen(false)}
+      />
+
+      <RequestGameModal
+        isOpen={isRequestOpen}
+        onClose={() => setIsRequestOpen(false)}
+        initialGame={requestedTitle}
       />
     </>
   );
