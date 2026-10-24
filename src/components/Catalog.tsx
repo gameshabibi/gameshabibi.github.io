@@ -34,7 +34,7 @@ export function Catalog({
   isHomeView = false,
   limit = 6,
 }: CatalogProps) {
-  const [filter, setFilter] = useState<FilterType>("all");
+  const [filter, setFilter] = useState<FilterType>("popularFirst");
 
   const filteredItems = useMemo(() => {
     let all: ProductItem[] = [];
@@ -77,7 +77,8 @@ export function Catalog({
     } else if (filter === "popularFirst") {
       const POPULAR_KEYS = [
         "grand theft auto",
-        "red dead redemption",
+        "gta",
+        "red dead",
         "black myth",
         "god of war",
         "forza",
@@ -88,10 +89,31 @@ export function Catalog({
         "spider-man",
         "last of us",
         "wukong",
+        "fifa",
+        "tekken",
+        "mortal kombat",
+        "call of duty",
+        "assassin's creed",
+        "sekiro",
+        "hogwarts",
+        "witcher",
+        "baldur",
+        "ghost of tsushima",
+        "stellar blade",
+        "resident evil",
+        "days gone",
+        "detroit",
+        "uncharted",
+        "hitman",
+        "dark souls",
+        "beamng",
+        "need for speed",
+        "nfs",
+        "assetto corsa",
       ];
       const isPopular = (i: ProductItem) => {
         let score = 0;
-        if (i.badge) score += 2;
+        if (i.badge && i.badge !== "Budget Pick") score += 2;
         const name = i.name.toLowerCase();
         if (POPULAR_KEYS.some((k) => name.includes(k))) score += 1;
         return score;
@@ -187,10 +209,10 @@ export function Catalog({
         <div className="catalog-filter-bar" role="tablist">
           <button
             type="button"
-            className={`filter-pill ${filter === "all" ? "active" : ""}`}
-            onClick={() => setFilter("all")}
+            className={`filter-pill ${filter === "popularFirst" ? "active" : ""}`}
+            onClick={() => setFilter("popularFirst")}
           >
-            ✨ All Items
+            🔥 Popular First
           </button>
           <button
             type="button"
@@ -215,10 +237,10 @@ export function Catalog({
           </button>
           <button
             type="button"
-            className={`filter-pill ${filter === "popularFirst" ? "active" : ""}`}
-            onClick={() => setFilter("popularFirst")}
+            className={`filter-pill ${filter === "all" ? "active" : ""}`}
+            onClick={() => setFilter("all")}
           >
-            🔥 Popular First
+            🔤 A to Z
           </button>
           <button
             type="button"
