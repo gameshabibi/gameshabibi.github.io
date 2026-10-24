@@ -8,7 +8,6 @@ import { Hero } from "@/components/Hero";
 import { Ticker } from "@/components/Ticker";
 import { Catalog } from "@/components/Catalog";
 import { SteamGuideFAQ } from "@/components/SteamGuideFAQ";
-import { MobileBottomNav } from "@/components/MobileBottomNav";
 import { MyOrdersModal } from "@/components/MyOrdersModal";
 import { RequestGameModal } from "@/components/RequestGameModal";
 
@@ -26,6 +25,9 @@ export default function HomePage() {
   return (
     <>
       <div id="top" />
+      <div className="notice-bar">
+        🚨 Limited time: 3-game bundle for ₹538 | <Link href="/catalog">Shop Now</Link>
+      </div>
       <Header
         onSearch={setSearchQuery}
         onOpenOrders={() => setIsOrdersOpen(true)}
@@ -264,13 +266,6 @@ export default function HomePage() {
           </div>
         </div>
       </footer>
-
-      <MobileBottomNav
-        onFocusSearch={() => {
-          const el = document.getElementById("games");
-          el?.scrollIntoView({ behavior: "smooth" });
-        }}
-      />
 
       <MyOrdersModal
         isOpen={isOrdersOpen}

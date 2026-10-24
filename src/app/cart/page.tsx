@@ -4,7 +4,6 @@ import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Header } from "@/components/Header";
-import { MobileBottomNav } from "@/components/MobileBottomNav";
 import { useCart } from "@/context/CartContext";
 import { generateUPIQRCode } from "@/lib/qr";
 
@@ -403,93 +402,69 @@ export default function CartPage() {
                 {/* Items List */}
                 <div className="cart-items-list" style={{ marginBottom: "1.5rem" }}>
                   {items.map((item, idx) => (
-                    <div
-                      className="cart-item-row"
-                      key={item.id}
-                      style={{ padding: "1rem", gap: "1rem" }}
-                    >
-                      {item.img && (
-                        <div
-                          style={{
-                            width: "70px",
-                            height: "44px",
-                            borderRadius: "var(--radius-sm)",
-                            overflow: "hidden",
-                            flexShrink: 0,
-                            position: "relative",
-                            background: "#090614",
-                          }}
-                        >
-                          <Image
-                            src={item.img}
-                            alt={item.game}
-                            fill
-                            style={{ objectFit: "cover" }}
-                          />
-                        </div>
-                      )}
-
-                      <div className="cart-item-info" style={{ flex: 1 }}>
-                        <strong style={{ fontSize: "1rem" }}>{item.game}</strong>
-                        {item.variant && (
-                          <span style={{ display: "block", color: "var(--text-muted)", fontSize: "0.82rem" }}>
-                            {item.variant}
-                          </span>
+                    <div className="cart-item-row" key={item.id}>
+                      <div className="cart-item-left">
+                        {item.img && (
+                          <div className="cart-item-thumb">
+                            <Image
+                              src={item.img}
+                              alt={item.game}
+                              fill
+                              style={{ objectFit: "cover" }}
+                            />
+                          </div>
                         )}
+
+                        <div className="cart-item-info">
+                          <strong className="cart-item-title">{item.game}</strong>
+                          {item.variant && (
+                            <span className="cart-item-variant">
+                              {item.variant}
+                            </span>
+                          )}
+                        </div>
                       </div>
 
-                      <div className="cart-item-ctrls">
+                      <div className="cart-item-right">
+                        <div className="cart-item-ctrls">
+                          <button
+                            type="button"
+                            className="qty-btn"
+                            onClick={() => {
+                              if (typeof window !== "undefined" && navigator.vibrate) navigator.vibrate(10);
+                              updateQty(idx, -1);
+                            }}
+                            aria-label="Decrease quantity"
+                          >
+                            −
+                          </button>
+                          <span className="qty-val">{item.qty}</span>
+                          <button
+                            type="button"
+                            className="qty-btn"
+                            onClick={() => {
+                              if (typeof window !== "undefined" && navigator.vibrate) navigator.vibrate(10);
+                              updateQty(idx, 1);
+                            }}
+                            aria-label="Increase quantity"
+                          >
+                            +
+                          </button>
+                        </div>
+
+                        <div className="cart-item-price">
+                          ₹{item.price * item.qty}
+                        </div>
+
                         <button
                           type="button"
-                          className="qty-btn"
-                          onClick={() => {
-                            if (typeof window !== "undefined" && navigator.vibrate) navigator.vibrate(10);
-                            updateQty(idx, -1);
-                          }}
-                          aria-label="Decrease quantity"
+                          className="cart-item-remove-btn"
+                          onClick={() => removeItem(idx)}
+                          aria-label={`Remove ${item.game} from cart`}
                         >
-                          −
-                        </button>
-                        <span
-                          style={{
-                            fontFamily: "var(--font-data)",
-                            minWidth: "1.4rem",
-                            textAlign: "center",
-                            fontWeight: 700,
-                          }}
-                        >
-                          {item.qty}
-                        </span>
-                        <button
-                          type="button"
-                          className="qty-btn"
-                          onClick={() => {
-                            if (typeof window !== "undefined" && navigator.vibrate) navigator.vibrate(10);
-                            updateQty(idx, 1);
-                          }}
-                          aria-label="Increase quantity"
-                        >
-                          +
+                          &times;
                         </button>
                       </div>
-
-                      <div className="cart-item-price" style={{ minWidth: "4.5rem", textAlign: "right" }}>
-                        ₹{item.price * item.qty}
-                      </div>
-
-                      <button
-                        type="button"
-                        onClick={() => removeItem(idx)}
-                        style={{
-                          color: "var(--danger)",
-                          fontSize: "1.3rem",
-                          padding: "0.2rem 0.4rem",
-                          cursor: "pointer",
-                        }}
-                        aria-label="Remove item"
-                      >
-                        &times;
-                      </button>
                     </div>
                   ))}
                 </div>
@@ -848,8 +823,6 @@ export default function CartPage() {
           </div>
         </div>
       </footer>
-
-      <MobileBottomNav />
     </>
   );
 }

@@ -4,7 +4,6 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { Header } from "@/components/Header";
 import { useCart } from "@/context/CartContext";
-import { MobileBottomNav } from "@/components/MobileBottomNav";
 
 export default function OrdersPage() {
   const { pastOrders } = useCart();
@@ -198,8 +197,6 @@ export default function OrdersPage() {
           </div>
         </div>
       </footer>
-
-      <MobileBottomNav />
     </>
   );
 }

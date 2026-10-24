@@ -3,7 +3,6 @@
 import React, { useState } from "react";
 import { Header } from "@/components/Header";
 import { Catalog } from "@/components/Catalog";
-import { MobileBottomNav } from "@/components/MobileBottomNav";
 import { RequestGameModal } from "@/components/RequestGameModal";
 
 export default function CatalogPage() {
@@ -25,8 +24,6 @@ export default function CatalogPage() {
           onRequestGame={handleOpenRequest}
         />
       </main>
-
-      <MobileBottomNav />
 
       <RequestGameModal
         isOpen={isRequestOpen}

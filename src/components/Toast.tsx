@@ -12,20 +12,11 @@ export function Toast() {
 
   return (
     <div className="toast-box" role="status" aria-live="polite">
-      <span>🎮</span>
-      <span>{toast}</span>
+      <span className="toast-dot" />
+      <span className="toast-text">{toast}</span>
       {isAddAction && (
-        <Link
-          href="/cart"
-          style={{
-            marginLeft: "0.4rem",
-            color: "var(--accent)",
-            fontWeight: 700,
-            textDecoration: "underline",
-            fontSize: "0.84rem",
-          }}
-        >
-          View Cart →
+        <Link href="/cart" className="toast-btn">
+          Cart →
         </Link>
       )}
     </div>

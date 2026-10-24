@@ -3,6 +3,7 @@ import { Bebas_Neue, Space_Grotesk, DM_Mono } from "next/font/google";
 import "@/styles/globals.css";
 import { CartProvider } from "@/context/CartContext";
 import { Toast } from "@/components/Toast";
+import { MobileBottomNav } from "@/components/MobileBottomNav";
 
 const bebasNeue = Bebas_Neue({
   weight: "400",
@@ -54,11 +55,9 @@ export default function RootLayout({
     >
       <body>
         <CartProvider>
-          <div className="notice-bar">
-            🚨 Limited time: 3-game bundle for ₹538 | <a href="#games">Shop Now</a>
-          </div>
           {children}
           <Toast />
+          <MobileBottomNav />
         </CartProvider>
       </body>
     </html>

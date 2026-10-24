@@ -4,7 +4,6 @@ import React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Header } from "@/components/Header";
-import { MobileBottomNav } from "@/components/MobileBottomNav";
 
 export default function AboutPage() {
   return (
@@ -124,8 +123,6 @@ export default function AboutPage() {
           </div>
         </div>
       </footer>
-
-      <MobileBottomNav />
     </>
   );
 }
