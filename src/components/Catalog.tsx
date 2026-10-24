@@ -54,7 +54,15 @@ export function Catalog({
       );
     }
 
-    if (filter === "under100") {
+    if (filter === "all") {
+      const serviceItems = all.filter((i) => i.isService);
+      const gameItems = all
+        .filter((i) => !i.isService)
+        .sort((a, b) =>
+          a.name.localeCompare(b.name, undefined, { sensitivity: "base", numeric: true })
+        );
+      all = [...serviceItems, ...gameItems];
+    } else if (filter === "under100") {
       all = all.filter((item) => getItemMinPrice(item) <= 100);
       all.sort((a, b) => getItemMinPrice(a) - getItemMinPrice(b));
     } else if (filter === "lowToHigh") {
