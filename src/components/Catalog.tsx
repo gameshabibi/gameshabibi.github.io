@@ -12,7 +12,21 @@ interface CatalogProps {
   limit?: number;
 }
 
-type FilterType = "all" | "personal" | "shared" | "services" | "under100" | "co-op";
+type FilterType =
+  | "all"
+  | "lowToHigh"
+  | "actionFirst"
+  | "racingFirst"
+  | "popularFirst"
+  | "under100"
+  | "services";
+
+const getItemMinPrice = (item: ProductItem): number => {
+  if (item.variants && item.variants.length > 0) {
+    return Math.min(...item.variants.map((v) => v.price));
+  }
+  return item.price || 0;
+};
 
 export function Catalog({
   searchQuery = "",
@@ -31,25 +45,6 @@ export function Catalog({
       all = [...services, ...games];
     }
 
-    if (filter === "personal") {
-      all = games.filter((g) =>
-        g.variants?.some((v) => v.name.toLowerCase().includes("in your steam"))
-      );
-    } else if (filter === "shared") {
-      all = games.filter((g) =>
-        g.variants?.some((v) => v.name.toLowerCase().includes("shared"))
-      );
-    } else if (filter === "under100") {
-      all = [...services, ...games].filter((item) => {
-        if (item.price && item.price <= 100) return true;
-        return item.variants?.some((v) => v.price <= 100);
-      });
-    } else if (filter === "co-op") {
-      all = games.filter((g) =>
-        g.genre.toLowerCase().includes("co-op") || g.genre.toLowerCase().includes("action")
-      );
-    }
-
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase().trim();
       all = all.filter(
@@ -57,6 +52,43 @@ export function Catalog({
           i.name.toLowerCase().includes(q) ||
           i.genre.toLowerCase().includes(q)
       );
+    }
+
+    if (filter === "under100") {
+      all = all.filter((item) => getItemMinPrice(item) <= 100);
+      all.sort((a, b) => getItemMinPrice(a) - getItemMinPrice(b));
+    } else if (filter === "lowToHigh") {
+      all.sort((a, b) => getItemMinPrice(a) - getItemMinPrice(b));
+    } else if (filter === "actionFirst") {
+      const isAction = (i: ProductItem) => i.genre.toLowerCase().includes("action");
+      all.sort((a, b) => (isAction(b) ? 1 : 0) - (isAction(a) ? 1 : 0));
+    } else if (filter === "racingFirst") {
+      const isRacing = (i: ProductItem) =>
+        i.genre.toLowerCase().includes("racing") || i.genre.toLowerCase().includes("driving");
+      all.sort((a, b) => (isRacing(b) ? 1 : 0) - (isRacing(a) ? 1 : 0));
+    } else if (filter === "popularFirst") {
+      const POPULAR_KEYS = [
+        "grand theft auto",
+        "red dead redemption",
+        "black myth",
+        "god of war",
+        "forza",
+        "elden ring",
+        "ea sports",
+        "palworld",
+        "cyberpunk",
+        "spider-man",
+        "last of us",
+        "wukong",
+      ];
+      const isPopular = (i: ProductItem) => {
+        let score = 0;
+        if (i.badge) score += 2;
+        const name = i.name.toLowerCase();
+        if (POPULAR_KEYS.some((k) => name.includes(k))) score += 1;
+        return score;
+      };
+      all.sort((a, b) => isPopular(b) - isPopular(a));
     }
 
     return all;
@@ -154,17 +186,38 @@ export function Catalog({
           </button>
           <button
             type="button"
-            className={`filter-pill ${filter === "shared" ? "active" : ""}`}
-            onClick={() => setFilter("shared")}
+            className={`filter-pill ${filter === "lowToHigh" ? "active" : ""}`}
+            onClick={() => setFilter("lowToHigh")}
           >
-            👥 Shared Steam
+            📉 Low to High
           </button>
           <button
             type="button"
-            className={`filter-pill ${filter === "personal" ? "active" : ""}`}
-            onClick={() => setFilter("personal")}
+            className={`filter-pill ${filter === "actionFirst" ? "active" : ""}`}
+            onClick={() => setFilter("actionFirst")}
           >
-            👤 Personal Steam
+            💥 Action First
+          </button>
+          <button
+            type="button"
+            className={`filter-pill ${filter === "racingFirst" ? "active" : ""}`}
+            onClick={() => setFilter("racingFirst")}
+          >
+            🏎️ Racing First
+          </button>
+          <button
+            type="button"
+            className={`filter-pill ${filter === "popularFirst" ? "active" : ""}`}
+            onClick={() => setFilter("popularFirst")}
+          >
+            🔥 Popular First
+          </button>
+          <button
+            type="button"
+            className={`filter-pill ${filter === "under100" ? "active" : ""}`}
+            onClick={() => setFilter("under100")}
+          >
+            💰 Under 100
           </button>
           <button
             type="button"
@@ -173,24 +226,6 @@ export function Catalog({
           >
             📺 Streaming Passes
           </button>
-          {!isHomeView && (
-            <>
-              <button
-                type="button"
-                className={`filter-pill ${filter === "under100" ? "active" : ""}`}
-                onClick={() => setFilter("under100")}
-              >
-                🔥 Under ₹100
-              </button>
-              <button
-                type="button"
-                className={`filter-pill ${filter === "co-op" ? "active" : ""}`}
-                onClick={() => setFilter("co-op")}
-              >
-                🎮 Action & Co-op
-              </button>
-            </>
-          )}
         </div>
 
         {displayedItems.length === 0 ? (
