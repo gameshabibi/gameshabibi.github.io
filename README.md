@@ -1,154 +1,78 @@
-# 🎮 GameStore - Digital Game Store with Telegram Integration
+# 🎮 Games Habibi — Next.js Digital Game Store
 
-> Your one-stop shop for the latest PC games and streaming services
+> Your one-stop storefront for the latest PC games, Steam account access, and digital subscriptions with fast UPI payments. Built on **Next.js 16 (App Router)**, **React 19**, and **TypeScript** for seamless **Vercel** deployment.
 
-## 🌟 Features
+---
 
-- 🎮 **Game Catalog** - Browse 25+ popular PC games
-- 📺 **Streaming Services** - Netflix Premium, YouTube Premium
-- 🛒 **Shopping Cart** - Add multiple items, manage quantities
-- 💰 **UPI Payment** - QR code generation for easy payments
-- 💬 **Telegram Integration** - Instant order & contact notifications
-- 📱 **Responsive Design** - Works on mobile, tablet, and desktop
-- 🔍 **Search Functionality** - Find games quickly
-- 💝 **Tip System** - Optional tips for support
+## 🌟 Key Features
 
-## 🚀 Quick Start
+- 🎮 **Curated PC Game Catalog** — 40+ titles with real-time personal vs. shared Steam account switching.
+- 📺 **Streaming Memberships** — Netflix Premium 4K, YouTube Premium, and digital passes.
+- 💰 **Instant UPI QR Payments** — Fast client-side QR generation and direct UPI deep linking for GPay, PhonePe, and Paytm.
+- 🔢 **12-Digit UPI UTR Tracking** — Direct reference ID entry to speed up manual bank verification.
+- 💬 **Zero-Leak Telegram Order Relay** — Server-side API route (`/api/order`) dispatches payment receipts directly to your private Telegram bot without exposing tokens to the browser.
+- 📱 **Mobile-First App Bar & Slide-Over Drawer** — Sticky thumb navigation bar, quick search, live cart calculations, and bundle discounts.
+- 📦 **Order History & Draft Auto-Save** — Customer name and email persist across mobile app switches, and past order IDs are saved for easy retrieval.
+- 🎫 **Integrated Help Desk** — Interactive support form (`/contact`) that delivers customer inquiries straight to Telegram.
 
-### For Users:
-Visit: [gameshabibi.github.io](https://gameshabibi.github.io)
+---
 
-### For Developers:
+## 🚀 Quick Start (Local Development)
+
 ```bash
-git clone https://github.com/gameshabibi/gameshabibi.github.io.git
-cd gameshabibi.github.io
-# Open index.html in browser
+# 1. Install dependencies
+npm install
+
+# 2. Configure environment variables (local)
+cp .env.example .env.local
+
+# 3. Start local development server
+npm run dev
 ```
 
-## 📱 Telegram Bot Setup
+Visit [http://localhost:3000](http://localhost:3000) in your browser.
 
-**NEW!** This website now supports Telegram bot integration for order and contact notifications.
+---
 
-### Quick Setup (3 minutes):
-1. Read: [`QUICK_START.md`](QUICK_START.md)
-2. Test: Open `telegram-test.html` in browser
-3. Configure: Update credentials in `payment.js` and `telegram-forms.js`
+## ☁️ Deploying to Vercel (1-Click)
 
-### Detailed Guide:
-See [`TELEGRAM_SETUP.md`](TELEGRAM_SETUP.md) for complete instructions.
+1. Push your repository to GitHub.
+2. Go to [Vercel](https://vercel.com) and click **"Add New Project"** → Import your GitHub repository.
+3. Under **Environment Variables**, add:
+   - `PAYMENT_ID` = `prashantsingh896@ybl` (your UPI VPA)
+   - `TELEGRAM_BOT_TOKEN` = `your_telegram_bot_token`
+   - `TELEGRAM_CHAT_ID` = `your_telegram_chat_id`
+4. Click **Deploy**. Vercel will automatically build and deploy your Next.js application!
 
-### What You'll Receive:
-- ✅ Order notifications (with payment screenshots)
-- ✅ Contact form submissions
-- ✅ Customer details (name, email, order info)
-- ✅ Timestamps for all events
+---
 
 ## 📂 Project Structure
 
 ```
-├── index.html              # Main page
-├── script.js               # Game catalog & cart logic
-├── payment.js              # Payment & order processing
-├── telegram-forms.js       # Telegram form handlers
-├── style.css               # Main styles
-├── privacy.css             # Policy pages styles
-├── contact.html            # Contact information
-├── privacy.html            # Privacy policy
-├── terms.html              # Terms & conditions
-├── shipping.html           # Shipping policy
-├── cancellation.html       # Refund policy
-├── telegram-test.html      # Bot testing tool
-├── TELEGRAM_SETUP.md       # Setup guide
-├── QUICK_START.md          # Quick reference
-└── TELEGRAM_SUMMARY.md     # Complete overview
+├── public/                 # Static assets (game covers, icons, audio)
+│   ├── png/games/          # Game covers
+│   ├── audio/              # Sound feedback
+│   └── site.webmanifest    # Web manifest
+├── src/
+│   ├── app/
+│   │   ├── api/
+│   │   │   ├── order/      # Secure serverless Telegram order relay
+│   │   │   └── contact/    # Secure support ticket relay
+│   │   ├── contact/        # Support Ticket & Help Desk page
+│   │   ├── privacy/        # Privacy policy
+│   │   ├── terms/          # Terms of service
+│   │   ├── shipping/       # Shipping & digital delivery policy
+│   │   ├── cancellation/   # Refund policy
+│   │   ├── layout.tsx      # Root layout with Google Fonts & CartProvider
+│   │   └── page.tsx        # Storefront home page
+│   ├── components/         # Reusable React components (Header, Catalog, Drawer, Hero, etc.)
+│   ├── context/            # React CartContext (cart, quantities, discounts, persistence)
+│   ├── data/               # Catalog datasets (games, services, variants, badges)
+│   ├── lib/                # Pure client-side QR generator
+│   └── styles/             # Cyber Arcade Bazaar design system styles
+├── legacy/                 # Archived original static HTML/JS files
+├── .env.example            # Example environment variables
+├── next.config.mjs         # Next.js configuration
+├── package.json            # Project dependencies and scripts
+└── tsconfig.json           # TypeScript configuration
 ```
-
-## 🛠️ Technologies Used
-
-- **HTML5** - Structure
-- **CSS3** - Styling with animations
-- **JavaScript** - Interactive functionality
-- **Telegram Bot API** - Notifications
-- **GitHub Pages** - Hosting
-- **QR Server API** - UPI QR code generation
-
-## 🎨 Features in Detail
-
-### 1. Shopping Cart
-- Add/remove items
-- Quantity management
-- Real-time total calculation
-- Tip system
-- Persistent across session
-
-### 2. Payment Integration
-- UPI payment via QR code
-- "Pay Now" button for mobile
-- Payment screenshot upload
-- Secure order processing
-
-### 3. Telegram Notifications
-- Instant order alerts
-- Contact form submissions
-- Payment screenshot delivery
-- Formatted messages with emojis
-
-### 4. Search System
-- Real-time game search
-- Service search included
-- Auto-complete suggestions
-- Smooth scroll to results
-
-## 📞 Contact
-
-- **Email:** [mr.bgmi9098@gmail.com](mailto:mr.bgmi9098@gmail.com)
-- **Instagram:** [@games_habibi](https://www.instagram.com/games_habibi)
-- **Website:** [gameshabibi.github.io](https://gameshabibi.github.io)
-
-## 📄 License
-
-© 2025 GameStore. All rights reserved.
-
-## 🤝 Contributing
-
-This is a personal project, but suggestions are welcome! Feel free to open issues or contact via email.
-
-## 📝 Notes
-
-- All games are delivered digitally
-- Processing time: Within 24 hours
-- Refunds available within 7 days
-- Telegram bot setup required for notifications
-
-## 🔐 Security
-
-- Never commit real bot tokens to repository
-- Use environment variables for sensitive data
-- Keep bot tokens private and secure
-- Revoke compromised tokens immediately
-
-## 📚 Documentation
-
-| Document | Description |
-|----------|-------------|
-| [QUICK_START.md](QUICK_START.md) | 3-minute Telegram setup |
-| [TELEGRAM_SETUP.md](TELEGRAM_SETUP.md) | Detailed setup guide |
-| [TELEGRAM_SUMMARY.md](TELEGRAM_SUMMARY.md) | Feature overview |
-| [telegram-test.html](telegram-test.html) | Interactive bot tester |
-
-## ✅ Setup Checklist
-
-- [x] Website deployed on GitHub Pages
-- [x] Shopping cart functionality
-- [x] UPI payment integration
-- [x] Telegram bot integration added
-- [x] Contact form with Telegram
-- [x] Order form with photo upload
-- [x] Comprehensive documentation
-- [ ] Configure Telegram bot credentials
-- [ ] Test all forms
-- [ ] Go live!
-
----
-
-**Made with ❤️ by Games Habibi**

@@ -1,0 +1,504 @@
+"use client";
+
+import React, { useState, useEffect, useRef } from "react";
+import Image from "next/image";
+import { useCart } from "@/context/CartContext";
+import { generateUPIQRCode } from "@/lib/qr";
+
+const PAYMENT_ID = process.env.NEXT_PUBLIC_PAYMENT_ID || "prashantsingh896@ybl";
+
+export function CartDrawer() {
+  const {
+    items,
+    isDrawerOpen,
+    closeDrawer,
+    removeItem,
+    updateQty,
+    clearCart,
+    tip,
+    setTip,
+    subtotal,
+    bundleDiscount,
+    total,
+    bundleCount,
+    saveOrder,
+    playFeedback,
+    showToast,
+  } = useCart();
+
+  const [qrSrc, setQrSrc] = useState<string>("");
+  const [customerName, setCustomerName] = useState<string>("");
+  const [customerEmail, setCustomerEmail] = useState<string>("");
+  const [customerUtr, setCustomerUtr] = useState<string>("");
+  const [paymentFile, setPaymentFile] = useState<File | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [placedOrderId, setPlacedOrderId] = useState<string | null>(null);
+  const [isCopied, setIsCopied] = useState(false);
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Auto-restore customer contact info from draft storage
+  useEffect(() => {
+    try {
+      const savedName = sessionStorage.getItem("gh_draft_name");
+      const savedEmail = sessionStorage.getItem("gh_draft_email");
+      if (savedName) setCustomerName(savedName);
+      if (savedEmail) setCustomerEmail(savedEmail);
+    } catch {}
+  }, []);
+
+  const handleNameChange = (val: string) => {
+    setCustomerName(val);
+    try {
+      sessionStorage.setItem("gh_draft_name", val);
+    } catch {}
+  };
+
+  const handleEmailChange = (val: string) => {
+    setCustomerEmail(val);
+    try {
+      sessionStorage.setItem("gh_draft_email", val);
+    } catch {}
+  };
+
+  // Generate UPI deep link & QR code whenever total changes
+  const upiUrl = `upi://pay?pa=${encodeURIComponent(
+    PAYMENT_ID
+  )}&pn=Games%20Habibi&am=${total.toFixed(2)}&cu=INR&tn=Games%20Habibi%20Order`;
+
+  useEffect(() => {
+    if (total > 0 && isDrawerOpen) {
+      generateUPIQRCode(upiUrl).then((url) => setQrSrc(url));
+    }
+  }, [total, isDrawerOpen, upiUrl]);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.size > 5 * 1024 * 1024) {
+      playFeedback("error");
+      showToast("Screenshot must be under 5 MB");
+      e.target.value = "";
+      return;
+    }
+
+    if (!file.type.startsWith("image/")) {
+      playFeedback("error");
+      showToast("Only image files (JPG, PNG, WEBP) are allowed");
+      e.target.value = "";
+      return;
+    }
+
+    setPaymentFile(file);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (items.length === 0) {
+      playFeedback("error");
+      showToast("Your cart is empty");
+      return;
+    }
+
+    if (!paymentFile) {
+      playFeedback("error");
+      showToast("Please select your payment screenshot");
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    const generatedId = "ORD-" + Math.floor(100000 + Math.random() * 900000);
+    const gamesSummary = items
+      .map((i) => `${i.game}${i.variant ? ` (${i.variant})` : ""} x ${i.qty}`)
+      .join(", ");
+
+    const formData = new FormData();
+    formData.append("name", customerName);
+    formData.append("email", customerEmail);
+    formData.append("utr", customerUtr || "Not provided");
+    formData.append("games", gamesSummary);
+    formData.append("total", total.toString());
+    formData.append("orderId", generatedId);
+    formData.append("photo", paymentFile);
+
+    try {
+      const res = await fetch("/api/order", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await res.json();
+
+      if (!res.ok || !data.ok) {
+        throw new Error(data.error || "Order dispatch error");
+      }
+
+      // Success
+      playFeedback("success");
+      saveOrder({
+        id: generatedId,
+        date: new Date().toISOString(),
+        name: customerName,
+        email: customerEmail,
+        games: gamesSummary,
+        total,
+        utr: customerUtr,
+      });
+
+      setPlacedOrderId(generatedId);
+      clearCart();
+      setPaymentFile(null);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    } catch (err: unknown) {
+      playFeedback("error");
+      const msg = err instanceof Error ? err.message : "Submission failed";
+      showToast(msg);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleCopyOrderId = (id: string) => {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(id).then(() => {
+        setIsCopied(true);
+        setTimeout(() => setIsCopied(false), 2000);
+      });
+    }
+  };
+
+  return (
+    <>
+      <div
+        className={`cart-backdrop ${isDrawerOpen ? "is-open" : ""}`}
+        onClick={closeDrawer}
+        aria-hidden={!isDrawerOpen}
+      />
+
+      <aside
+        className={`cart-drawer ${isDrawerOpen ? "is-open" : ""}`}
+        role="dialog"
+        aria-modal="true"
+        aria-label="Shopping Cart"
+      >
+        <div className="drawer-header">
+          <h2>Your Cart ({items.reduce((s, i) => s + i.qty, 0)})</h2>
+          <button
+            type="button"
+            className="drawer-close"
+            onClick={closeDrawer}
+            aria-label="Close Cart Drawer"
+          >
+            &times;
+          </button>
+        </div>
+
+        <div className="drawer-body">
+          {placedOrderId ? (
+            <div
+              style={{
+                textAlign: "center",
+                padding: "2rem 1rem",
+                background: "var(--surface-panel)",
+                borderRadius: "var(--radius-md)",
+                border: "1px solid var(--mint)",
+              }}
+            >
+              <div
+                style={{
+                  width: "3.5rem",
+                  height: "3.5rem",
+                  borderRadius: "50%",
+                  background: "rgba(0, 255, 179, 0.15)",
+                  color: "var(--mint)",
+                  display: "grid",
+                  placeItems: "center",
+                  fontSize: "1.8rem",
+                  margin: "0 auto 1rem",
+                }}
+              >
+                ✔
+              </div>
+              <h3 style={{ margin: "0 0 0.5rem", fontSize: "1.4rem" }}>
+                Order Placed Successfully!
+              </h3>
+              <p
+                style={{
+                  color: "var(--text-secondary)",
+                  fontSize: "0.9rem",
+                  margin: "0 0 1.2rem",
+                }}
+              >
+                Your payment screenshot has been submitted to store operators. Save
+                your Order ID below:
+              </p>
+
+              <div
+                style={{
+                  display: "inline-block",
+                  padding: "0.6rem 1.4rem",
+                  background: "var(--accent-soft)",
+                  border: "1px solid rgba(245, 166, 35, 0.35)",
+                  borderRadius: "var(--radius-sm)",
+                  fontFamily: "var(--font-data)",
+                  fontSize: "1.2rem",
+                  color: "var(--accent)",
+                  fontWeight: 700,
+                  marginBottom: "1.2rem",
+                }}
+              >
+                {placedOrderId}
+              </div>
+
+              <div
+                style={{
+                  display: "flex",
+                  gap: "0.6rem",
+                  justifyContent: "center",
+                  flexWrap: "wrap",
+                }}
+              >
+                <button
+                  type="button"
+                  className="btn"
+                  onClick={() => handleCopyOrderId(placedOrderId)}
+                >
+                  {isCopied ? "✔ Copied!" : "📋 Copy Order ID"}
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  onClick={() => {
+                    setPlacedOrderId(null);
+                    closeDrawer();
+                  }}
+                >
+                  Done
+                </button>
+              </div>
+            </div>
+          ) : items.length === 0 ? (
+            <div
+              style={{
+                textAlign: "center",
+                padding: "3.5rem 1rem",
+                color: "var(--text-muted)",
+              }}
+            >
+              <p style={{ fontSize: "1.1rem", marginBottom: "1rem" }}>
+                Your cart is empty.
+              </p>
+              <button
+                type="button"
+                className="btn btn-secondary"
+                onClick={closeDrawer}
+              >
+                Browse Games
+              </button>
+            </div>
+          ) : (
+            <>
+              {/* Bundle Banner */}
+              <div className="bundle-banner">
+                <span>🎁</span>
+                <div>
+                  <strong>Bundle Savings: </strong>
+                  <span>2 games: 25% OFF • 3 games: 40% OFF • 4+ games: 47% OFF</span>
+                </div>
+              </div>
+
+              {/* Items List */}
+              <div className="cart-items-list">
+                {items.map((item, idx) => (
+                  <div className="cart-item-row" key={item.id}>
+                    <div className="cart-item-info">
+                      <strong>{item.game}</strong>
+                      {item.variant && <span>{item.variant}</span>}
+                    </div>
+
+                    <div className="cart-item-ctrls">
+                      <button
+                        type="button"
+                        className="qty-btn"
+                        onClick={() => updateQty(idx, -1)}
+                        aria-label="Decrease quantity"
+                      >
+                        -
+                      </button>
+                      <span style={{ fontFamily: "var(--font-data)", minWidth: "1rem", textAlign: "center" }}>
+                        {item.qty}
+                      </span>
+                      <button
+                        type="button"
+                        className="qty-btn"
+                        onClick={() => updateQty(idx, 1)}
+                        aria-label="Increase quantity"
+                      >
+                        +
+                      </button>
+                    </div>
+
+                    <div className="cart-item-price">
+                      ₹{item.price * item.qty}
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => removeItem(idx)}
+                      style={{ color: "var(--danger)", fontSize: "1rem", marginLeft: "0.2rem" }}
+                      aria-label="Remove item"
+                    >
+                      &times;
+                    </button>
+                  </div>
+                ))}
+              </div>
+
+              {/* Tip Contribution */}
+              <div>
+                <label style={{ fontSize: "0.82rem", color: "var(--text-secondary)" }}>
+                  Storefront Tip / Support (Optional)
+                </label>
+                <div className="tip-box">
+                  <input
+                    type="number"
+                    min="0"
+                    value={tip}
+                    onChange={(e) => setTip(Math.max(0, Number(e.target.value) || 0))}
+                    placeholder="₹ Tip"
+                  />
+                  <span style={{ fontSize: "0.8rem", color: "var(--text-muted)" }}>
+                    Directly supports Games Habibi
+                  </span>
+                </div>
+              </div>
+
+              {/* Pricing Breakdown */}
+              <div className="pricing-card">
+                <div className="pricing-row">
+                  <span>Subtotal</span>
+                  <span>₹{subtotal}</span>
+                </div>
+                {bundleDiscount > 0 && (
+                  <div className="pricing-row" style={{ color: "var(--mint)" }}>
+                    <span>Bundle Discount ({bundleCount} titles)</span>
+                    <span>-₹{bundleDiscount}</span>
+                  </div>
+                )}
+                {tip > 0 && (
+                  <div className="pricing-row">
+                    <span>Storefront Tip</span>
+                    <span>+₹{tip}</span>
+                  </div>
+                )}
+                <div className="pricing-row total-row">
+                  <span>Total Amount</span>
+                  <span>₹{total}</span>
+                </div>
+              </div>
+
+              {/* Instant UPI Payment Box */}
+              <div className="upi-box">
+                <h3>🔐 Instant UPI Payment</h3>
+                <p>Scan QR with any UPI app, or tap below on your mobile device</p>
+
+                {qrSrc ? (
+                  <div className="qr-frame">
+                    <Image
+                      src={qrSrc}
+                      alt="Payment UPI QR"
+                      width={170}
+                      height={170}
+                      unoptimized
+                    />
+                  </div>
+                ) : (
+                  <div style={{ height: "170px", display: "grid", placeItems: "center" }}>
+                    Generating QR...
+                  </div>
+                )}
+
+                <a href={upiUrl} className="upi-app-btn">
+                  ⚡ Pay via UPI App (GPay / PhonePe / Paytm)
+                </a>
+              </div>
+
+              {/* Order Confirmation Form */}
+              <form onSubmit={handleSubmit} className="order-form">
+                <h3 style={{ margin: "0.5rem 0 0", fontSize: "1.1rem" }}>
+                  Confirm & Submit Order
+                </h3>
+
+                <div>
+                  <label htmlFor="customerName">Your Full Name</label>
+                  <input
+                    type="text"
+                    id="customerName"
+                    required
+                    placeholder="e.g. Rahul Sharma"
+                    value={customerName}
+                    onChange={(e) => handleNameChange(e.target.value)}
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="customerEmail">Your Email</label>
+                  <input
+                    type="email"
+                    id="customerEmail"
+                    required
+                    placeholder="rahul@example.com"
+                    value={customerEmail}
+                    onChange={(e) => handleEmailChange(e.target.value)}
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="customerUtr">
+                    12-Digit UPI UTR / Reference ID (Recommended)
+                  </label>
+                  <input
+                    type="text"
+                    id="customerUtr"
+                    placeholder="e.g. 429381928391"
+                    maxLength={16}
+                    value={customerUtr}
+                    onChange={(e) => setCustomerUtr(e.target.value)}
+                  />
+                  <small>
+                    Shown in your UPI app transaction receipt for instant approval.
+                  </small>
+                </div>
+
+                <div>
+                  <label htmlFor="paymentProof">Payment Screenshot (Required)</label>
+                  <input
+                    type="file"
+                    id="paymentProof"
+                    accept="image/*"
+                    required
+                    ref={fileInputRef}
+                    onChange={handleFileChange}
+                  />
+                  <small>Max file size: 5 MB (PNG, JPG, WEBP)</small>
+                </div>
+
+                <button
+                  type="submit"
+                  className="btn btn-block"
+                  disabled={isSubmitting}
+                  style={{ minHeight: "3rem", fontSize: "1rem" }}
+                >
+                  {isSubmitting ? "Submitting Order..." : `Submit Order • ₹${total}`}
+                </button>
+              </form>
+            </>
+          )}
+        </div>
+      </aside>
+    </>
+  );
+}

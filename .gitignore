@@ -1,3 +1,8 @@
+# Next.js build and dependencies
+node_modules/
+.next/
+out/
+
 # Environment secret files (never commit to git)
 .env
 .env.local
@@ -12,3 +17,4 @@ desktop.ini
 .vscode/
 .idea/
 *.log
+
