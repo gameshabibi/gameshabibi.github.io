@@ -7,9 +7,63 @@ import { useCart } from "@/context/CartContext";
 
 export function ProductCard({ product }: { product: ProductItem }) {
   const { addItem } = useCart();
-  // Find default variant: always select the cheapest available option
+  // Check if this is a popular/flagship game
+  const isPopularGame = (item: ProductItem) => {
+    if (item.badge && item.badge !== "Budget Pick") return true;
+    const POPULAR_KEYS = [
+      "grand theft auto",
+      "gta",
+      "red dead",
+      "black myth",
+      "god of war",
+      "forza",
+      "elden ring",
+      "ea sports",
+      "palworld",
+      "cyberpunk",
+      "spider-man",
+      "last of us",
+      "wukong",
+      "fifa",
+      "tekken",
+      "mortal kombat",
+      "call of duty",
+      "assassin's creed",
+      "sekiro",
+      "hogwarts",
+      "witcher",
+      "baldur",
+      "ghost of tsushima",
+      "stellar blade",
+      "resident evil",
+      "days gone",
+      "detroit",
+      "uncharted",
+      "hitman",
+      "dark souls",
+      "beamng",
+      "need for speed",
+      "nfs",
+      "assetto corsa",
+    ];
+    const name = item.name.toLowerCase();
+    return POPULAR_KEYS.some((k) => name.includes(k));
+  };
+
+  // Find default variant: popular games default to ₹149 option, others to cheapest
   const defaultIdx = () => {
     if (!product.variants || product.variants.length <= 1) return 0;
+
+    if (isPopularGame(product)) {
+      const idx149 = product.variants.findIndex((v) => v.price === 149);
+      if (idx149 !== -1) return idx149;
+      const sharedIdx = product.variants.findIndex((v) =>
+        v.name.toLowerCase().includes("shared") || v.name.toLowerCase().includes("offline")
+      );
+      if (sharedIdx !== -1) return sharedIdx;
+    }
+
+    // Default to the cheapest available option
     let minIdx = 0;
     let minPrice = product.variants[0].price;
     for (let i = 1; i < product.variants.length; i++) {

@@ -70,7 +70,7 @@ export const games: ProductItem[] = [
     genre: "Racing, Open World",
     variants: [
       { name: "In your steam account", price: 299 },
-      { name: "Shared Steam Account", price: 99 },
+      { name: "Shared Steam Account", price: 149 },
       { name: "Budget Friendly", price: 69 },
     ],
     badge: "Top Seller",
@@ -171,7 +171,7 @@ export const games: ProductItem[] = [
     genre: "Co-op Adventure, Cinematic",
     variants: [
       { name: "In your steam account", price: 299 },
-      { name: "Shared Steam Account", price: 99 },
+      { name: "Shared Steam Account", price: 149 },
       { name: "Budget Friendly", price: 69 },
     ],
     badge: "Co-op Favorite",
@@ -234,7 +234,7 @@ export const games: ProductItem[] = [
     genre: "Superhero, Open World, Action",
     variants: [
       { name: "In your steam account", price: 299 },
-      { name: "Shared Steam Account", price: 119 },
+      { name: "Shared Steam Account", price: 149 },
       { name: "Budget Friendly", price: 69 },
     ],
   },
@@ -246,7 +246,7 @@ export const games: ProductItem[] = [
     genre: "Open World RPG, Fantasy, Story-Rich",
     variants: [
       { name: "In your steam account", price: 299 },
-      { name: "Shared Steam Account", price: 99 },
+      { name: "Shared Steam Account", price: 149 },
       { name: "Budget Friendly", price: 69 },
     ],
     badge: "Must Play",
@@ -259,7 +259,7 @@ export const games: ProductItem[] = [
     genre: "Mythology, Action-Adventure, Story-Rich",
     variants: [
       { name: "In your steam account", price: 299 },
-      { name: "Shared Steam Account", price: 119 },
+      { name: "Shared Steam Account", price: 149 },
       { name: "Budget Friendly", price: 69 },
     ],
   },
@@ -283,7 +283,7 @@ export const games: ProductItem[] = [
     genre: "Norse Mythology, Hack and Slash, Story",
     variants: [
       { name: "In your steam account", price: 299 },
-      { name: "Shared Steam Account", price: 119 },
+      { name: "Shared Steam Account", price: 149 },
       { name: "Budget Friendly", price: 69 },
     ],
     badge: "Blockbuster",
@@ -296,7 +296,7 @@ export const games: ProductItem[] = [
     genre: "Feudal Japan, Stealth, Action RPG",
     variants: [
       { name: "In your steam account", price: 299 },
-      { name: "Shared Steam Account", price: 139 },
+      { name: "Shared Steam Account", price: 149 },
       { name: "Budget Friendly", price: 69 },
     ],
   },
@@ -354,7 +354,9 @@ export const games: ProductItem[] = [
     link: "https://store.steampowered.com/app/271590/Grand_Theft_Auto_V/",
     img: "/png/games/gta-v.jpg",
     genre: "1st - online, Shared with Rockstar",
-    variants: [{ name: "Shared Steam Account", price: 129 },
+    variants: [
+      { name: "In your steam account", price: 299 },
+      { name: "Shared Steam Account", price: 149 },
       { name: "Budget Friendly", price: 69 },
     ],
     badge: "Classic",
@@ -452,7 +454,7 @@ export const games: ProductItem[] = [
     genre: "Creature Collector, Survival Crafting",
     variants: [
       { name: "In your steam account", price: 299 },
-      { name: "Shared Steam Account", price: 99 },
+      { name: "Shared Steam Account", price: 149 },
       { name: "Budget Friendly", price: 69 },
     ],
   },
