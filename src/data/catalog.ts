@@ -59,6 +59,7 @@ export const games: ProductItem[] = [
     variants: [
       { name: "In your steam account", price: 299 },
       { name: "Shared Steam account", price: 149 },
+      { name: "Budget Friendly", price: 69 },
     ],
   },
   {
@@ -70,6 +71,7 @@ export const games: ProductItem[] = [
     variants: [
       { name: "In your steam account", price: 299 },
       { name: "Shared Steam Account", price: 99 },
+      { name: "Budget Friendly", price: 69 },
     ],
     badge: "Top Seller",
   },
@@ -82,6 +84,7 @@ export const games: ProductItem[] = [
     variants: [
       { name: "In your steam account", price: 299 },
       { name: "Shared Steam account", price: 149 },
+      { name: "Budget Friendly", price: 69 },
     ],
     isUpcoming: true,
     badge: "Pre-order / Upcoming",
@@ -95,6 +98,7 @@ export const games: ProductItem[] = [
     variants: [
       { name: "ONLINE", price: 249 },
       { name: "OFFLINE", price: 149 },
+      { name: "Budget Friendly", price: 69 },
     ],
   },
   {
@@ -131,6 +135,7 @@ export const games: ProductItem[] = [
     variants: [
       { name: "In your steam account", price: 299 },
       { name: "Shared Steam Account", price: 149 },
+      { name: "Budget Friendly", price: 69 },
     ],
   },
   {
@@ -155,6 +160,7 @@ export const games: ProductItem[] = [
     variants: [
       { name: "In your steam account", price: 299 },
       { name: "Shared Steam account", price: 149 },
+      { name: "Budget Friendly", price: 69 },
     ],
   },
   {
@@ -166,6 +172,7 @@ export const games: ProductItem[] = [
     variants: [
       { name: "In your steam account", price: 299 },
       { name: "Shared Steam Account", price: 99 },
+      { name: "Budget Friendly", price: 69 },
     ],
     badge: "Co-op Favorite",
   },
@@ -192,6 +199,7 @@ export const games: ProductItem[] = [
     variants: [
       { name: "In your steam account", price: 299 },
       { name: "Shared Steam Account", price: 69 },
+      { name: "Budget Friendly", price: 69 },
     ],
   },
   {
@@ -203,6 +211,7 @@ export const games: ProductItem[] = [
     variants: [
       { name: "In your steam account", price: 299 },
       { name: "Shared Steam account", price: 149 },
+      { name: "Budget Friendly", price: 69 },
     ],
   },
   {
@@ -214,6 +223,7 @@ export const games: ProductItem[] = [
     variants: [
       { name: "In your steam account", price: 299 },
       { name: "Shared Steam Account", price: 149 },
+      { name: "Budget Friendly", price: 69 },
     ],
   },
   {
@@ -225,6 +235,7 @@ export const games: ProductItem[] = [
     variants: [
       { name: "In your steam account", price: 299 },
       { name: "Shared Steam Account", price: 119 },
+      { name: "Budget Friendly", price: 69 },
     ],
   },
   {
@@ -236,6 +247,7 @@ export const games: ProductItem[] = [
     variants: [
       { name: "In your steam account", price: 299 },
       { name: "Shared Steam Account", price: 99 },
+      { name: "Budget Friendly", price: 69 },
     ],
     badge: "Must Play",
   },
@@ -248,6 +260,7 @@ export const games: ProductItem[] = [
     variants: [
       { name: "In your steam account", price: 299 },
       { name: "Shared Steam Account", price: 119 },
+      { name: "Budget Friendly", price: 69 },
     ],
   },
   {
@@ -259,6 +272,7 @@ export const games: ProductItem[] = [
     variants: [
       { name: "In your steam account", price: 299 },
       { name: "Shared Steam account", price: 149 },
+      { name: "Budget Friendly", price: 69 },
     ],
   },
   {
@@ -270,6 +284,7 @@ export const games: ProductItem[] = [
     variants: [
       { name: "In your steam account", price: 299 },
       { name: "Shared Steam Account", price: 119 },
+      { name: "Budget Friendly", price: 69 },
     ],
     badge: "Blockbuster",
   },
@@ -282,6 +297,7 @@ export const games: ProductItem[] = [
     variants: [
       { name: "In your steam account", price: 299 },
       { name: "Shared Steam Account", price: 139 },
+      { name: "Budget Friendly", price: 69 },
     ],
   },
   {
@@ -293,6 +309,7 @@ export const games: ProductItem[] = [
     variants: [
       { name: "In your steam account", price: 299 },
       { name: "Shared Steam Account", price: 149 },
+      { name: "Budget Friendly", price: 69 },
     ],
   },
   {
@@ -304,6 +321,7 @@ export const games: ProductItem[] = [
     variants: [
       { name: "In your steam account", price: 299 },
       { name: "Shared Steam Account", price: 149 },
+      { name: "Budget Friendly", price: 69 },
     ],
   },
   {
@@ -315,6 +333,7 @@ export const games: ProductItem[] = [
     variants: [
       { name: "In your steam account", price: 199 },
       { name: "Shared Steam account", price: 69 },
+      { name: "Budget Friendly", price: 69 },
     ],
   },
   {
@@ -326,6 +345,7 @@ export const games: ProductItem[] = [
     variants: [
       { name: "In your steam account", price: 299 },
       { name: "Shared Steam Account", price: 149 },
+      { name: "Budget Friendly", price: 69 },
     ],
   },
   {
@@ -334,7 +354,9 @@ export const games: ProductItem[] = [
     link: "https://store.steampowered.com/app/271590/Grand_Theft_Auto_V/",
     img: "/png/games/gta-v.jpg",
     genre: "1st - online, Shared with Rockstar",
-    variants: [{ name: "Shared Steam Account", price: 129 }],
+    variants: [{ name: "Shared Steam Account", price: 129 },
+      { name: "Budget Friendly", price: 69 },
+    ],
     badge: "Classic",
   },
   {
@@ -346,6 +368,7 @@ export const games: ProductItem[] = [
     variants: [
       { name: "In your steam account", price: 299 },
       { name: "Shared Steam Account", price: 149 },
+      { name: "Budget Friendly", price: 69 },
     ],
   },
   {
@@ -357,6 +380,7 @@ export const games: ProductItem[] = [
     variants: [
       { name: "In your steam account", price: 299 },
       { name: "Shared Steam Account", price: 149 },
+      { name: "Budget Friendly", price: 69 },
     ],
   },
   {
@@ -368,6 +392,7 @@ export const games: ProductItem[] = [
     variants: [
       { name: "In your steam account", price: 299 },
       { name: "Shared Steam Account", price: 149 },
+      { name: "Budget Friendly", price: 69 },
     ],
   },
   {
@@ -379,6 +404,7 @@ export const games: ProductItem[] = [
     variants: [
       { name: "In your steam account", price: 299 },
       { name: "Shared Steam Account", price: 149 },
+      { name: "Budget Friendly", price: 69 },
     ],
   },
   {
@@ -390,6 +416,7 @@ export const games: ProductItem[] = [
     variants: [
       { name: "In your steam account", price: 299 },
       { name: "Shared Steam Account", price: 149 },
+      { name: "Budget Friendly", price: 69 },
     ],
   },
   {
@@ -401,6 +428,7 @@ export const games: ProductItem[] = [
     variants: [
       { name: "In your steam account", price: 299 },
       { name: "Shared Steam Account", price: 149 },
+      { name: "Budget Friendly", price: 69 },
     ],
     badge: "GOTY Winner",
   },
@@ -413,6 +441,7 @@ export const games: ProductItem[] = [
     variants: [
       { name: "In your steam account", price: 299 },
       { name: "Shared Steam Account", price: 149 },
+      { name: "Budget Friendly", price: 69 },
     ],
   },
   {
@@ -424,6 +453,7 @@ export const games: ProductItem[] = [
     variants: [
       { name: "In your steam account", price: 299 },
       { name: "Shared Steam Account", price: 99 },
+      { name: "Budget Friendly", price: 69 },
     ],
   },
   {
@@ -435,6 +465,7 @@ export const games: ProductItem[] = [
     variants: [
       { name: "In your steam account", price: 299 },
       { name: "Shared Steam Account", price: 149 },
+      { name: "Budget Friendly", price: 69 },
     ],
     isUpcoming: true,
   },
@@ -447,6 +478,7 @@ export const games: ProductItem[] = [
     variants: [
       { name: "In your steam account", price: 299 },
       { name: "Shared Steam Account", price: 149 },
+      { name: "Budget Friendly", price: 69 },
     ],
   },
   {
@@ -458,6 +490,7 @@ export const games: ProductItem[] = [
     variants: [
       { name: "In your steam account", price: 299 },
       { name: "Shared Steam Account", price: 149 },
+      { name: "Budget Friendly", price: 69 },
     ],
   },
   {
@@ -469,6 +502,7 @@ export const games: ProductItem[] = [
     variants: [
       { name: "In your steam account", price: 299 },
       { name: "Shared Steam Account", price: 149 },
+      { name: "Budget Friendly", price: 69 },
     ],
   },
   {
@@ -480,6 +514,7 @@ export const games: ProductItem[] = [
     variants: [
       { name: "In your steam account", price: 299 },
       { name: "Shared Steam Account", price: 149 },
+      { name: "Budget Friendly", price: 69 },
     ],
     badge: "Night City",
   },
@@ -492,6 +527,7 @@ export const games: ProductItem[] = [
     variants: [
       { name: "In your steam account", price: 299 },
       { name: "Shared Steam Account", price: 149 },
+      { name: "Budget Friendly", price: 69 },
     ],
   },
   {
@@ -503,6 +539,7 @@ export const games: ProductItem[] = [
     variants: [
       { name: "In your steam account", price: 299 },
       { name: "Shared Steam Account", price: 149 },
+      { name: "Budget Friendly", price: 69 },
     ],
   },
   {
@@ -514,6 +551,7 @@ export const games: ProductItem[] = [
     variants: [
       { name: "In your steam account", price: 299 },
       { name: "Shared Steam Account", price: 149 },
+      { name: "Budget Friendly", price: 69 },
     ],
   },
   {
@@ -525,6 +563,7 @@ export const games: ProductItem[] = [
     variants: [
       { name: "In your steam account", price: 299 },
       { name: "Shared Steam Account", price: 149 },
+      { name: "Budget Friendly", price: 69 },
     ],
     badge: "Trending #1",
   },
@@ -537,6 +576,7 @@ export const games: ProductItem[] = [
     variants: [
       { name: "Shared Steam Account", price: 149 },
       { name: "In your steam account", price: 299 },
+      { name: "Budget Friendly", price: 69 },
     ],
     badge: "Masterpiece",
   },
@@ -549,6 +589,7 @@ export const games: ProductItem[] = [
     variants: [
       { name: "Shared Steam Account", price: 149 },
       { name: "In your steam account", price: 299 },
+      { name: "Budget Friendly", price: 69 },
     ],
     badge: "PlayStation Hit",
   },
@@ -561,6 +602,7 @@ export const games: ProductItem[] = [
     variants: [
       { name: "Shared Steam Account", price: 149 },
       { name: "In your steam account", price: 299 },
+      { name: "Budget Friendly", price: 69 },
     ],
     badge: "Classic Hit",
   },
@@ -573,6 +615,7 @@ export const games: ProductItem[] = [
     variants: [
       { name: "Shared Steam Account", price: 149 },
       { name: "In your steam account", price: 299 },
+      { name: "Budget Friendly", price: 69 },
     ],
     badge: "Fan Favorite",
   },
@@ -585,6 +628,7 @@ export const games: ProductItem[] = [
     variants: [
       { name: "Shared Steam Account", price: 149 },
       { name: "In your steam account", price: 299 },
+      { name: "Budget Friendly", price: 69 },
     ],
   },
   {
@@ -596,6 +640,7 @@ export const games: ProductItem[] = [
     variants: [
       { name: "Shared Steam Account", price: 149 },
       { name: "In your steam account", price: 299 },
+      { name: "Budget Friendly", price: 69 },
     ],
   },
   {
@@ -607,6 +652,7 @@ export const games: ProductItem[] = [
     variants: [
       { name: "Shared Steam Account", price: 149 },
       { name: "In your steam account", price: 299 },
+      { name: "Budget Friendly", price: 69 },
     ],
   },
   {
@@ -618,6 +664,7 @@ export const games: ProductItem[] = [
     variants: [
       { name: "Shared Steam Account", price: 149 },
       { name: "In your steam account", price: 299 },
+      { name: "Budget Friendly", price: 69 },
     ],
     badge: "Cult Classic",
   },
@@ -630,6 +677,7 @@ export const games: ProductItem[] = [
     variants: [
       { name: "Shared Steam Account", price: 149 },
       { name: "In your steam account", price: 299 },
+      { name: "Budget Friendly", price: 69 },
     ],
   },
   {
@@ -641,6 +689,7 @@ export const games: ProductItem[] = [
     variants: [
       { name: "Shared Steam Account", price: 149 },
       { name: "In your steam account", price: 299 },
+      { name: "Budget Friendly", price: 69 },
     ],
   },
   {
@@ -652,6 +701,7 @@ export const games: ProductItem[] = [
     variants: [
       { name: "Shared Steam Account", price: 149 },
       { name: "In your steam account", price: 299 },
+      { name: "Budget Friendly", price: 69 },
     ],
     badge: "PlayStation PC",
   },
@@ -664,6 +714,7 @@ export const games: ProductItem[] = [
     variants: [
       { name: "Shared Steam Account", price: 149 },
       { name: "In your steam account", price: 299 },
+      { name: "Budget Friendly", price: 69 },
     ],
   },
   {
@@ -675,6 +726,7 @@ export const games: ProductItem[] = [
     variants: [
       { name: "Shared Steam Account", price: 149 },
       { name: "In your steam account", price: 299 },
+      { name: "Budget Friendly", price: 69 },
     ],
     badge: "Top Rated",
   },
@@ -687,6 +739,7 @@ export const games: ProductItem[] = [
     variants: [
       { name: "Shared Steam Account", price: 149 },
       { name: "In your steam account", price: 299 },
+      { name: "Budget Friendly", price: 69 },
     ],
   },
   {
@@ -698,6 +751,7 @@ export const games: ProductItem[] = [
     variants: [
       { name: "Shared Steam Account", price: 149 },
       { name: "In your steam account", price: 299 },
+      { name: "Budget Friendly", price: 69 },
     ],
   },
   {
@@ -709,6 +763,7 @@ export const games: ProductItem[] = [
     variants: [
       { name: "Shared Steam Account", price: 149 },
       { name: "In your steam account", price: 299 },
+      { name: "Budget Friendly", price: 69 },
     ],
   },
   {
@@ -720,6 +775,7 @@ export const games: ProductItem[] = [
     variants: [
       { name: "Shared Steam Account", price: 149 },
       { name: "In your steam account", price: 299 },
+      { name: "Budget Friendly", price: 69 },
     ],
     badge: "GOTY Nominee",
   },
@@ -732,6 +788,7 @@ export const games: ProductItem[] = [
     variants: [
       { name: "Shared Steam Account", price: 149 },
       { name: "In your steam account", price: 299 },
+      { name: "Budget Friendly", price: 69 },
     ],
     badge: "Soulslike King",
   },
@@ -744,6 +801,7 @@ export const games: ProductItem[] = [
     variants: [
       { name: "Shared Steam Account", price: 149 },
       { name: "In your steam account", price: 299 },
+      { name: "Budget Friendly", price: 69 },
     ],
   },
   {
@@ -755,6 +813,7 @@ export const games: ProductItem[] = [
     variants: [
       { name: "Shared Steam Account", price: 149 },
       { name: "In your steam account", price: 299 },
+      { name: "Budget Friendly", price: 69 },
     ],
     badge: "Game of the Year",
   },
@@ -767,6 +826,7 @@ export const games: ProductItem[] = [
     variants: [
       { name: "Shared Steam Account", price: 149 },
       { name: "In your steam account", price: 299 },
+      { name: "Budget Friendly", price: 69 },
     ],
   },
   {
@@ -778,6 +838,7 @@ export const games: ProductItem[] = [
     variants: [
       { name: "Shared Steam Account", price: 149 },
       { name: "In your steam account", price: 299 },
+      { name: "Budget Friendly", price: 69 },
     ],
     badge: "Top Seller",
   },
@@ -790,6 +851,7 @@ export const games: ProductItem[] = [
     variants: [
       { name: "Shared Steam Account", price: 149 },
       { name: "In your steam account", price: 299 },
+      { name: "Budget Friendly", price: 69 },
     ],
     badge: "Pre-order",
   },
@@ -802,6 +864,7 @@ export const games: ProductItem[] = [
     variants: [
       { name: "Shared Steam Account", price: 149 },
       { name: "In your steam account", price: 299 },
+      { name: "Budget Friendly", price: 69 },
     ],
   },
   {
@@ -813,6 +876,7 @@ export const games: ProductItem[] = [
     variants: [
       { name: "Shared Steam Account", price: 149 },
       { name: "In your steam account", price: 299 },
+      { name: "Budget Friendly", price: 69 },
     ],
   },
   {
@@ -824,6 +888,7 @@ export const games: ProductItem[] = [
     variants: [
       { name: "Shared Steam Account", price: 149 },
       { name: "In your steam account", price: 299 },
+      { name: "Budget Friendly", price: 69 },
     ],
     badge: "Overwhelmingly Positive",
   },
@@ -836,6 +901,7 @@ export const games: ProductItem[] = [
     variants: [
       { name: "Shared Steam Account", price: 149 },
       { name: "In your steam account", price: 299 },
+      { name: "Budget Friendly", price: 69 },
     ],
     badge: "Upcoming",
   },
@@ -848,6 +914,7 @@ export const games: ProductItem[] = [
     variants: [
       { name: "Shared Steam Account", price: 149 },
       { name: "In your steam account", price: 299 },
+      { name: "Budget Friendly", price: 69 },
     ],
     badge: "Fan Favorite",
   },
@@ -860,6 +927,7 @@ export const games: ProductItem[] = [
     variants: [
       { name: "Shared Steam Account", price: 149 },
       { name: "In your steam account", price: 299 },
+      { name: "Budget Friendly", price: 69 },
     ],
   },
   {
@@ -871,6 +939,7 @@ export const games: ProductItem[] = [
     variants: [
       { name: "Shared Steam Account", price: 149 },
       { name: "In your steam account", price: 299 },
+      { name: "Budget Friendly", price: 69 },
     ],
   },
   {
@@ -882,6 +951,7 @@ export const games: ProductItem[] = [
     variants: [
       { name: "Shared Steam Account", price: 149 },
       { name: "In your steam account", price: 299 },
+      { name: "Budget Friendly", price: 69 },
     ],
   },
   {
@@ -893,6 +963,7 @@ export const games: ProductItem[] = [
     variants: [
       { name: "Shared Steam Account", price: 149 },
       { name: "In your steam account", price: 299 },
+      { name: "Budget Friendly", price: 69 },
     ],
     badge: "Blockbuster",
   },
@@ -905,6 +976,7 @@ export const games: ProductItem[] = [
     variants: [
       { name: "Shared Steam Account", price: 149 },
       { name: "In your steam account", price: 299 },
+      { name: "Budget Friendly", price: 69 },
     ],
   },
   {
@@ -916,6 +988,7 @@ export const games: ProductItem[] = [
     variants: [
       { name: "Shared Steam Account", price: 149 },
       { name: "In your steam account", price: 299 },
+      { name: "Budget Friendly", price: 69 },
     ],
   },
   {
@@ -927,6 +1000,7 @@ export const games: ProductItem[] = [
     variants: [
       { name: "Shared Steam Account", price: 149 },
       { name: "In your steam account", price: 299 },
+      { name: "Budget Friendly", price: 69 },
     ],
   },
   {
@@ -938,6 +1012,7 @@ export const games: ProductItem[] = [
     variants: [
       { name: "Shared Steam Account", price: 149 },
       { name: "In your steam account", price: 299 },
+      { name: "Budget Friendly", price: 69 },
     ],
   },
   {
@@ -949,6 +1024,7 @@ export const games: ProductItem[] = [
     variants: [
       { name: "Shared Steam Account", price: 149 },
       { name: "In your steam account", price: 299 },
+      { name: "Budget Friendly", price: 69 },
     ],
     badge: "Trending New",
   },
@@ -961,6 +1037,7 @@ export const games: ProductItem[] = [
     variants: [
       { name: "Shared Steam Account", price: 149 },
       { name: "In your steam account", price: 299 },
+      { name: "Budget Friendly", price: 69 },
     ],
     badge: "Sports #1",
   },
@@ -973,6 +1050,7 @@ export const games: ProductItem[] = [
     variants: [
       { name: "Shared Steam Account", price: 149 },
       { name: "In your steam account", price: 299 },
+      { name: "Budget Friendly", price: 69 },
     ],
   },
   {
@@ -984,6 +1062,7 @@ export const games: ProductItem[] = [
     variants: [
       { name: "Shared Steam Account", price: 149 },
       { name: "In your steam account", price: 299 },
+      { name: "Budget Friendly", price: 69 },
     ],
   },
   {
@@ -995,6 +1074,7 @@ export const games: ProductItem[] = [
     variants: [
       { name: "Shared Steam Account", price: 149 },
       { name: "In your steam account", price: 299 },
+      { name: "Budget Friendly", price: 69 },
     ],
   },
   {
@@ -1006,6 +1086,7 @@ export const games: ProductItem[] = [
     variants: [
       { name: "Shared Steam Account", price: 149 },
       { name: "In your steam account", price: 299 },
+      { name: "Budget Friendly", price: 69 },
     ],
     badge: "Sim Legend",
   },
@@ -1018,6 +1099,7 @@ export const games: ProductItem[] = [
     variants: [
       { name: "Shared Steam Account", price: 149 },
       { name: "In your steam account", price: 299 },
+      { name: "Budget Friendly", price: 69 },
     ],
     badge: "Overwhelmingly Positive",
   },
@@ -1030,6 +1112,7 @@ export const games: ProductItem[] = [
     variants: [
       { name: "Shared Steam Account", price: 149 },
       { name: "In your steam account", price: 299 },
+      { name: "Budget Friendly", price: 69 },
     ],
   },
   {
@@ -1041,6 +1124,7 @@ export const games: ProductItem[] = [
     variants: [
       { name: "Shared Steam Account", price: 149 },
       { name: "In your steam account", price: 299 },
+      { name: "Budget Friendly", price: 69 },
     ],
     badge: "Best Co-op",
   },
@@ -1053,6 +1137,7 @@ export const games: ProductItem[] = [
     variants: [
       { name: "Shared Steam Account", price: 149 },
       { name: "In your steam account", price: 299 },
+      { name: "Budget Friendly", price: 69 },
     ],
   },
   {
@@ -1064,6 +1149,7 @@ export const games: ProductItem[] = [
     variants: [
       { name: "Shared Steam Account", price: 149 },
       { name: "In your steam account", price: 299 },
+      { name: "Budget Friendly", price: 69 },
     ],
   },
   {
@@ -1075,6 +1161,7 @@ export const games: ProductItem[] = [
     variants: [
       { name: "Shared Steam Account", price: 149 },
       { name: "In your steam account", price: 299 },
+      { name: "Budget Friendly", price: 69 },
     ],
     badge: "Fighting King",
   },
@@ -1087,6 +1174,7 @@ export const games: ProductItem[] = [
     variants: [
       { name: "Shared Steam Account", price: 149 },
       { name: "In your steam account", price: 299 },
+      { name: "Budget Friendly", price: 69 },
     ],
     badge: "Stealth Master",
   },
@@ -1099,6 +1187,7 @@ export const games: ProductItem[] = [
     variants: [
       { name: "Shared Steam Account", price: 149 },
       { name: "In your steam account", price: 299 },
+      { name: "Budget Friendly", price: 69 },
     ],
     badge: "Ultimate FPS",
   },
