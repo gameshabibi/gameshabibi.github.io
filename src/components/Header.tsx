@@ -96,11 +96,24 @@ export function Header({ onSearch, onOpenOrders }: HeaderProps) {
               onChange={handleSearchChange}
               aria-label="Search products"
             />
+            {searchVal && (
+              <button
+                type="button"
+                className="search-clear-btn"
+                onClick={() => {
+                  setSearchVal("");
+                  if (onSearch) onSearch("");
+                }}
+                aria-label="Clear search"
+              >
+                &times;
+              </button>
+            )}
           </div>
 
           <button
             type="button"
-            className="cart-button"
+            className="cart-button desktop-only-cart"
             onClick={openDrawer}
             aria-label="Open Shopping Cart"
           >

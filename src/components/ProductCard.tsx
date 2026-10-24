@@ -22,6 +22,9 @@ export function ProductCard({ product }: { product: ProductItem }) {
   const currentPrice = currentVariant ? currentVariant.price : (product.price || 0);
 
   const handleAdd = () => {
+    if (typeof window !== "undefined" && navigator.vibrate) {
+      navigator.vibrate(15);
+    }
     addItem({
       game: product.name,
       price: currentPrice,
@@ -71,7 +74,8 @@ export function ProductCard({ product }: { product: ProductItem }) {
             onClick={handleAdd}
             aria-label={`Add ${product.name} to cart`}
           >
-            + Add to Cart
+            <span className="card-btn-full">+ Add to Cart</span>
+            <span className="card-btn-compact">+ Add</span>
           </button>
         </div>
       </div>

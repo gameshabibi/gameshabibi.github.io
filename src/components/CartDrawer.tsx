@@ -40,8 +40,19 @@ export function CartDrawer() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [placedOrderId, setPlacedOrderId] = useState<string | null>(null);
   const [isCopied, setIsCopied] = useState(false);
+  const [isUpiCopied, setIsUpiCopied] = useState(false);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleCopyUpi = () => {
+    if (typeof navigator !== "undefined" && navigator.clipboard) {
+      navigator.clipboard.writeText(PAYMENT_ID);
+      setIsUpiCopied(true);
+      if (typeof window !== "undefined" && navigator.vibrate) navigator.vibrate(15);
+      showToast("UPI ID copied to clipboard!");
+      setTimeout(() => setIsUpiCopied(false), 2500);
+    }
+  };
 
   // Auto-restore customer contact info from draft storage
   useEffect(() => {
@@ -202,6 +213,7 @@ export function CartDrawer() {
         aria-modal="true"
         aria-label="Shopping Cart"
       >
+        <div className="drawer-handle" aria-hidden="true" />
         <div className="drawer-header">
           <h2>Your Cart ({items.reduce((s, i) => s + i.qty, 0)})</h2>
           <button
@@ -286,6 +298,22 @@ export function CartDrawer() {
                 >
                   {isCopied ? "✔ Copied!" : "📋 Copy Order ID"}
                 </button>
+                <a
+                  href={`https://wa.me/?text=${encodeURIComponent(
+                    `Hi Games Habibi! I just placed order #${placedOrderId} on gameshabibi.vercel.app. Here is my order confirmation!`
+                  )}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn"
+                  style={{
+                    background: "#25D366",
+                    color: "#04101c",
+                    fontWeight: 700,
+                    textDecoration: "none",
+                  }}
+                >
+                  💬 Share on WhatsApp
+                </a>
                 <button
                   type="button"
                   className="btn btn-secondary"
@@ -341,18 +369,24 @@ export function CartDrawer() {
                       <button
                         type="button"
                         className="qty-btn"
-                        onClick={() => updateQty(idx, -1)}
+                        onClick={() => {
+                          if (typeof window !== "undefined" && navigator.vibrate) navigator.vibrate(10);
+                          updateQty(idx, -1);
+                        }}
                         aria-label="Decrease quantity"
                       >
-                        -
+                        −
                       </button>
-                      <span style={{ fontFamily: "var(--font-data)", minWidth: "1rem", textAlign: "center" }}>
+                      <span style={{ fontFamily: "var(--font-data)", minWidth: "1.2rem", textAlign: "center", fontWeight: 700 }}>
                         {item.qty}
                       </span>
                       <button
                         type="button"
                         className="qty-btn"
-                        onClick={() => updateQty(idx, 1)}
+                        onClick={() => {
+                          if (typeof window !== "undefined" && navigator.vibrate) navigator.vibrate(10);
+                          updateQty(idx, 1);
+                        }}
                         aria-label="Increase quantity"
                       >
                         +
@@ -478,28 +512,54 @@ export function CartDrawer() {
 
               {/* Instant UPI Payment Box */}
               <div className="upi-box">
-                <h3>🔐 Instant UPI Payment</h3>
-                <p>Scan QR with any UPI app, or tap below on your mobile device</p>
+                <div className="upi-box-header">
+                  <h3>🔐 Instant UPI Payment</h3>
+                  <span className="upi-instant-badge">Instant Verification</span>
+                </div>
 
-                {qrSrc ? (
-                  <div className="qr-frame">
-                    <Image
-                      src={qrSrc}
-                      alt="Payment UPI QR"
-                      width={170}
-                      height={170}
-                      unoptimized
-                    />
-                  </div>
-                ) : (
-                  <div style={{ height: "170px", display: "grid", placeItems: "center" }}>
-                    Generating QR...
-                  </div>
-                )}
+                <div className="upi-actions-card">
+                  <a href={upiUrl} className="upi-app-btn">
+                    ⚡ Pay via UPI App (GPay / PhonePe / Paytm)
+                  </a>
 
-                <a href={upiUrl} className="upi-app-btn">
-                  ⚡ Pay via UPI App (GPay / PhonePe / Paytm)
-                </a>
+                  <div className="upi-id-pill">
+                    <span className="upi-id-text">
+                      UPI ID: <strong>{PAYMENT_ID}</strong>
+                    </span>
+                    <button
+                      type="button"
+                      onClick={handleCopyUpi}
+                      className="upi-copy-action-btn"
+                      aria-label="Copy UPI ID"
+                    >
+                      {isUpiCopied ? "✔ Copied" : "📋 Copy"}
+                    </button>
+                  </div>
+                </div>
+
+                <details className="upi-qr-accordion">
+                  <summary className="upi-qr-summary">
+                    <span>Show QR Code (For Desktop / Scanning)</span>
+                    <span className="accordion-chevron">▼</span>
+                  </summary>
+                  <div className="upi-qr-content">
+                    {qrSrc ? (
+                      <div className="qr-frame">
+                        <Image
+                          src={qrSrc}
+                          alt="Payment UPI QR"
+                          width={170}
+                          height={170}
+                          unoptimized
+                        />
+                      </div>
+                    ) : (
+                      <div style={{ height: "170px", display: "grid", placeItems: "center" }}>
+                        Generating QR...
+                      </div>
+                    )}
+                  </div>
+                </details>
               </div>
 
               {/* Order Confirmation Form */}
@@ -545,31 +605,51 @@ export function CartDrawer() {
                     onChange={(e) => setCustomerUtr(e.target.value)}
                   />
                   <small>
-                    Shown in your UPI app transaction receipt for instant approval.
+                    Found in your UPI app transaction receipt for instant operator approval.
                   </small>
                 </div>
 
                 <div>
                   <label htmlFor="paymentProof">Payment Screenshot (Required)</label>
-                  <input
-                    type="file"
-                    id="paymentProof"
-                    accept="image/*"
-                    required
-                    ref={fileInputRef}
-                    onChange={handleFileChange}
-                  />
+                  <div className="mobile-file-picker">
+                    <input
+                      type="file"
+                      id="paymentProof"
+                      accept="image/*"
+                      required
+                      ref={fileInputRef}
+                      onChange={handleFileChange}
+                      className="hidden-file-input"
+                    />
+                    <label htmlFor="paymentProof" className="mobile-file-label">
+                      <span className="file-icon">📸</span>
+                      <span className="file-desc">
+                        {paymentFile ? (
+                          <strong style={{ color: "var(--mint)" }}>
+                            Attached: {paymentFile.name}
+                          </strong>
+                        ) : (
+                          "Tap to choose screenshot from photo gallery"
+                        )}
+                      </span>
+                      {paymentFile && (
+                        <span className="file-ready-tag">Ready ✓</span>
+                      )}
+                    </label>
+                  </div>
                   <small>Max file size: 5 MB (PNG, JPG, WEBP)</small>
                 </div>
 
-                <button
-                  type="submit"
-                  className="btn btn-block"
-                  disabled={isSubmitting}
-                  style={{ minHeight: "3rem", fontSize: "1rem" }}
-                >
-                  {isSubmitting ? "Submitting Order..." : `Submit Order • ₹${total}`}
-                </button>
+                <div className="drawer-sticky-action">
+                  <button
+                    type="submit"
+                    className="btn btn-block"
+                    disabled={isSubmitting}
+                    style={{ minHeight: "3.2rem", fontSize: "1.05rem" }}
+                  >
+                    {isSubmitting ? "Submitting Order..." : `Submit Order • ₹${total}`}
+                  </button>
+                </div>
               </form>
             </>
           )}

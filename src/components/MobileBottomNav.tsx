@@ -10,9 +10,19 @@ export function MobileBottomNav({ onFocusSearch }: { onFocusSearch?: () => void 
   const pathname = usePathname();
   const totalQty = items.reduce((sum, item) => sum + item.qty, 0);
 
+  const triggerHaptic = () => {
+    if (typeof window !== "undefined" && navigator.vibrate) {
+      navigator.vibrate(12);
+    }
+  };
+
   return (
     <nav className="mobile-bottom-nav" aria-label="Mobile Navigation">
-      <Link href="/" className={`mobile-nav-item ${pathname === "/" ? "active" : ""}`}>
+      <Link
+        href="/"
+        onClick={triggerHaptic}
+        className={`mobile-nav-item ${pathname === "/" ? "active" : ""}`}
+      >
         <svg
           width="20"
           height="20"
@@ -31,6 +41,7 @@ export function MobileBottomNav({ onFocusSearch }: { onFocusSearch?: () => void 
 
       <Link
         href="/catalog"
+        onClick={triggerHaptic}
         className={`mobile-nav-item ${pathname === "/catalog" ? "active" : ""}`}
       >
         <svg
@@ -51,6 +62,7 @@ export function MobileBottomNav({ onFocusSearch }: { onFocusSearch?: () => void 
 
       <Link
         href="/orders"
+        onClick={triggerHaptic}
         className={`mobile-nav-item ${pathname === "/orders" ? "active" : ""}`}
       >
         <svg
@@ -73,7 +85,10 @@ export function MobileBottomNav({ onFocusSearch }: { onFocusSearch?: () => void 
       <button
         type="button"
         className="mobile-nav-item"
-        onClick={openDrawer}
+        onClick={() => {
+          triggerHaptic();
+          openDrawer();
+        }}
         aria-label="Open Shopping Cart"
         style={{ position: "relative" }}
       >
