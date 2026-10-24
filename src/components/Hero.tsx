@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import Link from "next/link";
 
 export function Hero() {
   return (
@@ -19,12 +20,12 @@ export function Hero() {
           </p>
 
           <div className="hero-actions">
-            <a href="#games" className="btn">
+            <Link href="/catalog" className="btn">
               Browse Catalog
-            </a>
-            <a href="#contact" className="btn btn-secondary">
+            </Link>
+            <Link href="/contact" className="btn btn-secondary">
               Talk to Support
-            </a>
+            </Link>
           </div>
 
           <div className="trust-strip" aria-label="Trust indicators">

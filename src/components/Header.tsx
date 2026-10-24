@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 import { useCart } from "@/context/CartContext";
 
 interface HeaderProps {
@@ -13,6 +14,7 @@ interface HeaderProps {
 export function Header({ onSearch, onOpenOrders }: HeaderProps) {
   const { items, openDrawer, pastOrders } = useCart();
   const [searchVal, setSearchVal] = useState("");
+  const pathname = usePathname();
 
   const totalItems = items.reduce((sum, item) => sum + item.qty, 0);
 
@@ -41,26 +43,36 @@ export function Header({ onSearch, onOpenOrders }: HeaderProps) {
         </Link>
 
         <nav className="site-nav" aria-label="Store navigation">
-          <a href="#games">Catalog</a>
-          <a href="#how-it-works">How It Works</a>
-          <a href="#about">About</a>
-          <a href="#contact">Support</a>
-          <Link href="/contact">Help Desk</Link>
-          {pastOrders.length > 0 && (
-            <button
-              type="button"
-              onClick={onOpenOrders}
-              style={{
-                fontSize: "0.86rem",
-                color: "var(--mint)",
-                display: "inline-flex",
-                alignItems: "center",
-                gap: "0.3rem",
-              }}
-            >
-              📦 My Orders ({pastOrders.length})
-            </button>
-          )}
+          <Link
+            href="/catalog"
+            className={pathname === "/catalog" ? "active" : ""}
+          >
+            Catalog
+          </Link>
+          <Link
+            href="/how-it-works"
+            className={pathname === "/how-it-works" ? "active" : ""}
+          >
+            How It Works
+          </Link>
+          <Link
+            href="/about"
+            className={pathname === "/about" ? "active" : ""}
+          >
+            About
+          </Link>
+          <Link
+            href="/contact"
+            className={pathname === "/contact" ? "active" : ""}
+          >
+            Help Desk
+          </Link>
+          <Link
+            href="/orders"
+            className={pathname === "/orders" ? "active" : ""}
+          >
+            Orders {pastOrders.length > 0 ? `(${pastOrders.length})` : ""}
+          </Link>
         </nav>
 
         <div className="header-actions">
