@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Header } from "@/components/Header";
 import { Hero } from "@/components/Hero";
 import { Ticker } from "@/components/Ticker";
@@ -236,11 +237,20 @@ export default function HomePage() {
 
       <footer className="site-footer">
         <div className="container footer-inner">
-          <div>
-            <p className="footer-brand">Games Habibi</p>
-            <p className="footer-copy">
-              Premium digital storefront with mobile-friendly UPI checkout and direct support.
-            </p>
+          <div style={{ display: "flex", alignItems: "center", gap: "0.85rem" }}>
+            <Image
+              src="/png/apple-touch-icon.png"
+              alt="Games Habibi Logo"
+              width={40}
+              height={40}
+              className="brand-logo"
+            />
+            <div>
+              <p className="footer-brand">Games Habibi</p>
+              <p className="footer-copy">
+                Premium digital storefront with mobile-friendly UPI checkout and direct support.
+              </p>
+            </div>
           </div>
 
           <div className="footer-links">

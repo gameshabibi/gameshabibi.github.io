@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useCart } from "@/context/CartContext";
 
 interface HeaderProps {
@@ -25,7 +26,14 @@ export function Header({ onSearch, onOpenOrders }: HeaderProps) {
     <header className="site-header">
       <div className="container header-inner">
         <Link href="/" className="brand-lockup" aria-label="Games Habibi Home">
-          <span className="brand-mark">GH</span>
+          <Image
+            src="/png/apple-touch-icon.png"
+            alt="Games Habibi Logo"
+            width={44}
+            height={44}
+            className="brand-logo"
+            priority
+          />
           <span className="brand-copy">
             <span className="brand-kicker">Instant digital delivery</span>
             <span className="brand-name">Games Habibi</span>

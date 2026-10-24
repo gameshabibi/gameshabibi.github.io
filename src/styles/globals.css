@@ -149,6 +149,21 @@ button {
   font-weight: 800;
 }
 
+.brand-logo {
+  width: 2.65rem;
+  height: 2.65rem;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1.5px solid rgba(245, 166, 35, 0.45);
+  box-shadow: 0 0 12px rgba(0, 255, 179, 0.22);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.brand-lockup:hover .brand-logo {
+  transform: scale(1.06);
+  box-shadow: 0 0 18px rgba(245, 166, 35, 0.4);
+}
+
 .brand-copy {
   display: flex;
   flex-direction: column;
