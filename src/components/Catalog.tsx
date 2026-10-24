@@ -21,6 +21,51 @@ type FilterType =
   | "under100"
   | "services";
 
+const POPULAR_KEYS = [
+  "grand theft auto",
+  "gta",
+  "red dead",
+  "black myth",
+  "god of war",
+  "forza",
+  "elden ring",
+  "ea sports",
+  "palworld",
+  "cyberpunk",
+  "spider-man",
+  "last of us",
+  "wukong",
+  "fifa",
+  "tekken",
+  "mortal kombat",
+  "call of duty",
+  "assassin's creed",
+  "sekiro",
+  "hogwarts",
+  "witcher",
+  "baldur",
+  "ghost of tsushima",
+  "stellar blade",
+  "resident evil",
+  "days gone",
+  "detroit",
+  "uncharted",
+  "hitman",
+  "dark souls",
+  "beamng",
+  "need for speed",
+  "nfs",
+  "assetto corsa",
+];
+
+const getPopularityScore = (i: ProductItem): number => {
+  let score = 0;
+  if (i.badge && i.badge !== "Budget Pick") score += 2;
+  const name = i.name.toLowerCase();
+  if (POPULAR_KEYS.some((k) => name.includes(k))) score += 1;
+  return score;
+};
+
 const getItemMinPrice = (item: ProductItem): number => {
   if (item.variants && item.variants.length > 0) {
     return Math.min(...item.variants.map((v) => v.price));
@@ -64,9 +109,21 @@ export function Catalog({
       all = [...serviceItems, ...gameItems];
     } else if (filter === "under100") {
       all = all.filter((item) => getItemMinPrice(item) <= 100);
-      all.sort((a, b) => getItemMinPrice(a) - getItemMinPrice(b));
+      all.sort((a, b) => {
+        const priceDiff = getItemMinPrice(a) - getItemMinPrice(b);
+        if (priceDiff !== 0) return priceDiff;
+        const popDiff = getPopularityScore(b) - getPopularityScore(a);
+        if (popDiff !== 0) return popDiff;
+        return a.name.localeCompare(b.name, undefined, { sensitivity: "base", numeric: true });
+      });
     } else if (filter === "lowToHigh") {
-      all.sort((a, b) => getItemMinPrice(a) - getItemMinPrice(b));
+      all.sort((a, b) => {
+        const priceDiff = getItemMinPrice(a) - getItemMinPrice(b);
+        if (priceDiff !== 0) return priceDiff;
+        const popDiff = getPopularityScore(b) - getPopularityScore(a);
+        if (popDiff !== 0) return popDiff;
+        return a.name.localeCompare(b.name, undefined, { sensitivity: "base", numeric: true });
+      });
     } else if (filter === "actionFirst") {
       const isAction = (i: ProductItem) => i.genre.toLowerCase().includes("action");
       all.sort((a, b) => (isAction(b) ? 1 : 0) - (isAction(a) ? 1 : 0));
@@ -75,50 +132,11 @@ export function Catalog({
         i.genre.toLowerCase().includes("racing") || i.genre.toLowerCase().includes("driving");
       all.sort((a, b) => (isRacing(b) ? 1 : 0) - (isRacing(a) ? 1 : 0));
     } else if (filter === "popularFirst") {
-      const POPULAR_KEYS = [
-        "grand theft auto",
-        "gta",
-        "red dead",
-        "black myth",
-        "god of war",
-        "forza",
-        "elden ring",
-        "ea sports",
-        "palworld",
-        "cyberpunk",
-        "spider-man",
-        "last of us",
-        "wukong",
-        "fifa",
-        "tekken",
-        "mortal kombat",
-        "call of duty",
-        "assassin's creed",
-        "sekiro",
-        "hogwarts",
-        "witcher",
-        "baldur",
-        "ghost of tsushima",
-        "stellar blade",
-        "resident evil",
-        "days gone",
-        "detroit",
-        "uncharted",
-        "hitman",
-        "dark souls",
-        "beamng",
-        "need for speed",
-        "nfs",
-        "assetto corsa",
-      ];
-      const isPopular = (i: ProductItem) => {
-        let score = 0;
-        if (i.badge && i.badge !== "Budget Pick") score += 2;
-        const name = i.name.toLowerCase();
-        if (POPULAR_KEYS.some((k) => name.includes(k))) score += 1;
-        return score;
-      };
-      all.sort((a, b) => isPopular(b) - isPopular(a));
+      all.sort((a, b) => {
+        const popDiff = getPopularityScore(b) - getPopularityScore(a);
+        if (popDiff !== 0) return popDiff;
+        return a.name.localeCompare(b.name, undefined, { sensitivity: "base", numeric: true });
+      });
     }
 
     return all;
