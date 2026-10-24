@@ -45,36 +45,39 @@ export function SteamGuideFAQ() {
 
           <div
             style={{
-              display: "inline-flex",
+              display: "flex",
+              flexWrap: "wrap",
+              justifyContent: "center",
               background: "rgba(25, 18, 48, 0.8)",
               padding: "0.35rem",
-              borderRadius: "var(--radius-full)",
+              borderRadius: "var(--radius-md)",
               border: "1px solid var(--border-soft)",
-              marginTop: "1.5rem",
+              marginTop: "1.2rem",
               gap: "0.4rem",
+              maxWidth: "100%",
             }}
           >
             <button
               type="button"
               className={`filter-pill ${activeTab === "shared" ? "active" : ""}`}
               onClick={() => setActiveTab("shared")}
-              style={{ padding: "0.45rem 1.1rem", fontSize: "0.85rem" }}
+              style={{ padding: "0.45rem 0.85rem", fontSize: "0.82rem" }}
             >
-              👥 Shared Account (Budget)
+              👥 Shared (Budget)
             </button>
             <button
               type="button"
               className={`filter-pill ${activeTab === "personal" ? "active" : ""}`}
               onClick={() => setActiveTab("personal")}
-              style={{ padding: "0.45rem 1.1rem", fontSize: "0.85rem" }}
+              style={{ padding: "0.45rem 0.85rem", fontSize: "0.82rem" }}
             >
-              👤 In Your Steam Account
+              👤 Personal Steam
             </button>
             <button
               type="button"
               className={`filter-pill ${activeTab === "faq" ? "active" : ""}`}
               onClick={() => setActiveTab("faq")}
-              style={{ padding: "0.45rem 1.1rem", fontSize: "0.85rem" }}
+              style={{ padding: "0.45rem 0.85rem", fontSize: "0.82rem" }}
             >
               ❓ FAQs
             </button>
