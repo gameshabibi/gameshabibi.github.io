@@ -55,6 +55,13 @@ const COUPON_LIST: Record<string, { type: "percent" | "flat"; value: number }> =
   LEVELUP: { type: "percent", value: 15 },
 };
 
+export const isBudgetFriendlyItem = (item: { variant?: string; price: number }) => {
+  return (
+    item.variant?.toLowerCase().includes("budget") ||
+    (item.price === 69 && (item.variant?.toLowerCase().includes("friendly") || !item.variant))
+  );
+};
+
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export function CartProvider({ children }: { children: React.ReactNode }) {
@@ -168,6 +175,14 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     if (!clean) {
       return { success: false, message: "Please enter a coupon code" };
     }
+    const hasEligibleItems = items.some((item) => !isBudgetFriendlyItem(item));
+    if (items.length > 0 && !hasEligibleItems) {
+      playFeedback("error");
+      return {
+        success: false,
+        message: "Offers & coupons do not apply to Budget Friendly option (flat ₹69)",
+      };
+    }
     if (COUPON_LIST[clean]) {
       setAppliedCoupon(clean);
       try {
@@ -194,9 +209,11 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   // Calculate pricing & bundle discounts
   const subtotal = items.reduce((sum, item) => sum + item.price * item.qty, 0);
 
-  // Bundle discounts apply to Steam personal account games (price === 299)
+  // Bundle discounts apply only to standard Steam personal account games (price === 299, not Budget Friendly)
   const personalSteamItems = items.filter(
-    (item) => item.variant?.toLowerCase().includes("in your steam") || item.price === 299
+    (item) =>
+      !isBudgetFriendlyItem(item) &&
+      (item.variant?.toLowerCase().includes("in your steam") || item.price === 299)
   );
   const bundleCount = personalSteamItems.reduce((acc, item) => acc + item.qty, 0);
 
@@ -212,15 +229,23 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     bundleDiscount = Math.round(steamSum * 0.25);
   }
 
-  // Calculate coupon discount
+  // Calculate coupon discount - explicitly excludes Budget Friendly selection
+  const couponEligibleItems = items.filter((item) => !isBudgetFriendlyItem(item));
+  const couponEligibleSubtotal = couponEligibleItems.reduce(
+    (sum, item) => sum + item.price * item.qty,
+    0
+  );
+
   let couponDiscount = 0;
   if (appliedCoupon && COUPON_LIST[appliedCoupon]) {
     const rule = COUPON_LIST[appliedCoupon];
-    const discountedBase = Math.max(0, subtotal - bundleDiscount);
-    if (rule.type === "percent") {
-      couponDiscount = Math.round((discountedBase * rule.value) / 100);
-    } else {
-      couponDiscount = Math.min(rule.value, discountedBase);
+    const discountedBase = Math.max(0, couponEligibleSubtotal - bundleDiscount);
+    if (discountedBase > 0) {
+      if (rule.type === "percent") {
+        couponDiscount = Math.round((discountedBase * rule.value) / 100);
+      } else {
+        couponDiscount = Math.min(rule.value, discountedBase);
+      }
     }
   }
 

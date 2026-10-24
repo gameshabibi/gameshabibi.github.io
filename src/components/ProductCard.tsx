@@ -61,6 +61,7 @@ export function ProductCard({ product }: { product: ProductItem }) {
             {product.variants.map((v, idx) => (
               <option key={idx} value={idx}>
                 {v.name} — ₹{v.price}
+                {v.name.toLowerCase().includes("budget") ? " (Flat ₹69 • No coupons/offers)" : ""}
               </option>
             ))}
           </select>

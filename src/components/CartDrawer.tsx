@@ -363,6 +363,11 @@ export function CartDrawer() {
                     <div className="cart-item-info">
                       <strong>{item.game}</strong>
                       {item.variant && <span>{item.variant}</span>}
+                      {item.variant?.toLowerCase().includes("budget") && (
+                        <span style={{ fontSize: "0.72rem", color: "var(--accent-gold, #f59e0b)" }}>
+                          ⚡ Flat ₹69 (No coupons/offers)
+                        </span>
+                      )}
                     </div>
 
                     <div className="cart-item-ctrls">

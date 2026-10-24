@@ -422,6 +422,11 @@ export default function CartPage() {
                               {item.variant}
                             </span>
                           )}
+                          {item.variant?.toLowerCase().includes("budget") && (
+                            <span style={{ fontSize: "0.72rem", color: "var(--accent-gold, #f59e0b)", display: "block" }}>
+                              ⚡ Flat ₹69 (No coupons/offers)
+                            </span>
+                          )}
                         </div>
                       </div>
 
