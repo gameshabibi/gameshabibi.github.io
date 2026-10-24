@@ -20,5 +20,18 @@
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "typescript": "^5.6.3"
-  }
+  },
+  "description": "> Your one-stop storefront for the latest PC games, Steam account access, and digital subscriptions with fast UPI payments. Built on **Next.js 16 (App Router)**, **React 19**, and **TypeScript** for seamless **Vercel** deployment.",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gameshabibi/gameshabibi.github.io.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/gameshabibi/gameshabibi.github.io/issues"
+  },
+  "homepage": "https://github.com/gameshabibi/gameshabibi.github.io#readme"
 }
