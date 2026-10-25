@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { useCart } from "@/context/CartContext";
 import { generateUPIQRCode } from "@/lib/qr";
 import { getOrderWhatsAppUrl, WhatsAppOrderDetails } from "@/lib/whatsapp";
@@ -32,6 +33,7 @@ export function CartDrawer() {
     showToast,
   } = useCart();
 
+  const [checkoutStep, setCheckoutStep] = useState<1 | 2 | 3>(1);
   const [qrSrc, setQrSrc] = useState<string>("");
   const [customerName, setCustomerName] = useState<string>("");
   const [customerEmail, setCustomerEmail] = useState<string>("");
@@ -246,15 +248,35 @@ export function CartDrawer() {
       >
         <div className="drawer-handle" aria-hidden="true" />
         <div className="drawer-header">
-          <h2>Your Cart ({items.reduce((s, i) => s + i.qty, 0)})</h2>
-          <button
-            type="button"
-            className="drawer-close"
-            onClick={closeDrawer}
-            aria-label="Close Cart Drawer"
-          >
-            &times;
-          </button>
+          <h2>
+            {checkoutStep === 1
+              ? `Cart (${items.reduce((s, i) => s + i.qty, 0)})`
+              : checkoutStep === 2
+              ? "UPI Payment"
+              : "Verify & Dispatch"}
+          </h2>
+          <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+            <Link
+              href="/cart"
+              onClick={closeDrawer}
+              style={{
+                fontSize: "0.78rem",
+                color: "var(--accent)",
+                textDecoration: "underline",
+                fontWeight: 600,
+              }}
+            >
+              Full Page ↗
+            </Link>
+            <button
+              type="button"
+              className="drawer-close"
+              onClick={closeDrawer}
+              aria-label="Close Cart Drawer"
+            >
+              &times;
+            </button>
+          </div>
         </div>
 
         <div className="drawer-body">
@@ -293,8 +315,7 @@ export function CartDrawer() {
                   margin: "0 0 1.2rem",
                 }}
               >
-                Your payment screenshot has been submitted to store operators. Save
-                your Order ID below:
+                Your payment screenshot has been submitted for automated order dispatch. Save your Order ID:
               </p>
 
               <div
@@ -359,6 +380,7 @@ export function CartDrawer() {
                   onClick={() => {
                     setPlacedOrderId(null);
                     setPlacedOrderDetails(null);
+                    setCheckoutStep(1);
                     closeDrawer();
                   }}
                 >
@@ -387,365 +409,562 @@ export function CartDrawer() {
             </div>
           ) : (
             <>
-              {/* 3-Step Checkout Stepper */}
+              {/* 3-Step Interactive Stepper */}
               <div className="checkout-stepper">
-                <div className="step-pill is-active">
-                  <span className="step-dot">1</span>
-                  <span>Review</span>
-                </div>
+                <button
+                  type="button"
+                  className={`step-pill ${checkoutStep === 1 ? "is-active" : "is-completed"}`}
+                  onClick={() => setCheckoutStep(1)}
+                >
+                  <span className="step-dot">{checkoutStep > 1 ? "✓" : "1"}</span>
+                  <span>1. Review</span>
+                </button>
                 <div className="step-arrow">→</div>
-                <div className="step-pill is-active">
-                  <span className="step-dot">2</span>
-                  <span>UPI Pay</span>
-                </div>
+                <button
+                  type="button"
+                  className={`step-pill ${
+                    checkoutStep === 2
+                      ? "is-active"
+                      : checkoutStep > 2
+                      ? "is-completed"
+                      : ""
+                  }`}
+                  onClick={() => setCheckoutStep(2)}
+                >
+                  <span className="step-dot">{checkoutStep > 2 ? "✓" : "2"}</span>
+                  <span>2. UPI Pay</span>
+                </button>
                 <div className="step-arrow">→</div>
-                <div className="step-pill">
+                <button
+                  type="button"
+                  className={`step-pill ${checkoutStep === 3 ? "is-active" : ""}`}
+                  onClick={() => setCheckoutStep(3)}
+                >
                   <span className="step-dot">3</span>
-                  <span>Dispatch</span>
-                </div>
+                  <span>3. Verify</span>
+                </button>
               </div>
 
-              {/* Bundle Banner */}
-              <div className="bundle-banner">
-                <span>🎁</span>
-                <div>
-                  <strong>Bundle Savings: </strong>
-                  <span>2 games: 25% OFF • 3 games: 40% OFF • 4+ games: 47% OFF</span>
-                </div>
-              </div>
-
-              {/* Items List */}
-              <div className="cart-items-list">
-                {items.map((item, idx) => (
-                  <div className="cart-item-row" key={item.id}>
-                    <div className="cart-item-info">
-                      <strong>{item.game}</strong>
-                      {item.variant && <span>{item.variant}</span>}
-                      {item.variant?.toLowerCase().includes("budget") && (
-                        <span style={{ fontSize: "0.72rem", color: "var(--accent-gold, #f59e0b)" }}>
-                          ⚡ Budget (No Offers)
-                        </span>
-                      )}
+              {/* STEP 1: REVIEW ITEMS */}
+              {checkoutStep === 1 && (
+                <>
+                  {/* Bundle Banner */}
+                  <div className="bundle-banner">
+                    <span>🎁</span>
+                    <div>
+                      <strong>Bundle Savings: </strong>
+                      <span>2 games: 25% OFF • 3 games: 40% OFF • 4+ games: 47% OFF</span>
                     </div>
-
-                    <div className="cart-item-ctrls">
-                      <button
-                        type="button"
-                        className="qty-btn"
-                        onClick={() => {
-                          if (typeof window !== "undefined" && navigator.vibrate) navigator.vibrate(10);
-                          updateQty(idx, -1);
-                        }}
-                        aria-label="Decrease quantity"
-                      >
-                        −
-                      </button>
-                      <span style={{ fontFamily: "var(--font-data)", minWidth: "1.2rem", textAlign: "center", fontWeight: 700 }}>
-                        {item.qty}
-                      </span>
-                      <button
-                        type="button"
-                        className="qty-btn"
-                        onClick={() => {
-                          if (typeof window !== "undefined" && navigator.vibrate) navigator.vibrate(10);
-                          updateQty(idx, 1);
-                        }}
-                        aria-label="Increase quantity"
-                      >
-                        +
-                      </button>
-                    </div>
-
-                    <div className="cart-item-price">
-                      ₹{item.price * item.qty}
-                    </div>
-
-                    <button
-                      type="button"
-                      onClick={() => removeItem(idx)}
-                      style={{ color: "var(--danger)", fontSize: "1rem", marginLeft: "0.2rem" }}
-                      aria-label="Remove item"
-                    >
-                      &times;
-                    </button>
                   </div>
-                ))}
-              </div>
 
-              {/* Promo / Coupon Code Section */}
-              <div style={{ background: "rgba(25, 18, 48, 0.6)", padding: "0.85rem", borderRadius: "var(--radius-sm)", border: "1px solid rgba(245, 166, 35, 0.12)" }}>
-                <label style={{ display: "block", fontSize: "0.82rem", color: "var(--text-secondary)", marginBottom: "0.35rem" }}>
-                  Have a Promo / Coupon Code?
-                </label>
-                {appliedCoupon ? (
-                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", background: "rgba(0, 255, 179, 0.1)", border: "1px solid var(--mint)", padding: "0.4rem 0.8rem", borderRadius: "var(--radius-sm)" }}>
-                    <span style={{ color: "var(--mint)", fontWeight: 700, fontSize: "0.88rem", fontFamily: "var(--font-data)" }}>
-                      {couponEligibleCount > 1
-                        ? `🏷️ ${appliedCoupon} APPLIED (-₹${couponDiscount})`
-                        : `🏷️ ${appliedCoupon} (Requires >1 game: -₹0)`}
-                    </span>
-                    <button
-                      type="button"
-                      onClick={removeCoupon}
-                      style={{ color: "var(--danger)", fontSize: "0.82rem", fontWeight: 600 }}
-                    >
-                      Remove
-                    </button>
+                  {/* Items List */}
+                  <div className="cart-items-list">
+                    {items.map((item, idx) => (
+                      <div className="cart-item-row" key={item.id}>
+                        <div className="cart-item-info">
+                          <strong>{item.game}</strong>
+                          {item.variant && <span>{item.variant}</span>}
+                          {item.variant?.toLowerCase().includes("budget") && (
+                            <span
+                              style={{
+                                fontSize: "0.72rem",
+                                color: "var(--accent-gold, #f59e0b)",
+                              }}
+                            >
+                              ⚡ Budget (No Offers)
+                            </span>
+                          )}
+                        </div>
+
+                        <div className="cart-item-ctrls">
+                          <button
+                            type="button"
+                            className="qty-btn"
+                            onClick={() => {
+                              if (typeof window !== "undefined" && navigator.vibrate)
+                                navigator.vibrate(10);
+                              updateQty(idx, -1);
+                            }}
+                            aria-label="Decrease quantity"
+                          >
+                            −
+                          </button>
+                          <span
+                            style={{
+                              fontFamily: "var(--font-data)",
+                              minWidth: "1.2rem",
+                              textAlign: "center",
+                              fontWeight: 700,
+                            }}
+                          >
+                            {item.qty}
+                          </span>
+                          <button
+                            type="button"
+                            className="qty-btn"
+                            onClick={() => {
+                              if (typeof window !== "undefined" && navigator.vibrate)
+                                navigator.vibrate(10);
+                              updateQty(idx, 1);
+                            }}
+                            aria-label="Increase quantity"
+                          >
+                            +
+                          </button>
+                        </div>
+
+                        <div className="cart-item-price">
+                          ₹{item.price * item.qty}
+                        </div>
+
+                        <button
+                          type="button"
+                          onClick={() => removeItem(idx)}
+                          style={{
+                            color: "var(--danger)",
+                            fontSize: "1rem",
+                            marginLeft: "0.2rem",
+                          }}
+                          aria-label="Remove item"
+                        >
+                          &times;
+                        </button>
+                      </div>
+                    ))}
                   </div>
-                ) : (
-                  <>
-                    <form onSubmit={handleApplyCoupon} style={{ display: "flex", gap: "0.5rem" }}>
-                      <input
-                        type="text"
-                        placeholder="e.g. HABIBI10, FIRST50"
-                        value={couponInput}
-                        onChange={(e) => setCouponInput(e.target.value)}
+
+                  {/* Promo / Coupon Code Section */}
+                  <div
+                    style={{
+                      background: "rgba(25, 18, 48, 0.6)",
+                      padding: "0.85rem",
+                      borderRadius: "var(--radius-sm)",
+                      border: "1px solid rgba(245, 166, 35, 0.12)",
+                    }}
+                  >
+                    <label
+                      style={{
+                        display: "block",
+                        fontSize: "0.82rem",
+                        color: "var(--text-secondary)",
+                        marginBottom: "0.35rem",
+                      }}
+                    >
+                      Have a Promo / Coupon Code?
+                    </label>
+                    {appliedCoupon ? (
+                      <div
                         style={{
-                          flex: 1,
-                          background: "rgba(18, 14, 35, 0.9)",
-                          border: "1px solid var(--border-soft)",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "space-between",
+                          background: "rgba(0, 255, 179, 0.1)",
+                          border: "1px solid var(--mint)",
+                          padding: "0.4rem 0.8rem",
                           borderRadius: "var(--radius-sm)",
-                          color: "var(--text-primary)",
-                          padding: "0.45rem 0.75rem",
-                          fontSize: "0.85rem",
-                          textTransform: "uppercase",
                         }}
-                      />
-                      <button
-                        type="submit"
-                        className="btn btn-secondary"
-                        style={{ minHeight: "2.4rem", padding: "0.4rem 1rem", fontSize: "0.82rem" }}
                       >
-                        Apply
-                      </button>
-                    </form>
-                    <span style={{ display: "block", fontSize: "0.74rem", color: "var(--text-muted)", marginTop: "0.3rem" }}>
-                      * Requires &gt;1 game in cart (excluding Budget Friendly).
-                    </span>
-                  </>
-                )}
-                {couponMessage && !appliedCoupon && (
-                  <span style={{ display: "block", fontSize: "0.76rem", color: "var(--warning)", marginTop: "0.35rem" }}>
-                    {couponMessage}
-                  </span>
-                )}
-              </div>
-
-              {/* Tip Contribution */}
-              <div>
-                <label style={{ fontSize: "0.82rem", color: "var(--text-secondary)" }}>
-                  Storefront Tip / Support (Optional)
-                </label>
-                <div className="tip-box">
-                  <input
-                    type="number"
-                    min="0"
-                    value={tip}
-                    onChange={(e) => setTip(Math.max(0, Number(e.target.value) || 0))}
-                    placeholder="₹ Tip"
-                  />
-                  <span style={{ fontSize: "0.8rem", color: "var(--text-muted)" }}>
-                    Directly supports Games Habibi
-                  </span>
-                </div>
-              </div>
-
-              {/* Pricing Breakdown */}
-              <div className="pricing-card">
-                <div className="pricing-row">
-                  <span>Subtotal</span>
-                  <span>₹{subtotal}</span>
-                </div>
-                {bundleDiscount > 0 && (
-                  <div className="pricing-row" style={{ color: "var(--mint)" }}>
-                    <span>Bundle Discount ({bundleCount} titles)</span>
-                    <span>-₹{bundleDiscount}</span>
-                  </div>
-                )}
-                {couponDiscount > 0 && (
-                  <div className="pricing-row" style={{ color: "var(--mint)" }}>
-                    <span>Coupon Discount ({appliedCoupon})</span>
-                    <span>-₹{couponDiscount}</span>
-                  </div>
-                )}
-                {tip > 0 && (
-                  <div className="pricing-row">
-                    <span>Storefront Tip</span>
-                    <span>+₹{tip}</span>
-                  </div>
-                )}
-                <div className="pricing-row total-row">
-                  <span>Total Amount</span>
-                  <span>₹{total}</span>
-                </div>
-              </div>
-
-              {/* Instant UPI Payment Box */}
-              <div className="upi-box">
-                <div className="upi-box-header">
-                  <h3>🔐 Instant UPI Payment</h3>
-                  <span className="upi-instant-badge">Instant Verification</span>
-                </div>
-
-                <div className="upi-actions-card">
-                  <a href={upiUrl} className="upi-app-btn">
-                    ⚡ Pay via UPI App (GPay / PhonePe / Paytm)
-                  </a>
-
-                  <div className="upi-id-pill">
-                    <span className="upi-id-text">
-                      UPI ID: <strong>{PAYMENT_ID}</strong>
-                    </span>
-                    <button
-                      type="button"
-                      onClick={handleCopyUpi}
-                      className="upi-copy-action-btn"
-                      aria-label="Copy UPI ID"
-                    >
-                      {isUpiCopied ? "✔ Copied" : "📋 Copy"}
-                    </button>
-                  </div>
-                </div>
-
-                <details className="upi-qr-accordion">
-                  <summary className="upi-qr-summary">
-                    <span>Show QR Code (For Desktop / Scanning)</span>
-                    <span className="accordion-chevron">▼</span>
-                  </summary>
-                  <div className="upi-qr-content">
-                    {qrSrc ? (
-                      <div className="qr-frame">
-                        <Image
-                          src={qrSrc}
-                          alt="Payment UPI QR"
-                          width={170}
-                          height={170}
-                          unoptimized
-                        />
+                        <span
+                          style={{
+                            color: "var(--mint)",
+                            fontWeight: 700,
+                            fontSize: "0.88rem",
+                            fontFamily: "var(--font-data)",
+                          }}
+                        >
+                          {couponEligibleCount > 1
+                            ? `🏷️ ${appliedCoupon} APPLIED (-₹${couponDiscount})`
+                            : `🏷️ ${appliedCoupon} (Requires >1 game: -₹0)`}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={removeCoupon}
+                          style={{
+                            color: "var(--danger)",
+                            fontSize: "0.82rem",
+                            fontWeight: 600,
+                          }}
+                        >
+                          Remove
+                        </button>
                       </div>
                     ) : (
-                      <div style={{ height: "170px", display: "grid", placeItems: "center" }}>
-                        Generating QR...
-                      </div>
+                      <>
+                        <form
+                          onSubmit={handleApplyCoupon}
+                          style={{ display: "flex", gap: "0.5rem" }}
+                        >
+                          <input
+                            type="text"
+                            placeholder="e.g. HABIBI10, FIRST50"
+                            value={couponInput}
+                            onChange={(e) => setCouponInput(e.target.value)}
+                            style={{
+                              flex: 1,
+                              background: "rgba(18, 14, 35, 0.9)",
+                              border: "1px solid var(--border-soft)",
+                              borderRadius: "var(--radius-sm)",
+                              color: "var(--text-primary)",
+                              padding: "0.45rem 0.75rem",
+                              fontSize: "0.85rem",
+                              textTransform: "uppercase",
+                            }}
+                          />
+                          <button
+                            type="submit"
+                            className="btn btn-secondary"
+                            style={{
+                              minHeight: "2.4rem",
+                              padding: "0.4rem 1rem",
+                              fontSize: "0.82rem",
+                            }}
+                          >
+                            Apply
+                          </button>
+                        </form>
+                        <span
+                          style={{
+                            display: "block",
+                            fontSize: "0.74rem",
+                            color: "var(--text-muted)",
+                            marginTop: "0.3rem",
+                          }}
+                        >
+                          * Requires &gt;1 game in cart (excluding Budget Friendly).
+                        </span>
+                      </>
+                    )}
+                    {couponMessage && !appliedCoupon && (
+                      <span
+                        style={{
+                          display: "block",
+                          fontSize: "0.76rem",
+                          color: "var(--warning)",
+                          marginTop: "0.35rem",
+                        }}
+                      >
+                        {couponMessage}
+                      </span>
                     )}
                   </div>
-                </details>
-              </div>
 
-              {/* Trust & Guarantee Card */}
-              <div className="trust-guarantee-card">
-                <div className="trust-item">
-                  <span className="trust-icon">🛡️</span>
+                  {/* Tip Contribution */}
                   <div>
-                    <strong>100% Replacement Warranty</strong>
-                    <p>Guaranteed active login & lifetime assistance.</p>
-                  </div>
-                </div>
-                <div className="trust-item">
-                  <span className="trust-icon">⚡</span>
-                  <div>
-                    <strong>Fast Telegram Bot Dispatch</strong>
-                    <p>Automated payment check & rapid dispatch.</p>
-                  </div>
-                </div>
-                <div className="trust-item">
-                  <span className="trust-icon">💬</span>
-                  <div>
-                    <strong>Human WhatsApp Support</strong>
-                    <p>Direct chat available if you need help.</p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Order Confirmation Form */}
-              <form onSubmit={handleSubmit} className="order-form">
-                <h3 style={{ margin: "0.5rem 0 0", fontSize: "1.1rem" }}>
-                  Confirm & Submit Order
-                </h3>
-
-                <div>
-                  <label htmlFor="customerName">Your Full Name</label>
-                  <input
-                    type="text"
-                    id="customerName"
-                    required
-                    placeholder="e.g. Rahul Sharma"
-                    value={customerName}
-                    onChange={(e) => handleNameChange(e.target.value)}
-                  />
-                </div>
-
-                <div>
-                  <label htmlFor="customerEmail">Your Email</label>
-                  <input
-                    type="email"
-                    id="customerEmail"
-                    required
-                    placeholder="rahul@example.com"
-                    value={customerEmail}
-                    onChange={(e) => handleEmailChange(e.target.value)}
-                  />
-                </div>
-
-                <div>
-                  <label htmlFor="customerUtr">
-                    12-Digit UPI UTR / Reference ID (Optional)
-                  </label>
-                  <input
-                    type="text"
-                    id="customerUtr"
-                    placeholder="12-digit UPI UTR / Ref (Optional)"
-                    maxLength={16}
-                    value={customerUtr}
-                    onChange={(e) => setCustomerUtr(e.target.value.replace(/\s+/g, ""))}
-                  />
-                  <small>
-                    Found in your UPI app transaction receipt for instant operator approval.
-                  </small>
-                </div>
-
-                <div>
-                  <label htmlFor="paymentProof">Payment Screenshot (Required)</label>
-                  <div className="mobile-file-picker">
-                    <input
-                      type="file"
-                      id="paymentProof"
-                      accept="image/*"
-                      required
-                      ref={fileInputRef}
-                      onChange={handleFileChange}
-                      className="hidden-file-input"
-                    />
-                    <label htmlFor="paymentProof" className="mobile-file-label">
-                      <span className="file-icon">📸</span>
-                      <span className="file-desc">
-                        {paymentFile ? (
-                          <strong style={{ color: "var(--mint)" }}>
-                            Attached: {paymentFile.name}
-                          </strong>
-                        ) : (
-                          "Tap to choose screenshot from photo gallery"
-                        )}
-                      </span>
-                      {paymentFile && (
-                        <span className="file-ready-tag">Ready ✓</span>
-                      )}
+                    <label
+                      style={{
+                        fontSize: "0.82rem",
+                        color: "var(--text-secondary)",
+                      }}
+                    >
+                      Storefront Tip / Support (Optional)
                     </label>
+                    <div className="tip-box">
+                      <input
+                        type="number"
+                        min="0"
+                        value={tip}
+                        onChange={(e) =>
+                          setTip(Math.max(0, Number(e.target.value) || 0))
+                        }
+                        placeholder="₹ Tip"
+                      />
+                      <span
+                        style={{ fontSize: "0.8rem", color: "var(--text-muted)" }}
+                      >
+                        Directly supports Games Habibi
+                      </span>
+                    </div>
                   </div>
-                  <small>Max file size: 5 MB (PNG, JPG, WEBP)</small>
-                </div>
 
-                <div className="drawer-sticky-action">
+                  {/* Pricing Breakdown */}
+                  <div className="pricing-card">
+                    <div className="pricing-row">
+                      <span>Subtotal</span>
+                      <span>₹{subtotal}</span>
+                    </div>
+                    {bundleDiscount > 0 && (
+                      <div className="pricing-row" style={{ color: "var(--mint)" }}>
+                        <span>Bundle Discount ({bundleCount} titles)</span>
+                        <span>-₹{bundleDiscount}</span>
+                      </div>
+                    )}
+                    {couponDiscount > 0 && (
+                      <div className="pricing-row" style={{ color: "var(--mint)" }}>
+                        <span>Coupon Discount ({appliedCoupon})</span>
+                        <span>-₹{couponDiscount}</span>
+                      </div>
+                    )}
+                    {tip > 0 && (
+                      <div className="pricing-row">
+                        <span>Storefront Tip</span>
+                        <span>+₹{tip}</span>
+                      </div>
+                    )}
+                    <div className="pricing-row total-row">
+                      <span>Total Amount</span>
+                      <span>₹{total}</span>
+                    </div>
+                  </div>
+
                   <button
-                    type="submit"
+                    type="button"
                     className="btn btn-block"
-                    disabled={isSubmitting}
+                    onClick={() => setCheckoutStep(2)}
                     style={{ minHeight: "3.2rem", fontSize: "1.05rem" }}
                   >
-                    {isSubmitting ? "Submitting Order..." : `Submit Order • ₹${total}`}
+                    Proceed to Step 2: UPI Pay (₹{total}) →
                   </button>
+                </>
+              )}
+
+              {/* STEP 2: UPI PAYMENT */}
+              {checkoutStep === 2 && (
+                <div style={{ display: "grid", gap: "1rem" }}>
+                  <div className="upi-box">
+                    <div className="upi-box-header">
+                      <h3>🔐 Instant UPI Payment</h3>
+                      <span className="upi-instant-badge">₹{total}</span>
+                    </div>
+
+                    <div className="upi-actions-card">
+                      <a href={upiUrl} className="upi-app-btn">
+                        ⚡ Pay via UPI App (GPay / PhonePe / Paytm)
+                      </a>
+
+                      <div className="upi-id-pill">
+                        <span className="upi-id-text">
+                          UPI ID: <strong>{PAYMENT_ID}</strong>
+                        </span>
+                        <button
+                          type="button"
+                          onClick={handleCopyUpi}
+                          className="upi-copy-action-btn"
+                          aria-label="Copy UPI ID"
+                        >
+                          {isUpiCopied ? "✔ Copied" : "📋 Copy"}
+                        </button>
+                      </div>
+                    </div>
+
+                    <div
+                      style={{
+                        textAlign: "center",
+                        padding: "1rem",
+                        background: "rgba(10, 7, 22, 0.9)",
+                        borderRadius: "var(--radius-md)",
+                        border: "1px solid rgba(245, 166, 35, 0.2)",
+                      }}
+                    >
+                      <p
+                        style={{
+                          margin: "0 0 0.6rem",
+                          fontSize: "0.82rem",
+                          color: "var(--text-secondary)",
+                          fontWeight: 600,
+                        }}
+                      >
+                        Scan QR Code with any UPI App
+                      </p>
+                      {qrSrc ? (
+                        <div
+                          className="qr-frame"
+                          style={{
+                            display: "inline-block",
+                            padding: "0.4rem",
+                            background: "#fff",
+                            borderRadius: "8px",
+                          }}
+                        >
+                          <Image
+                            src={qrSrc}
+                            alt="Payment UPI QR"
+                            width={170}
+                            height={170}
+                            unoptimized
+                            style={{ display: "block", borderRadius: "4px" }}
+                          />
+                        </div>
+                      ) : (
+                        <div
+                          style={{
+                            height: "170px",
+                            display: "grid",
+                            placeItems: "center",
+                          }}
+                        >
+                          Generating QR...
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  <div style={{ display: "flex", gap: "0.6rem" }}>
+                    <button
+                      type="button"
+                      className="btn btn-secondary"
+                      onClick={() => setCheckoutStep(1)}
+                      style={{ flex: 1, minHeight: "3rem" }}
+                    >
+                      ← Back
+                    </button>
+                    <button
+                      type="button"
+                      className="btn"
+                      onClick={() => setCheckoutStep(3)}
+                      style={{ flex: 2, minHeight: "3rem" }}
+                    >
+                      I Have Paid → Verify
+                    </button>
+                  </div>
+
+                  {/* Trust & Guarantee Card */}
+                  <div className="trust-guarantee-card">
+                    <div className="trust-item">
+                      <span className="trust-icon">🛡️</span>
+                      <div>
+                        <strong>100% Replacement Warranty</strong>
+                        <p>Guaranteed active login & lifetime assistance.</p>
+                      </div>
+                    </div>
+                    <div className="trust-item">
+                      <span className="trust-icon">⚡</span>
+                      <div>
+                        <strong>Fast Telegram Bot Dispatch</strong>
+                        <p>Automated payment check & rapid dispatch.</p>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-              </form>
+              )}
+
+              {/* STEP 3: DISPATCH & VERIFY */}
+              {checkoutStep === 3 && (
+                <form onSubmit={handleSubmit} className="order-form">
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      marginBottom: "0.6rem",
+                    }}
+                  >
+                    <h3 style={{ margin: 0, fontSize: "1.1rem" }}>
+                      Upload Proof & Dispatch
+                    </h3>
+                    <span
+                      style={{
+                        color: "var(--mint)",
+                        fontFamily: "var(--font-data)",
+                        fontWeight: 700,
+                      }}
+                    >
+                      ₹{total}
+                    </span>
+                  </div>
+
+                  <div>
+                    <label htmlFor="drawerCustomerName">Your Full Name</label>
+                    <input
+                      type="text"
+                      id="drawerCustomerName"
+                      required
+                      placeholder="e.g. Rahul Sharma"
+                      value={customerName}
+                      onChange={(e) => handleNameChange(e.target.value)}
+                    />
+                  </div>
+
+                  <div>
+                    <label htmlFor="drawerCustomerEmail">Your Email</label>
+                    <input
+                      type="email"
+                      id="drawerCustomerEmail"
+                      required
+                      placeholder="rahul@example.com"
+                      value={customerEmail}
+                      onChange={(e) => handleEmailChange(e.target.value)}
+                    />
+                  </div>
+
+                  <div>
+                    <label htmlFor="drawerCustomerUtr">
+                      12-Digit UPI UTR / Ref (Optional)
+                    </label>
+                    <input
+                      type="text"
+                      id="drawerCustomerUtr"
+                      placeholder="12-digit UPI UTR / Ref"
+                      maxLength={16}
+                      value={customerUtr}
+                      onChange={(e) =>
+                        setCustomerUtr(e.target.value.replace(/\s+/g, ""))
+                      }
+                    />
+                  </div>
+
+                  <div>
+                    <label htmlFor="drawerPaymentProof">
+                      Payment Screenshot (Required)
+                    </label>
+                    <div className="mobile-file-picker">
+                      <input
+                        type="file"
+                        id="drawerPaymentProof"
+                        accept="image/*"
+                        required
+                        ref={fileInputRef}
+                        onChange={handleFileChange}
+                        className="hidden-file-input"
+                      />
+                      <label
+                        htmlFor="drawerPaymentProof"
+                        className="mobile-file-label"
+                      >
+                        <span className="file-icon">📸</span>
+                        <span className="file-desc">
+                          {paymentFile ? (
+                            <strong style={{ color: "var(--mint)" }}>
+                              Attached: {paymentFile.name}
+                            </strong>
+                          ) : (
+                            "Tap to choose screenshot"
+                          )}
+                        </span>
+                        {paymentFile && (
+                          <span className="file-ready-tag">Ready ✓</span>
+                        )}
+                      </label>
+                    </div>
+                  </div>
+
+                  <div
+                    style={{
+                      display: "flex",
+                      gap: "0.6rem",
+                      marginTop: "0.8rem",
+                    }}
+                  >
+                    <button
+                      type="button"
+                      className="btn btn-secondary"
+                      onClick={() => setCheckoutStep(2)}
+                      style={{ flex: 1, minHeight: "3.2rem" }}
+                    >
+                      ← Back
+                    </button>
+                    <button
+                      type="submit"
+                      className="btn"
+                      disabled={isSubmitting}
+                      style={{ flex: 2, minHeight: "3.2rem", fontSize: "1.05rem" }}
+                    >
+                      {isSubmitting
+                        ? "Submitting..."
+                        : `Submit Order • ₹${total}`}
+                    </button>
+                  </div>
+                </form>
+              )}
             </>
           )}
         </div>

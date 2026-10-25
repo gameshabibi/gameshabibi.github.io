@@ -60,13 +60,10 @@ export function MobileBottomNav({ onFocusSearch }: { onFocusSearch?: () => void 
         <span>Catalog</span>
       </Link>
 
-      <button
-        type="button"
-        onClick={() => {
-          triggerHaptic();
-          openDrawer();
-        }}
-        className={`mobile-nav-item ${isDrawerOpen || pathname === "/cart" ? "active" : ""}`}
+      <Link
+        href="/cart"
+        onClick={triggerHaptic}
+        className={`mobile-nav-item ${pathname === "/cart" ? "active" : ""}`}
         aria-label="Open Shopping Cart"
         style={{ position: "relative" }}
       >
@@ -105,7 +102,7 @@ export function MobileBottomNav({ onFocusSearch }: { onFocusSearch?: () => void 
           )}
         </div>
         <span>Cart</span>
-      </button>
+      </Link>
 
       <Link
         href="/orders"

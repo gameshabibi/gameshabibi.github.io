@@ -1,10 +1,11 @@
 "use client";
 
 import React from "react";
+import Link from "next/link";
 import { useCart } from "@/context/CartContext";
 
 export function Toast() {
-  const { toast, openDrawer } = useCart();
+  const { toast } = useCart();
   if (!toast) return null;
 
   const isAddAction = toast.toLowerCase().includes("added");
@@ -14,14 +15,9 @@ export function Toast() {
       <span className="toast-dot" />
       <span className="toast-text">{toast}</span>
       {isAddAction && (
-        <button
-          type="button"
-          onClick={openDrawer}
-          className="toast-btn"
-          aria-label="Open Cart"
-        >
+        <Link href="/cart" className="toast-btn" aria-label="Open Cart Page">
           Cart →
-        </button>
+        </Link>
       )}
     </div>
   );

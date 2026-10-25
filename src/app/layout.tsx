@@ -4,7 +4,6 @@ import "@/styles/globals.css";
 import { CartProvider } from "@/context/CartContext";
 import { Toast } from "@/components/Toast";
 import { MobileBottomNav } from "@/components/MobileBottomNav";
-import { CartDrawer } from "@/components/CartDrawer";
 
 const bebasNeue = Bebas_Neue({
   weight: "400",
@@ -57,7 +56,6 @@ export default function RootLayout({
       <body>
         <CartProvider>
           {children}
-          <CartDrawer />
           <Toast />
           <MobileBottomNav />
         </CartProvider>

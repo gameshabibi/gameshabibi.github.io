@@ -84,14 +84,13 @@ export function Header({ onSearch, onOpenOrders }: HeaderProps) {
           >
             Orders {pastOrders.length > 0 ? `(${pastOrders.length})` : ""}
           </Link>
-          <button
-            type="button"
+          <Link
+            href="/cart"
             className={`site-nav-cart-btn ${pathname === "/cart" ? "active" : ""}`}
-            onClick={openDrawer}
             aria-label={`Open Cart with ${totalItems} items`}
           >
             Cart {totalItems > 0 ? `(${totalItems})` : ""}
-          </button>
+          </Link>
         </nav>
 
         <div className="header-actions">
@@ -191,15 +190,14 @@ export function Header({ onSearch, onOpenOrders }: HeaderProps) {
             )}
           </div>
 
-          <button
-            type="button"
-            onClick={openDrawer}
+          <Link
+            href="/cart"
             className="cart-button desktop-only-cart"
             aria-label={`View Shopping Cart (${totalItems} items)`}
           >
             Cart
             <span className="cart-count">{totalItems}</span>
-          </button>
+          </Link>
         </div>
       </div>
     </header>
