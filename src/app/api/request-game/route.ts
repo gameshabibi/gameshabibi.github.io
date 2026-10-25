@@ -12,9 +12,16 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const botToken =
-      process.env.TELEGRAM_BOT_TOKEN || "8959778893:AAH5aQu5Y1oV4SrmiCjljtqCqdv3kXWtG84";
-    const chatId = process.env.TELEGRAM_CHAT_ID || "5822439843";
+    const botToken = process.env.TELEGRAM_BOT_TOKEN;
+    const chatId = process.env.TELEGRAM_CHAT_ID;
+
+    if (!botToken || !chatId) {
+      console.error("Missing TELEGRAM_BOT_TOKEN or TELEGRAM_CHAT_ID in environment variables.");
+      return NextResponse.json(
+        { ok: false, error: "Game request service is currently unavailable. Please reach out directly." },
+        { status: 500 }
+      );
+    }
 
     const timestamp = new Date().toLocaleString("en-IN", {
       timeZone: "Asia/Kolkata",

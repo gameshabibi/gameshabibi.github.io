@@ -599,15 +599,15 @@ export function CartDrawer() {
 
                 <div>
                   <label htmlFor="customerUtr">
-                    12-Digit UPI UTR / Reference ID (Recommended)
+                    12-Digit UPI UTR / Reference ID (Optional)
                   </label>
                   <input
                     type="text"
                     id="customerUtr"
-                    placeholder="e.g. 429381928391"
+                    placeholder="12-digit UPI UTR / Ref (Optional)"
                     maxLength={16}
                     value={customerUtr}
-                    onChange={(e) => setCustomerUtr(e.target.value)}
+                    onChange={(e) => setCustomerUtr(e.target.value.replace(/\s+/g, ""))}
                   />
                   <small>
                     Found in your UPI app transaction receipt for instant operator approval.

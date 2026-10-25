@@ -17,4 +17,5 @@ desktop.ini
 .vscode/
 .idea/
 *.log
+*.tsbuildinfo
 

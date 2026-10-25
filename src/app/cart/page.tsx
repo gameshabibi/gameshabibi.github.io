@@ -155,13 +155,17 @@ export default function CartPage() {
 
       const formData = new FormData();
       formData.append("orderId", orderId);
+      formData.append("name", customerName);
       formData.append("customerName", customerName);
+      formData.append("email", customerEmail);
       formData.append("customerEmail", customerEmail);
-      formData.append("customerUtr", customerUtr);
+      formData.append("utr", customerUtr || "Not provided");
+      formData.append("customerUtr", customerUtr || "Not provided");
       formData.append("games", gamesList);
       formData.append("total", total.toString());
       formData.append("tip", tip.toString());
       if (appliedCoupon) formData.append("coupon", appliedCoupon);
+      formData.append("photo", paymentFile);
       formData.append("paymentProof", paymentFile);
 
       const res = await fetch("/api/order", {
@@ -740,15 +744,15 @@ export default function CartPage() {
 
                   <div>
                     <label htmlFor="customerUtr">
-                      12-Digit UPI UTR / Reference ID (Recommended)
+                      12-Digit UPI UTR / Reference ID (Optional)
                     </label>
                     <input
                       type="text"
                       id="customerUtr"
-                      placeholder="e.g. 429381928391"
+                      placeholder="12-digit UPI UTR / Ref (Optional)"
                       maxLength={16}
                       value={customerUtr}
-                      onChange={(e) => setCustomerUtr(e.target.value)}
+                      onChange={(e) => setCustomerUtr(e.target.value.replace(/\s+/g, ""))}
                     />
                     <small>
                       Found in your UPI app transaction receipt for instant operator approval.

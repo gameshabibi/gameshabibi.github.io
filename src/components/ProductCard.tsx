@@ -1,11 +1,16 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { ProductItem } from "@/data/catalog";
 import { useCart } from "@/context/CartContext";
 
-export function ProductCard({ product }: { product: ProductItem }) {
+interface ProductCardProps {
+  product: ProductItem;
+  defaultToCheapest?: boolean;
+}
+
+export function ProductCard({ product, defaultToCheapest = false }: ProductCardProps) {
   const { addItem } = useCart();
   // Check if this is a popular/flagship game
   const isPopularGame = (item: ProductItem) => {
@@ -50,20 +55,8 @@ export function ProductCard({ product }: { product: ProductItem }) {
     return POPULAR_KEYS.some((k) => name.includes(k));
   };
 
-  // Find default variant: popular games default to ₹149 option, others to cheapest
-  const defaultIdx = () => {
+  const getCheapestIdx = () => {
     if (!product.variants || product.variants.length <= 1) return 0;
-
-    if (isPopularGame(product)) {
-      const idx149 = product.variants.findIndex((v) => v.price === 149);
-      if (idx149 !== -1) return idx149;
-      const sharedIdx = product.variants.findIndex((v) =>
-        v.name.toLowerCase().includes("shared") || v.name.toLowerCase().includes("offline")
-      );
-      if (sharedIdx !== -1) return sharedIdx;
-    }
-
-    // Default to the cheapest available option
     let minIdx = 0;
     let minPrice = product.variants[0].price;
     for (let i = 1; i < product.variants.length; i++) {
@@ -75,7 +68,35 @@ export function ProductCard({ product }: { product: ProductItem }) {
     return minIdx;
   };
 
+  // Find default variant: if defaultToCheapest (under 100), choose lowest option.
+  // Otherwise, popular games default to ₹149 option, others to cheapest.
+  const defaultIdx = () => {
+    if (!product.variants || product.variants.length <= 1) return 0;
+
+    if (defaultToCheapest) {
+      return getCheapestIdx();
+    }
+
+    if (isPopularGame(product)) {
+      const idx149 = product.variants.findIndex((v) => v.price === 149);
+      if (idx149 !== -1) return idx149;
+      const sharedIdx = product.variants.findIndex((v) =>
+        v.name.toLowerCase().includes("shared") || v.name.toLowerCase().includes("offline")
+      );
+      if (sharedIdx !== -1) return sharedIdx;
+    }
+
+    return getCheapestIdx();
+  };
+
   const [selectedVariantIdx, setSelectedVariantIdx] = useState(defaultIdx);
+
+  // When defaultToCheapest changes to true (e.g. user chooses 'Under 100'), switch selection to lowest price
+  useEffect(() => {
+    if (defaultToCheapest) {
+      setSelectedVariantIdx(getCheapestIdx());
+    }
+  }, [defaultToCheapest, product]);
 
   const currentVariant = product.variants ? product.variants[selectedVariantIdx] : null;
   const currentPrice = currentVariant ? currentVariant.price : (product.price || 0);

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
 import { services, games, ProductItem } from "@/data/catalog";
 import { ProductCard } from "./ProductCard";
@@ -73,6 +73,8 @@ const getItemMinPrice = (item: ProductItem): number => {
   return item.price || 0;
 };
 
+const BATCH_SIZE = 24;
+
 export function Catalog({
   searchQuery = "",
   onRequestGame,
@@ -80,6 +82,12 @@ export function Catalog({
   limit = 6,
 }: CatalogProps) {
   const [filter, setFilter] = useState<FilterType>("popularFirst");
+  const [visibleCount, setVisibleCount] = useState<number>(BATCH_SIZE);
+
+  // Reset pagination when filter or search changes
+  useEffect(() => {
+    setVisibleCount(BATCH_SIZE);
+  }, [filter, searchQuery]);
 
   const filteredItems = useMemo(() => {
     let all: ProductItem[] = [];
@@ -142,7 +150,9 @@ export function Catalog({
     return all;
   }, [filter, searchQuery]);
 
-  const displayedItems = isHomeView ? filteredItems.slice(0, limit) : filteredItems;
+  const displayedItems = isHomeView
+    ? filteredItems.slice(0, limit)
+    : filteredItems.slice(0, visibleCount);
 
   return (
     <section id="games" className="catalog-section">
@@ -309,11 +319,86 @@ export function Catalog({
             </div>
           </div>
         ) : (
-          <div className="product-grid">
-            {displayedItems.map((item) => (
-              <ProductCard key={item.id} product={item} />
-            ))}
-          </div>
+          <>
+            <div className="product-grid">
+              {displayedItems.map((item) => (
+                <ProductCard
+                  key={item.id}
+                  product={item}
+                  defaultToCheapest={filter === "under100"}
+                />
+              ))}
+            </div>
+
+            {!isHomeView && filteredItems.length > visibleCount && (
+              <div
+                style={{
+                  textAlign: "center",
+                  marginTop: "2.5rem",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  gap: "0.85rem",
+                }}
+              >
+                <p
+                  style={{
+                    color: "var(--text-secondary)",
+                    fontSize: "0.92rem",
+                    margin: 0,
+                  }}
+                >
+                  Showing <b>{displayedItems.length}</b> of <b>{filteredItems.length}</b> items
+                </p>
+                <div
+                  style={{
+                    display: "flex",
+                    gap: "0.8rem",
+                    flexWrap: "wrap",
+                    justifyContent: "center",
+                  }}
+                >
+                  <button
+                    type="button"
+                    className="btn"
+                    onClick={() => setVisibleCount((prev) => prev + BATCH_SIZE)}
+                    style={{
+                      minHeight: "2.8rem",
+                      padding: "0.55rem 1.8rem",
+                      fontSize: "0.92rem",
+                    }}
+                  >
+                    ⚡ Load More Games (+{Math.min(BATCH_SIZE, filteredItems.length - visibleCount)})
+                  </button>
+                  <button
+                    type="button"
+                    className="btn btn-secondary"
+                    onClick={() => setVisibleCount(filteredItems.length)}
+                    style={{
+                      minHeight: "2.8rem",
+                      padding: "0.55rem 1.4rem",
+                      fontSize: "0.92rem",
+                    }}
+                  >
+                    Show All ({filteredItems.length})
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {!isHomeView && filteredItems.length > BATCH_SIZE && visibleCount >= filteredItems.length && (
+              <p
+                style={{
+                  textAlign: "center",
+                  color: "var(--text-muted)",
+                  fontSize: "0.88rem",
+                  marginTop: "2rem",
+                }}
+              >
+                ✓ All {filteredItems.length} items loaded.
+              </p>
+            )}
+          </>
         )}
 
         {isHomeView && (
