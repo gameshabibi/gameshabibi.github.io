@@ -758,7 +758,7 @@ function renderCart() {
         <p>${cart.length} item${cart.length === 1 ? "" : "s"} in cart</p>
         <p>Discount: ${formatTotal(discountAmount)}</p>
         <p>Tip: ${formatTotal(tip)}</p>
-        <p>Coupon: ${hasCoupon() ? appliedCoupon : "None"}</p>
+        <p>Coupon: ${hasCoupon() ? escapeHTML(appliedCoupon) : "None"}</p>
         <p><strong>Payable: ${formatTotal(finalTotal)}</strong></p>
       </div>
     `;
