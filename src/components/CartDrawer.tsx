@@ -57,6 +57,26 @@ export function CartDrawer() {
     }
   };
 
+  // Lock body scroll and listen for Escape key when cart drawer is open
+  useEffect(() => {
+    if (!isDrawerOpen) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        closeDrawer();
+      }
+    };
+
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.body.style.overflow = originalOverflow;
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isDrawerOpen, closeDrawer]);
+
   // Auto-restore customer contact info from draft storage
   useEffect(() => {
     try {
