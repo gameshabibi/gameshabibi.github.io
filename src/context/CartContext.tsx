@@ -46,7 +46,7 @@ interface CartContextType {
   saveOrder: (order: PastOrder) => void;
   toast: string | null;
   showToast: (msg: string) => void;
-  playFeedback: (type: "success" | "error") => void;
+  playFeedback: (type: "success" | "error" | "order-success") => void;
 }
 
 const COUPON_LIST: Record<string, { type: "percent" | "flat"; value: number }> = {
@@ -112,12 +112,13 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     }, 2800);
   };
 
-  const playFeedback = (type: "success" | "error") => {
+  const playFeedback = (type: "success" | "error" | "order-success") => {
     try {
-      const audio = new Audio(
-        type === "success" ? "/audio/succ.wav" : "/audio/error.wav"
-      );
-      audio.volume = 0.45;
+      let soundPath = "/audio/succ.wav";
+      if (type === "error") soundPath = "/audio/error.wav";
+      if (type === "order-success") soundPath = "/audio/order-success.wav";
+      const audio = new Audio(soundPath);
+      audio.volume = 0.5;
       audio.play().catch(() => {});
     } catch {}
   };

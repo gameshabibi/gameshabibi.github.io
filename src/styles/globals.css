@@ -2115,3 +2115,34 @@ details[open] .accordion-chevron {
     max-width: 260px;
   }
 }
+
+.submitting-spinner {
+  display: inline-block;
+  width: 1.15rem;
+  height: 1.15rem;
+  border: 2px solid rgba(0, 0, 0, 0.25);
+  border-top-color: #04101c;
+  border-radius: 50%;
+  animation: spinLoader 0.75s linear infinite;
+  flex-shrink: 0;
+}
+
+@keyframes spinLoader {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.submitting-banner {
+  background: rgba(123, 47, 255, 0.15);
+  border: 1px solid rgba(123, 47, 255, 0.4);
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-size: 0.88rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-top: 0.8rem;
+  animation: noticeShimmer 3s ease infinite;
+}

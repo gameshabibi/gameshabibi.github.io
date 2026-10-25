@@ -41,6 +41,7 @@ export default function CartPage() {
   const [couponMessage, setCouponMessage] = useState<string>("");
   const [paymentFile, setPaymentFile] = useState<File | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submittingStatus, setSubmittingStatus] = useState<string>("");
   const [placedOrderId, setPlacedOrderId] = useState<string | null>(null);
   const [placedOrderDetails, setPlacedOrderDetails] = useState<WhatsAppOrderDetails | null>(null);
   const [isCopied, setIsCopied] = useState(false);
@@ -77,7 +78,7 @@ export default function CartPage() {
       navigator.clipboard.writeText(PAYMENT_ID);
       setIsUpiCopied(true);
       if (typeof window !== "undefined" && navigator.vibrate) navigator.vibrate(15);
-      showToast("UPI ID copied to clipboard!");
+      showToast("UPI ID copied! Open your UPI app and paste to pay.");
       setTimeout(() => setIsUpiCopied(false), 2500);
     }
   };
@@ -109,10 +110,10 @@ export default function CartPage() {
     }
   };
 
-  // Generate UPI deep link & QR code whenever total changes
+  // Generate UPI QR code data url using clean format that works across all apps
   const upiUrl = `upi://pay?pa=${encodeURIComponent(
     PAYMENT_ID
-  )}&pn=Games%20Habibi&am=${total.toFixed(2)}&cu=INR&tn=Games%20Habibi%20Order`;
+  )}&am=${total.toFixed(2)}&cu=INR`;
 
   useEffect(() => {
     if (total > 0) {
@@ -157,6 +158,8 @@ export default function CartPage() {
     }
 
     setIsSubmitting(true);
+    setSubmittingStatus("Uploading payment proof and registering order...");
+    const startTime = Date.now();
 
     try {
       const orderId = `GH-${Date.now().toString().slice(-6)}`;
@@ -186,11 +189,20 @@ export default function CartPage() {
 
       const data = await res.json();
 
-      if (!res.ok || !data.success) {
-        throw new Error(data.message || "Order submission failed");
+      // Check both data.ok and data.success to avoid missing valid responses
+      if (!res.ok || (!data.ok && !data.success)) {
+        throw new Error(data.error || data.message || "Order submission failed");
       }
 
-      saveOrder({
+      // Add a slight realistic delay (at least 800ms) so user perceives the verification submission
+      const elapsed = Date.now() - startTime;
+      if (elapsed < 800) {
+        await new Promise((resolve) => setTimeout(resolve, 800 - elapsed));
+      }
+
+      setSubmittingStatus("Order verified! Recording order details...");
+
+      const orderRecord = {
         id: orderId,
         date: new Date().toLocaleDateString("en-IN", {
           day: "numeric",
@@ -203,9 +215,18 @@ export default function CartPage() {
         total,
         utr: customerUtr || undefined,
         coupon: appliedCoupon || undefined,
-      });
+      };
 
-      playFeedback("success");
+      // 1. Record the order in history and storage
+      saveOrder(orderRecord);
+
+      // 2. Empty the cart completely
+      clearCart();
+
+      // 3. Play the distinct celebratory order success sound
+      playFeedback("order-success");
+
+      // 4. Update placed order state to display result
       setPlacedOrderId(orderId);
       setPlacedOrderDetails({
         orderId,
@@ -214,15 +235,17 @@ export default function CartPage() {
         utr: customerUtr,
         customerName: customerName,
       });
-      clearCart();
+
       setPaymentFile(null);
       if (fileInputRef.current) fileInputRef.current.value = "";
+      showToast("Order placed successfully!");
     } catch (err: unknown) {
       playFeedback("error");
-      const msg = err instanceof Error ? err.message : "Network error";
+      const msg = err instanceof Error ? err.message : "Network error. Please try again.";
       showToast(msg);
     } finally {
       setIsSubmitting(false);
+      setSubmittingStatus("");
     }
   };
 
@@ -296,7 +319,7 @@ export default function CartPage() {
                   margin: "0 0 1.5rem",
                 }}
               >
-                Your payment screenshot has been submitted for automated order dispatch. Save your Order ID below:
+                Your payment screenshot has been submitted and recorded. Save your Order ID below:
               </p>
 
               <div
@@ -845,7 +868,7 @@ export default function CartPage() {
                     className="upi-box"
                     style={{ marginBottom: "1.8rem", padding: "1.8rem" }}
                   >
-                    <div style={{ textAlign: "center", marginBottom: "1.4rem" }}>
+                    <div style={{ textAlign: "center", marginBottom: "1.2rem" }}>
                       <span
                         style={{
                           fontSize: "0.85rem",
@@ -876,62 +899,75 @@ export default function CartPage() {
                           fontSize: "0.9rem",
                         }}
                       >
-                        Tap below to pay directly on mobile or scan the QR code
+                        Scan QR Code or transfer to UPI ID below inside any UPI app
                       </p>
                     </div>
 
-                    <div className="upi-actions-card" style={{ marginBottom: "1.5rem" }}>
-                      <a
-                        href={upiUrl}
-                        className="upi-app-btn"
-                        style={{ minHeight: "3.4rem", fontSize: "1.05rem" }}
-                      >
-                        ⚡ Pay via UPI App (GPay / PhonePe / Paytm / BHIM)
-                      </a>
-
-                      <div className="upi-id-pill">
-                        <span className="upi-id-text">
-                          UPI ID: <strong>{PAYMENT_ID}</strong>
-                        </span>
-                        <button
-                          type="button"
-                          onClick={handleCopyUpi}
-                          className="upi-copy-action-btn"
-                          aria-label="Copy UPI ID"
-                        >
-                          {isUpiCopied ? "✔ Copied" : "📋 Copy"}
-                        </button>
-                      </div>
+                    {/* Bank Anti-Scam Advisory Notice */}
+                    <div
+                      style={{
+                        background: "rgba(245, 166, 35, 0.1)",
+                        border: "1px solid rgba(245, 166, 35, 0.35)",
+                        borderRadius: "var(--radius-sm)",
+                        padding: "0.85rem 1rem",
+                        marginBottom: "1.4rem",
+                        fontSize: "0.84rem",
+                        lineHeight: 1.5,
+                        color: "#ffda88",
+                      }}
+                    >
+                      <strong style={{ display: "block", marginBottom: "0.2rem", color: "#ffd066" }}>
+                        🛡️ Recommended Payment Method (Prevents Bank Blocks):
+                      </strong>
+                      Banks and UPI apps (GPay / PhonePe) often flag direct browser website redirect links as a scam precaution.
+                      <strong> Scanning the QR code or transferring to the UPI ID inside your app works 100% smoothly without any bank blocks.</strong>
                     </div>
 
-                    {/* QR Code Section */}
+                    {/* Method 1: QR Code (Primary & 100% Reliable) */}
                     <div
                       style={{
                         textAlign: "center",
                         padding: "1.4rem",
                         background: "rgba(10, 7, 22, 0.85)",
                         borderRadius: "var(--radius-md)",
-                        border: "1px solid rgba(245, 166, 35, 0.25)",
+                        border: "1px solid rgba(0, 255, 179, 0.25)",
+                        marginBottom: "1.4rem",
                       }}
                     >
+                      <span
+                        style={{
+                          display: "inline-block",
+                          padding: "0.2rem 0.6rem",
+                          background: "rgba(0, 255, 179, 0.15)",
+                          color: "var(--mint)",
+                          fontSize: "0.75rem",
+                          fontWeight: 700,
+                          borderRadius: "999px",
+                          marginBottom: "0.6rem",
+                          textTransform: "uppercase",
+                        }}
+                      >
+                        Method 1: 100% Guaranteed (No Blocks)
+                      </span>
                       <p
                         style={{
                           margin: "0 0 0.9rem",
-                          fontSize: "0.9rem",
-                          color: "var(--text-secondary)",
+                          fontSize: "0.95rem",
+                          color: "var(--text-primary)",
                           fontWeight: 600,
                         }}
                       >
-                        Scan QR Code with any UPI App
+                        Scan with GPay, PhonePe, Paytm, or BHIM
                       </p>
                       {qrSrc ? (
                         <div
                           className="qr-frame"
                           style={{
                             display: "inline-block",
-                            padding: "0.5rem",
+                            padding: "0.6rem",
                             background: "#fff",
                             borderRadius: "10px",
+                            boxShadow: "0 4px 20px rgba(0, 0, 0, 0.5)",
                           }}
                         >
                           <Image
@@ -956,10 +992,66 @@ export default function CartPage() {
                       )}
                     </div>
 
+                    {/* Method 2: Copy UPI ID */}
+                    <div
+                      style={{
+                        background: "rgba(25, 18, 48, 0.75)",
+                        border: "1px solid rgba(245, 166, 35, 0.25)",
+                        borderRadius: "var(--radius-md)",
+                        padding: "1.1rem",
+                        marginBottom: "1.4rem",
+                      }}
+                    >
+                      <span
+                        style={{
+                          display: "inline-block",
+                          padding: "0.2rem 0.6rem",
+                          background: "rgba(245, 166, 35, 0.15)",
+                          color: "var(--accent)",
+                          fontSize: "0.75rem",
+                          fontWeight: 700,
+                          borderRadius: "999px",
+                          marginBottom: "0.5rem",
+                          textTransform: "uppercase",
+                        }}
+                      >
+                        Method 2: In-App UPI Transfer
+                      </span>
+                      <p style={{ margin: "0 0 0.6rem", fontSize: "0.85rem", color: "var(--text-secondary)" }}>
+                        Open your UPI app, tap <strong>&ldquo;Pay to UPI ID&rdquo;</strong> and enter:
+                      </p>
+                      <div className="upi-id-pill" style={{ margin: 0 }}>
+                        <span className="upi-id-text">
+                          UPI ID: <strong>{PAYMENT_ID}</strong>
+                        </span>
+                        <button
+                          type="button"
+                          onClick={handleCopyUpi}
+                          className="upi-copy-action-btn"
+                          aria-label="Copy UPI ID"
+                        >
+                          {isUpiCopied ? "✔ Copied!" : "📋 Copy UPI ID"}
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Method 3: Optional Fallback Browser Link */}
+                    <div style={{ textAlign: "center", marginBottom: "1rem" }}>
+                      <a
+                        href={upiUrl}
+                        style={{
+                          fontSize: "0.82rem",
+                          color: "var(--text-muted)",
+                          textDecoration: "underline",
+                        }}
+                      >
+                        ⚡ Or try opening UPI app directly (may be blocked by your bank)
+                      </a>
+                    </div>
+
                     {/* 3 Step Instruction Checklist */}
                     <div
                       style={{
-                        marginTop: "1.5rem",
                         display: "grid",
                         gap: "0.6rem",
                         background: "rgba(255, 255, 255, 0.03)",
@@ -983,7 +1075,7 @@ export default function CartPage() {
                           2.
                         </span>
                         <span>
-                          Save a screenshot of the completed payment receipt in your
+                          Take a screenshot of the completed payment receipt in your
                           UPI app.
                         </span>
                       </div>
@@ -992,8 +1084,7 @@ export default function CartPage() {
                           3.
                         </span>
                         <span>
-                          Click the button below to upload your screenshot and confirm
-                          dispatch.
+                          Click below to upload the screenshot for automatic fulfillment.
                         </span>
                       </div>
                     </div>
@@ -1110,6 +1201,7 @@ export default function CartPage() {
                         type="text"
                         id="customerName"
                         required
+                        disabled={isSubmitting}
                         placeholder="e.g. Rahul Sharma"
                         value={customerName}
                         onChange={(e) => handleNameChange(e.target.value)}
@@ -1124,6 +1216,7 @@ export default function CartPage() {
                         type="email"
                         id="customerEmail"
                         required
+                        disabled={isSubmitting}
                         placeholder="rahul@example.com"
                         value={customerEmail}
                         onChange={(e) => handleEmailChange(e.target.value)}
@@ -1137,6 +1230,7 @@ export default function CartPage() {
                       <input
                         type="text"
                         id="customerUtr"
+                        disabled={isSubmitting}
                         placeholder="12-digit UPI UTR / Ref (Optional)"
                         maxLength={16}
                         value={customerUtr}
@@ -1157,6 +1251,7 @@ export default function CartPage() {
                           id="paymentProof"
                           accept="image/*"
                           required
+                          disabled={isSubmitting}
                           ref={fileInputRef}
                           onChange={handleFileChange}
                           className="hidden-file-input"
@@ -1180,6 +1275,13 @@ export default function CartPage() {
                       <small>Max file size: 5 MB (PNG, JPG, WEBP)</small>
                     </div>
 
+                    {isSubmitting && submittingStatus && (
+                      <div className="submitting-banner">
+                        <span className="submitting-spinner" />
+                        <span>{submittingStatus}</span>
+                      </div>
+                    )}
+
                     <div
                       style={{
                         display: "flex",
@@ -1191,6 +1293,7 @@ export default function CartPage() {
                       <button
                         type="button"
                         className="btn btn-secondary"
+                        disabled={isSubmitting}
                         onClick={() => goToStep(2)}
                         style={{ flex: "1 1 120px", minHeight: "3.5rem" }}
                       >
@@ -1204,11 +1307,20 @@ export default function CartPage() {
                           flex: "2 1 220px",
                           minHeight: "3.5rem",
                           fontSize: "1.1rem",
+                          display: "inline-flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          gap: "0.6rem",
                         }}
                       >
-                        {isSubmitting
-                          ? "Submitting Order..."
-                          : `Submit Order • ₹${total}`}
+                        {isSubmitting ? (
+                          <>
+                            <span className="submitting-spinner" />
+                            <span>Verifying & Submitting...</span>
+                          </>
+                        ) : (
+                          `Submit Order • ₹${total}`
+                        )}
                       </button>
                     </div>
 

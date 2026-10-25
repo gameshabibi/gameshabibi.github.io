@@ -161,6 +161,7 @@ export function CartDrawer() {
     }
 
     setIsSubmitting(true);
+    const startTime = Date.now();
 
     const generatedId = "ORD-" + Math.floor(100000 + Math.random() * 900000);
     const gamesSummary = items
@@ -185,12 +186,19 @@ export function CartDrawer() {
 
       const data = await res.json();
 
-      if (!res.ok || !data.ok) {
-        throw new Error(data.error || "Order dispatch error");
+      if (!res.ok || (!data.ok && !data.success)) {
+        throw new Error(data.error || data.message || "Order dispatch error");
       }
 
-      // Success
-      playFeedback("success");
+      // Add minimum delay so user perceives loading progress
+      const elapsed = Date.now() - startTime;
+      if (elapsed < 800) {
+        await new Promise((r) => setTimeout(r, 800 - elapsed));
+      }
+
+      // Success: Play distinct celebratory order success sound
+      playFeedback("order-success");
+
       const orderRecord = {
         id: generatedId,
         date: new Date().toISOString(),
@@ -201,7 +209,9 @@ export function CartDrawer() {
         utr: customerUtr,
         coupon: appliedCoupon || undefined,
       };
+
       saveOrder(orderRecord);
+      clearCart();
 
       setPlacedOrderId(generatedId);
       setPlacedOrderDetails({
@@ -211,9 +221,10 @@ export function CartDrawer() {
         utr: customerUtr,
         customerName: customerName,
       });
-      clearCart();
+
       setPaymentFile(null);
       if (fileInputRef.current) fileInputRef.current.value = "";
+      showToast("Order submitted successfully!");
     } catch (err: unknown) {
       playFeedback("error");
       const msg = err instanceof Error ? err.message : "Submission failed";
@@ -726,24 +737,50 @@ export function CartDrawer() {
                       <span className="upi-instant-badge">₹{total}</span>
                     </div>
 
-                    <div className="upi-actions-card">
-                      <a href={upiUrl} className="upi-app-btn">
-                        ⚡ Pay via UPI App (GPay / PhonePe / Paytm)
-                      </a>
+                    <div
+                      style={{
+                        background: "rgba(245, 166, 35, 0.1)",
+                        border: "1px solid rgba(245, 166, 35, 0.35)",
+                        borderRadius: "var(--radius-sm)",
+                        padding: "0.75rem 0.85rem",
+                        fontSize: "0.82rem",
+                        lineHeight: 1.45,
+                        color: "#ffda88",
+                        marginBottom: "0.8rem",
+                      }}
+                    >
+                      <strong style={{ display: "block", color: "#ffd066", marginBottom: "0.2rem" }}>
+                        🛡️ Recommended (Avoids Bank Fraud Blocks):
+                      </strong>
+                      Banks and UPI apps (GPay / PhonePe) often block direct browser links to individual UPI IDs.
+                      <strong> Scan the QR or Copy the UPI ID below to pay directly inside your app without blocks.</strong>
+                    </div>
 
-                      <div className="upi-id-pill">
-                        <span className="upi-id-text">
-                          UPI ID: <strong>{PAYMENT_ID}</strong>
-                        </span>
-                        <button
-                          type="button"
-                          onClick={handleCopyUpi}
-                          className="upi-copy-action-btn"
-                          aria-label="Copy UPI ID"
-                        >
-                          {isUpiCopied ? "✔ Copied" : "📋 Copy"}
-                        </button>
-                      </div>
+                    <div className="upi-id-pill" style={{ marginBottom: "0.8rem" }}>
+                      <span className="upi-id-text">
+                        UPI ID: <strong>{PAYMENT_ID}</strong>
+                      </span>
+                      <button
+                        type="button"
+                        onClick={handleCopyUpi}
+                        className="upi-copy-action-btn"
+                        aria-label="Copy UPI ID"
+                      >
+                        {isUpiCopied ? "✔ Copied" : "📋 Copy"}
+                      </button>
+                    </div>
+
+                    <div style={{ textAlign: "center", marginBottom: "0.8rem" }}>
+                      <a
+                        href={upiUrl}
+                        style={{
+                          fontSize: "0.78rem",
+                          color: "var(--text-muted)",
+                          textDecoration: "underline",
+                        }}
+                      >
+                        ⚡ Or try opening UPI app directly (may be blocked by your bank)
+                      </a>
                     </div>
 
                     <div

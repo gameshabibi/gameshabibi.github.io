@@ -114,6 +114,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({
       ok: true,
+      success: true,
       orderId,
       message: "Order placed and verified successfully",
     });
