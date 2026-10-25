@@ -34,6 +34,7 @@ interface CartContextType {
   applyCoupon: (code: string) => { success: boolean; message: string };
   removeCoupon: () => void;
   couponDiscount: number;
+  couponEligibleCount: number;
   isDrawerOpen: boolean;
   openDrawer: () => void;
   closeDrawer: () => void;
@@ -175,14 +176,34 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     if (!clean) {
       return { success: false, message: "Please enter a coupon code" };
     }
-    const hasEligibleItems = items.some((item) => !isBudgetFriendlyItem(item));
-    if (items.length > 0 && !hasEligibleItems) {
+
+    if (items.length === 0) {
+      playFeedback("error");
+      return {
+        success: false,
+        message: "Your cart is empty",
+      };
+    }
+
+    const couponEligibleItems = items.filter((item) => !isBudgetFriendlyItem(item));
+    const eligibleCount = couponEligibleItems.reduce((acc, item) => acc + item.qty, 0);
+
+    if (eligibleCount === 0) {
       playFeedback("error");
       return {
         success: false,
         message: "Offers & coupons do not apply to Budget Friendly option (flat ₹69)",
       };
     }
+
+    if (eligibleCount <= 1) {
+      playFeedback("error");
+      return {
+        success: false,
+        message: "Coupons only apply when you have more than 1 game in your cart (excluding Budget Friendly)",
+      };
+    }
+
     if (COUPON_LIST[clean]) {
       setAppliedCoupon(clean);
       try {
@@ -229,15 +250,16 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     bundleDiscount = Math.round(steamSum * 0.25);
   }
 
-  // Calculate coupon discount - explicitly excludes Budget Friendly selection
+  // Calculate coupon discount - explicitly requires > 1 eligible game and excludes Budget Friendly selection
   const couponEligibleItems = items.filter((item) => !isBudgetFriendlyItem(item));
+  const couponEligibleCount = couponEligibleItems.reduce((acc, item) => acc + item.qty, 0);
   const couponEligibleSubtotal = couponEligibleItems.reduce(
     (sum, item) => sum + item.price * item.qty,
     0
   );
 
   let couponDiscount = 0;
-  if (appliedCoupon && COUPON_LIST[appliedCoupon]) {
+  if (appliedCoupon && COUPON_LIST[appliedCoupon] && couponEligibleCount > 1) {
     const rule = COUPON_LIST[appliedCoupon];
     const discountedBase = Math.max(0, couponEligibleSubtotal - bundleDiscount);
     if (discountedBase > 0) {
@@ -276,6 +298,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         applyCoupon,
         removeCoupon,
         couponDiscount,
+        couponEligibleCount,
         isDrawerOpen,
         openDrawer,
         closeDrawer,

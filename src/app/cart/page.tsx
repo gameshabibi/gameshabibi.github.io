@@ -22,6 +22,7 @@ export default function CartPage() {
     applyCoupon,
     removeCoupon,
     couponDiscount,
+    couponEligibleCount,
     subtotal,
     bundleDiscount,
     total,
@@ -524,7 +525,6 @@ export default function CartPage() {
                         justifyContent: "space-between",
                         background: "rgba(0, 255, 179, 0.1)",
                         border: "1px solid var(--mint)",
-                        padding: "0.55rem 0.9rem",
                         borderRadius: "var(--radius-sm)",
                       }}
                     >
@@ -536,7 +536,9 @@ export default function CartPage() {
                           fontFamily: "var(--font-data)",
                         }}
                       >
-                        🏷️ {appliedCoupon} APPLIED (-₹{couponDiscount})
+                        {couponEligibleCount > 1
+                          ? `🏷️ ${appliedCoupon} APPLIED (-₹${couponDiscount})`
+                          : `🏷️ ${appliedCoupon} (Requires >1 game: -₹0)`}
                       </span>
                       <button
                         type="button"
@@ -551,31 +553,36 @@ export default function CartPage() {
                       </button>
                     </div>
                   ) : (
-                    <form onSubmit={handleApplyCoupon} style={{ display: "flex", gap: "0.6rem" }}>
-                      <input
-                        type="text"
-                        placeholder="e.g. HABIBI10, FIRST50"
-                        value={couponInput}
-                        onChange={(e) => setCouponInput(e.target.value)}
-                        style={{
-                          flex: 1,
-                          background: "rgba(18, 14, 35, 0.9)",
-                          border: "1px solid var(--border-soft)",
-                          borderRadius: "var(--radius-sm)",
-                          color: "var(--text-primary)",
-                          padding: "0.55rem 0.85rem",
-                          fontSize: "0.88rem",
-                          textTransform: "uppercase",
-                        }}
-                      />
-                      <button
-                        type="submit"
-                        className="btn btn-secondary"
-                        style={{ minHeight: "2.6rem", padding: "0.4rem 1.2rem", fontSize: "0.85rem" }}
-                      >
-                        Apply
-                      </button>
-                    </form>
+                    <>
+                      <form onSubmit={handleApplyCoupon} style={{ display: "flex", gap: "0.6rem" }}>
+                        <input
+                          type="text"
+                          placeholder="e.g. HABIBI10, FIRST50"
+                          value={couponInput}
+                          onChange={(e) => setCouponInput(e.target.value)}
+                          style={{
+                            flex: 1,
+                            background: "rgba(18, 14, 35, 0.9)",
+                            border: "1px solid var(--border-soft)",
+                            borderRadius: "var(--radius-sm)",
+                            color: "var(--text-primary)",
+                            padding: "0.55rem 0.85rem",
+                            fontSize: "0.88rem",
+                            textTransform: "uppercase",
+                          }}
+                        />
+                        <button
+                          type="submit"
+                          className="btn btn-secondary"
+                          style={{ minHeight: "2.6rem", padding: "0.4rem 1.2rem", fontSize: "0.85rem" }}
+                        >
+                          Apply
+                        </button>
+                      </form>
+                      <span style={{ display: "block", fontSize: "0.78rem", color: "var(--text-muted)", marginTop: "0.35rem" }}>
+                        * Requires &gt;1 game in cart (excluding Budget Friendly).
+                      </span>
+                    </>
                   )}
                   {couponMessage && !appliedCoupon && (
                     <span

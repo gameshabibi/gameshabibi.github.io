@@ -22,6 +22,7 @@ export function CartDrawer() {
     applyCoupon,
     removeCoupon,
     couponDiscount,
+    couponEligibleCount,
     subtotal,
     bundleDiscount,
     total,
@@ -441,7 +442,9 @@ export function CartDrawer() {
                 {appliedCoupon ? (
                   <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", background: "rgba(0, 255, 179, 0.1)", border: "1px solid var(--mint)", padding: "0.4rem 0.8rem", borderRadius: "var(--radius-sm)" }}>
                     <span style={{ color: "var(--mint)", fontWeight: 700, fontSize: "0.88rem", fontFamily: "var(--font-data)" }}>
-                      🏷️ {appliedCoupon} APPLIED (-₹{couponDiscount})
+                      {couponEligibleCount > 1
+                        ? `🏷️ ${appliedCoupon} APPLIED (-₹${couponDiscount})`
+                        : `🏷️ ${appliedCoupon} (Requires >1 game: -₹0)`}
                     </span>
                     <button
                       type="button"
@@ -452,31 +455,36 @@ export function CartDrawer() {
                     </button>
                   </div>
                 ) : (
-                  <form onSubmit={handleApplyCoupon} style={{ display: "flex", gap: "0.5rem" }}>
-                    <input
-                      type="text"
-                      placeholder="e.g. HABIBI10, FIRST50"
-                      value={couponInput}
-                      onChange={(e) => setCouponInput(e.target.value)}
-                      style={{
-                        flex: 1,
-                        background: "rgba(18, 14, 35, 0.9)",
-                        border: "1px solid var(--border-soft)",
-                        borderRadius: "var(--radius-sm)",
-                        color: "var(--text-primary)",
-                        padding: "0.45rem 0.75rem",
-                        fontSize: "0.85rem",
-                        textTransform: "uppercase",
-                      }}
-                    />
-                    <button
-                      type="submit"
-                      className="btn btn-secondary"
-                      style={{ minHeight: "2.4rem", padding: "0.4rem 1rem", fontSize: "0.82rem" }}
-                    >
-                      Apply
-                    </button>
-                  </form>
+                  <>
+                    <form onSubmit={handleApplyCoupon} style={{ display: "flex", gap: "0.5rem" }}>
+                      <input
+                        type="text"
+                        placeholder="e.g. HABIBI10, FIRST50"
+                        value={couponInput}
+                        onChange={(e) => setCouponInput(e.target.value)}
+                        style={{
+                          flex: 1,
+                          background: "rgba(18, 14, 35, 0.9)",
+                          border: "1px solid var(--border-soft)",
+                          borderRadius: "var(--radius-sm)",
+                          color: "var(--text-primary)",
+                          padding: "0.45rem 0.75rem",
+                          fontSize: "0.85rem",
+                          textTransform: "uppercase",
+                        }}
+                      />
+                      <button
+                        type="submit"
+                        className="btn btn-secondary"
+                        style={{ minHeight: "2.4rem", padding: "0.4rem 1rem", fontSize: "0.82rem" }}
+                      >
+                        Apply
+                      </button>
+                    </form>
+                    <span style={{ display: "block", fontSize: "0.74rem", color: "var(--text-muted)", marginTop: "0.3rem" }}>
+                      * Requires &gt;1 game in cart (excluding Budget Friendly).
+                    </span>
+                  </>
                 )}
                 {couponMessage && !appliedCoupon && (
                   <span style={{ display: "block", fontSize: "0.76rem", color: "var(--warning)", marginTop: "0.35rem" }}>
