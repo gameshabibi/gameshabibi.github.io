@@ -412,6 +412,24 @@ export default function CartPage() {
                   Your Cart ({items.reduce((s, i) => s + i.qty, 0)})
                 </h1>
 
+                {/* 3-Step Checkout Stepper */}
+                <div className="checkout-stepper" style={{ marginBottom: "1.2rem" }}>
+                  <div className="step-pill is-active">
+                    <span className="step-dot">1</span>
+                    <span>Review Items</span>
+                  </div>
+                  <div className="step-arrow">→</div>
+                  <div className="step-pill is-active">
+                    <span className="step-dot">2</span>
+                    <span>UPI Payment</span>
+                  </div>
+                  <div className="step-arrow">→</div>
+                  <div className="step-pill">
+                    <span className="step-dot">3</span>
+                    <span>Fast Dispatch</span>
+                  </div>
+                </div>
+
                 {/* Bundle Banner */}
                 <div className="bundle-banner" style={{ marginBottom: "1.2rem" }}>
                   <span style={{ fontSize: "1.2rem" }}>🎁</span>
@@ -725,6 +743,31 @@ export default function CartPage() {
                       )}
                     </div>
                   </details>
+                </div>
+
+                {/* Trust & Guarantee Card */}
+                <div className="trust-guarantee-card" style={{ marginBottom: "1.5rem" }}>
+                  <div className="trust-item">
+                    <span className="trust-icon">🛡️</span>
+                    <div>
+                      <strong>100% Replacement Warranty</strong>
+                      <p>Guaranteed active login & lifetime assistance.</p>
+                    </div>
+                  </div>
+                  <div className="trust-item">
+                    <span className="trust-icon">⚡</span>
+                    <div>
+                      <strong>Fast Telegram Bot Dispatch</strong>
+                      <p>Automated payment check & rapid dispatch.</p>
+                    </div>
+                  </div>
+                  <div className="trust-item">
+                    <span className="trust-icon">💬</span>
+                    <div>
+                      <strong>Human WhatsApp Support</strong>
+                      <p>Direct chat available if you need help.</p>
+                    </div>
+                  </div>
                 </div>
 
                 {/* Order Confirmation Form */}

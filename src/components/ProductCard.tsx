@@ -132,19 +132,43 @@ export function ProductCard({ product, defaultToCheapest = false }: ProductCardP
 
       <div className="card-footer">
         {product.variants && product.variants.length > 1 && (
-          <select
-            className="variant-selector"
-            value={selectedVariantIdx}
-            onChange={(e) => setSelectedVariantIdx(Number(e.target.value))}
+          <div
+            className="variant-chip-group"
+            role="radiogroup"
             aria-label={`Select access type for ${product.name}`}
           >
-            {product.variants.map((v, idx) => (
-              <option key={idx} value={idx}>
-                {v.name} — ₹{v.price}
-                {v.name.toLowerCase().includes("budget") ? " (No Offers)" : ""}
-              </option>
-            ))}
-          </select>
+            {product.variants.map((v, idx) => {
+              const isSelected = selectedVariantIdx === idx;
+              const isBudget = v.name.toLowerCase().includes("budget");
+              const isPersonal = v.name.toLowerCase().includes("in your steam") || v.name.toLowerCase().includes("personal");
+              const isShared = v.name.toLowerCase().includes("shared");
+              
+              const shortLabel = isPersonal
+                ? "Personal"
+                : isShared
+                ? "Shared"
+                : isBudget
+                ? "Budget"
+                : v.name.length > 12
+                ? v.name.slice(0, 10) + "…"
+                : v.name;
+
+              return (
+                <button
+                  key={idx}
+                  type="button"
+                  role="radio"
+                  aria-checked={isSelected}
+                  title={`${v.name} — ₹${v.price}${isBudget ? " (No Offers)" : ""}`}
+                  className={`variant-chip ${isSelected ? "is-selected" : ""} ${isBudget ? "is-budget" : ""}`}
+                  onClick={() => setSelectedVariantIdx(idx)}
+                >
+                  <span className="variant-chip-name">{shortLabel}</span>
+                  <span className="variant-chip-price">₹{v.price}</span>
+                </button>
+              );
+            })}
+          </div>
         )}
 
         <div className="card-price-row">
