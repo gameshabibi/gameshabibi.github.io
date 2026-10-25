@@ -263,6 +263,14 @@ export default function HomePage() {
             <Link href="/shipping">Shipping</Link>
             <Link href="/cancellation">Refunds</Link>
             <Link href="/contact">Help Desk</Link>
+            <a
+              href="https://wa.me/918966010035"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ color: "#25D366", fontWeight: 600 }}
+            >
+              💬 WhatsApp
+            </a>
           </div>
         </div>
       </footer>

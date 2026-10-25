@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { Header } from "@/components/Header";
 import { useCart } from "@/context/CartContext";
+import { getOrderWhatsAppUrl } from "@/lib/whatsapp";
 
 export default function OrdersPage() {
   const { pastOrders } = useCart();
@@ -161,20 +162,46 @@ export default function OrdersPage() {
                         )}
                       </div>
 
-                      <div style={{ display: "flex", gap: "0.8rem" }}>
+                      <div style={{ display: "flex", gap: "0.6rem", flexWrap: "wrap" }}>
+                        <a
+                          href={getOrderWhatsAppUrl({
+                            orderId: ord.id,
+                            games: ord.games,
+                            total: ord.total,
+                            utr: ord.utr,
+                            customerName: ord.name,
+                          })}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="btn"
+                          style={{
+                            background: "#25D366",
+                            color: "#04101c",
+                            fontWeight: 700,
+                            textDecoration: "none",
+                            minHeight: "2.4rem",
+                            fontSize: "0.82rem",
+                            padding: "0.4rem 1rem",
+                            display: "inline-flex",
+                            alignItems: "center",
+                            gap: "0.35rem",
+                          }}
+                        >
+                          💬 WhatsApp
+                        </a>
                         <a
                           href={`mailto:mr.bgmi9098@gmail.com?subject=${emailSubject}&body=${emailBody}`}
                           className="btn btn-secondary"
                           style={{ minHeight: "2.4rem", fontSize: "0.82rem", padding: "0.4rem 1rem" }}
                         >
-                          ✉️ Email Support
+                          ✉️ Email
                         </a>
                         <Link
                           href="/contact"
-                          className="btn"
+                          className="btn btn-secondary"
                           style={{ minHeight: "2.4rem", fontSize: "0.82rem", padding: "0.4rem 1rem" }}
                         >
-                          Help Desk Ticket
+                          Help Desk
                         </Link>
                       </div>
                     </div>

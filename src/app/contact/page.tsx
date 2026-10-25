@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { Header } from "@/components/Header";
+import { getSupportWhatsAppUrl } from "@/lib/whatsapp";
 
 export default function ContactPage() {
   const [name, setName] = useState("");
@@ -60,11 +61,56 @@ export default function ContactPage() {
           >
             How can we help you today?
           </h1>
-          <p style={{ color: "var(--text-secondary)", marginBottom: "2rem" }}>
+          <p style={{ color: "var(--text-secondary)", marginBottom: "1.5rem" }}>
             Whether you have questions about personal vs. shared Steam access, need help
             verifying an order, or want to request an unlisted game title, send us a
             message below.
           </p>
+
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              flexWrap: "wrap",
+              gap: "1rem",
+              background: "rgba(37, 211, 102, 0.1)",
+              border: "1px solid rgba(37, 211, 102, 0.3)",
+              borderRadius: "var(--radius-md)",
+              padding: "1.2rem 1.5rem",
+              marginBottom: "2rem",
+            }}
+          >
+            <div>
+              <h3 style={{ margin: "0 0 0.25rem", fontSize: "1.1rem", color: "#f1f7ff" }}>
+                ⚡ Prefer instant chat?
+              </h3>
+              <p style={{ margin: 0, fontSize: "0.88rem", color: "var(--text-secondary)" }}>
+                Message us directly on WhatsApp (+91 8966010035) for real-time help.
+              </p>
+            </div>
+            <a
+              href={getSupportWhatsAppUrl()}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn"
+              style={{
+                background: "#25D366",
+                color: "#04101c",
+                fontWeight: 700,
+                textDecoration: "none",
+                boxShadow: "0 0.4rem 1.2rem rgba(37, 211, 102, 0.3)",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "0.4rem",
+                whiteSpace: "nowrap",
+                fontSize: "0.92rem",
+                padding: "0.5rem 1.3rem",
+              }}
+            >
+              💬 Chat on WhatsApp
+            </a>
+          </div>
 
           <div
             style={{

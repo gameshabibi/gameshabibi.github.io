@@ -6,6 +6,7 @@ import Image from "next/image";
 import { Header } from "@/components/Header";
 import { useCart } from "@/context/CartContext";
 import { generateUPIQRCode } from "@/lib/qr";
+import { getOrderWhatsAppUrl, WhatsAppOrderDetails } from "@/lib/whatsapp";
 
 const PAYMENT_ID = process.env.NEXT_PUBLIC_PAYMENT_ID || "prashantsingh896@ybl";
 
@@ -39,6 +40,7 @@ export default function CartPage() {
   const [paymentFile, setPaymentFile] = useState<File | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [placedOrderId, setPlacedOrderId] = useState<string | null>(null);
+  const [placedOrderDetails, setPlacedOrderDetails] = useState<WhatsAppOrderDetails | null>(null);
   const [isCopied, setIsCopied] = useState(false);
   const [isUpiCopied, setIsUpiCopied] = useState(false);
 
@@ -196,6 +198,13 @@ export default function CartPage() {
 
       playFeedback("success");
       setPlacedOrderId(orderId);
+      setPlacedOrderDetails({
+        orderId,
+        games: gamesList,
+        total,
+        utr: customerUtr,
+        customerName: customerName,
+      });
       clearCart();
       setPaymentFile(null);
       if (fileInputRef.current) fileInputRef.current.value = "";
@@ -306,17 +315,14 @@ export default function CartPage() {
                   flexWrap: "wrap",
                 }}
               >
-                <button
-                  type="button"
-                  className="btn"
-                  onClick={() => handleCopyOrderId(placedOrderId)}
-                >
-                  {isCopied ? "✔ Copied!" : "📋 Copy Order ID"}
-                </button>
                 <a
-                  href={`https://wa.me/?text=${encodeURIComponent(
-                    `Hi Games Habibi! I just placed order #${placedOrderId} on gameshabibi.vercel.app. Here is my order confirmation!`
-                  )}`}
+                  href={getOrderWhatsAppUrl(
+                    placedOrderDetails || {
+                      orderId: placedOrderId,
+                      games: "Digital Game Pass",
+                      total: total,
+                    }
+                  )}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="btn"
@@ -325,10 +331,21 @@ export default function CartPage() {
                     color: "#04101c",
                     fontWeight: 700,
                     textDecoration: "none",
+                    boxShadow: "0 0.5rem 1.5rem rgba(37, 211, 102, 0.35)",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "0.5rem",
                   }}
                 >
-                  💬 Share on WhatsApp
+                  💬 Confirm on WhatsApp (+91 8966010035)
                 </a>
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  onClick={() => handleCopyOrderId(placedOrderId)}
+                >
+                  {isCopied ? "✔ Copied!" : "📋 Copy Order ID"}
+                </button>
                 <Link href="/orders" className="btn btn-secondary">
                   View Past Orders
                 </Link>

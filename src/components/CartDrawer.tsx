@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { useCart } from "@/context/CartContext";
 import { generateUPIQRCode } from "@/lib/qr";
+import { getOrderWhatsAppUrl, WhatsAppOrderDetails } from "@/lib/whatsapp";
 
 const PAYMENT_ID = process.env.NEXT_PUBLIC_PAYMENT_ID || "prashantsingh896@ybl";
 
@@ -39,6 +40,7 @@ export function CartDrawer() {
   const [paymentFile, setPaymentFile] = useState<File | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [placedOrderId, setPlacedOrderId] = useState<string | null>(null);
+  const [placedOrderDetails, setPlacedOrderDetails] = useState<WhatsAppOrderDetails | null>(null);
   const [isCopied, setIsCopied] = useState(false);
   const [isUpiCopied, setIsUpiCopied] = useState(false);
 
@@ -166,7 +168,7 @@ export function CartDrawer() {
 
       // Success
       playFeedback("success");
-      saveOrder({
+      const orderRecord = {
         id: generatedId,
         date: new Date().toISOString(),
         name: customerName,
@@ -175,9 +177,17 @@ export function CartDrawer() {
         total,
         utr: customerUtr,
         coupon: appliedCoupon || undefined,
-      });
+      };
+      saveOrder(orderRecord);
 
       setPlacedOrderId(generatedId);
+      setPlacedOrderDetails({
+        orderId: generatedId,
+        games: gamesSummary,
+        total,
+        utr: customerUtr,
+        customerName: customerName,
+      });
       clearCart();
       setPaymentFile(null);
       if (fileInputRef.current) fileInputRef.current.value = "";
@@ -291,17 +301,14 @@ export function CartDrawer() {
                   flexWrap: "wrap",
                 }}
               >
-                <button
-                  type="button"
-                  className="btn"
-                  onClick={() => handleCopyOrderId(placedOrderId)}
-                >
-                  {isCopied ? "✔ Copied!" : "📋 Copy Order ID"}
-                </button>
                 <a
-                  href={`https://wa.me/?text=${encodeURIComponent(
-                    `Hi Games Habibi! I just placed order #${placedOrderId} on gameshabibi.vercel.app. Here is my order confirmation!`
-                  )}`}
+                  href={getOrderWhatsAppUrl(
+                    placedOrderDetails || {
+                      orderId: placedOrderId,
+                      games: "Digital Game Pass",
+                      total: total,
+                    }
+                  )}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="btn"
@@ -310,15 +317,27 @@ export function CartDrawer() {
                     color: "#04101c",
                     fontWeight: 700,
                     textDecoration: "none",
+                    boxShadow: "0 0.4rem 1.2rem rgba(37, 211, 102, 0.35)",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "0.4rem",
                   }}
                 >
-                  💬 Share on WhatsApp
+                  💬 Confirm on WhatsApp
                 </a>
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  onClick={() => handleCopyOrderId(placedOrderId)}
+                >
+                  {isCopied ? "✔ Copied!" : "📋 Copy ID"}
+                </button>
                 <button
                   type="button"
                   className="btn btn-secondary"
                   onClick={() => {
                     setPlacedOrderId(null);
+                    setPlacedOrderDetails(null);
                     closeDrawer();
                   }}
                 >

@@ -2,6 +2,7 @@
 
 import React from "react";
 import { useCart } from "@/context/CartContext";
+import { getOrderWhatsAppUrl } from "@/lib/whatsapp";
 
 export function MyOrdersModal({
   isOpen,
@@ -137,21 +138,44 @@ export function MyOrdersModal({
                       marginTop: "0.4rem",
                       paddingTop: "0.4rem",
                       borderTop: "1px solid rgba(255, 255, 255, 0.08)",
+                      flexWrap: "wrap",
+                      gap: "0.5rem",
                     }}
                   >
                     <span style={{ fontWeight: 600, color: "var(--text-primary)" }}>
                       Total: ₹{ord.total}
                     </span>
-                    <a
-                      href={`mailto:mr.bgmi9098@gmail.com?subject=${emailSubject}&body=${emailBody}`}
-                      style={{
-                        fontSize: "0.8rem",
-                        color: "var(--mint)",
-                        textDecoration: "underline",
-                      }}
-                    >
-                      Contact Support
-                    </a>
+                    <div style={{ display: "flex", gap: "0.8rem", alignItems: "center" }}>
+                      <a
+                        href={getOrderWhatsAppUrl({
+                          orderId: ord.id,
+                          games: ord.games,
+                          total: ord.total,
+                          utr: ord.utr,
+                          customerName: ord.name,
+                        })}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{
+                          fontSize: "0.8rem",
+                          color: "#25D366",
+                          fontWeight: 600,
+                          textDecoration: "none",
+                        }}
+                      >
+                        💬 WhatsApp
+                      </a>
+                      <a
+                        href={`mailto:mr.bgmi9098@gmail.com?subject=${emailSubject}&body=${emailBody}`}
+                        style={{
+                          fontSize: "0.8rem",
+                          color: "var(--text-muted)",
+                          textDecoration: "underline",
+                        }}
+                      >
+                        Email
+                      </a>
+                    </div>
                   </div>
                 </div>
               );
