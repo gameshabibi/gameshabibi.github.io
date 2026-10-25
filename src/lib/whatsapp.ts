@@ -1,5 +1,5 @@
 export const WHATSAPP_NUMBER =
-  process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "918966010035";
+  process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "919770493784";
 
 export interface WhatsAppOrderDetails {
   orderId: string;

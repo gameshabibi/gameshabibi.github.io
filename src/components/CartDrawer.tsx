@@ -292,68 +292,32 @@ export function CartDrawer() {
 
         <div className="drawer-body">
           {placedOrderId ? (
-            <div
-              style={{
-                textAlign: "center",
-                padding: "2rem 1rem",
-                background: "var(--surface-panel)",
-                borderRadius: "var(--radius-md)",
-                border: "1px solid var(--mint)",
-              }}
-            >
-              <div
-                style={{
-                  width: "3.5rem",
-                  height: "3.5rem",
-                  borderRadius: "50%",
-                  background: "rgba(0, 255, 179, 0.15)",
-                  color: "var(--mint)",
-                  display: "grid",
-                  placeItems: "center",
-                  fontSize: "1.8rem",
-                  margin: "0 auto 1rem",
-                }}
-              >
-                ✔
-              </div>
-              <h3 style={{ margin: "0 0 0.5rem", fontSize: "1.4rem" }}>
-                Order Placed Successfully!
-              </h3>
-              <p
-                style={{
-                  color: "var(--text-secondary)",
-                  fontSize: "0.9rem",
-                  margin: "0 0 1.2rem",
-                }}
-              >
-                Your payment screenshot has been submitted for automated order dispatch. Save your Order ID:
+            <div className="order-success-card" style={{ margin: "0.5rem 0" }}>
+              <div className="order-success-icon">✔</div>
+              <h3 className="order-success-title">Order Confirmed!</h3>
+              <p className="order-success-desc">
+                Payment receipt submitted. Our team is verifying details for instant key dispatch.
               </p>
 
-              <div
-                style={{
-                  display: "inline-block",
-                  padding: "0.6rem 1.4rem",
-                  background: "var(--accent-soft)",
-                  border: "1px solid rgba(245, 166, 35, 0.35)",
-                  borderRadius: "var(--radius-sm)",
-                  fontFamily: "var(--font-data)",
-                  fontSize: "1.2rem",
-                  color: "var(--accent)",
-                  fontWeight: 700,
-                  marginBottom: "1.2rem",
-                }}
-              >
-                {placedOrderId}
+              <div className="order-id-badge-wrap">
+                <span className="order-id-label">Order ID:</span>
+                <span className="order-id-code">{placedOrderId}</span>
+                <button
+                  type="button"
+                  className="order-id-inline-copy"
+                  onClick={() => handleCopyOrderId(placedOrderId)}
+                  title="Copy Order ID"
+                >
+                  {isCopied ? "✔ Copied" : "📋 Copy"}
+                </button>
               </div>
 
-              <div
-                style={{
-                  display: "flex",
-                  gap: "0.6rem",
-                  justifyContent: "center",
-                  flexWrap: "wrap",
-                }}
-              >
+              <div className="order-dispatch-note">
+                <strong>⚡ Instant Delivery Status:</strong>
+                Credentials and access guide will be delivered via WhatsApp within 5–15 minutes.
+              </div>
+
+              <div className="order-success-actions">
                 <a
                   href={getOrderWhatsAppUrl(
                     placedOrderDetails || {
@@ -364,27 +328,10 @@ export function CartDrawer() {
                   )}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="btn"
-                  style={{
-                    background: "#25D366",
-                    color: "#04101c",
-                    fontWeight: 700,
-                    textDecoration: "none",
-                    boxShadow: "0 0.4rem 1.2rem rgba(37, 211, 102, 0.35)",
-                    display: "inline-flex",
-                    alignItems: "center",
-                    gap: "0.4rem",
-                  }}
+                  className="btn btn-whatsapp"
                 >
-                  💬 Confirm on WhatsApp
+                  💬 Chat on WhatsApp
                 </a>
-                <button
-                  type="button"
-                  className="btn btn-secondary"
-                  onClick={() => handleCopyOrderId(placedOrderId)}
-                >
-                  {isCopied ? "✔ Copied!" : "📋 Copy ID"}
-                </button>
                 <button
                   type="button"
                   className="btn btn-secondary"
@@ -420,7 +367,7 @@ export function CartDrawer() {
             </div>
           ) : (
             <>
-              {/* 3-Step Interactive Stepper */}
+              {/* 3-Step Interactive Stepper (Amazon/Flipkart Compact) */}
               <div className="checkout-stepper">
                 <button
                   type="button"
@@ -428,9 +375,9 @@ export function CartDrawer() {
                   onClick={() => setCheckoutStep(1)}
                 >
                   <span className="step-dot">{checkoutStep > 1 ? "✓" : "1"}</span>
-                  <span>1. Review</span>
+                  <span className="step-text">1. Cart</span>
                 </button>
-                <div className="step-arrow">→</div>
+                <div className="step-arrow">›</div>
                 <button
                   type="button"
                   className={`step-pill ${
@@ -443,16 +390,16 @@ export function CartDrawer() {
                   onClick={() => setCheckoutStep(2)}
                 >
                   <span className="step-dot">{checkoutStep > 2 ? "✓" : "2"}</span>
-                  <span>2. UPI Pay</span>
+                  <span className="step-text">2. Pay</span>
                 </button>
-                <div className="step-arrow">→</div>
+                <div className="step-arrow">›</div>
                 <button
                   type="button"
                   className={`step-pill ${checkoutStep === 3 ? "is-active" : ""}`}
                   onClick={() => setCheckoutStep(3)}
                 >
                   <span className="step-dot">3</span>
-                  <span>3. Verify</span>
+                  <span className="step-text">3. Verify</span>
                 </button>
               </div>
 
@@ -721,9 +668,9 @@ export function CartDrawer() {
                     type="button"
                     className="btn btn-block"
                     onClick={() => setCheckoutStep(2)}
-                    style={{ minHeight: "3.2rem", fontSize: "1.05rem" }}
+                    style={{ minHeight: "2.45rem", fontSize: "0.88rem", fontWeight: 600 }}
                   >
-                    Proceed to Step 2: UPI Pay (₹{total}) →
+                    Proceed to Pay • ₹{total} →
                   </button>
                 </>
               )}
@@ -835,12 +782,12 @@ export function CartDrawer() {
                     </div>
                   </div>
 
-                  <div style={{ display: "flex", gap: "0.6rem" }}>
+                  <div style={{ display: "flex", gap: "0.5rem" }}>
                     <button
                       type="button"
                       className="btn btn-secondary"
                       onClick={() => setCheckoutStep(1)}
-                      style={{ flex: 1, minHeight: "3rem" }}
+                      style={{ flex: 1, minHeight: "2.45rem", fontSize: "0.86rem", fontWeight: 500 }}
                     >
                       ← Back
                     </button>
@@ -848,9 +795,9 @@ export function CartDrawer() {
                       type="button"
                       className="btn"
                       onClick={() => setCheckoutStep(3)}
-                      style={{ flex: 2, minHeight: "3rem" }}
+                      style={{ flex: 2, minHeight: "2.45rem", fontSize: "0.86rem", fontWeight: 600 }}
                     >
-                      I Have Paid → Verify
+                      I&apos;ve Paid → Verify
                     </button>
                   </div>
 
@@ -977,7 +924,7 @@ export function CartDrawer() {
                   <div
                     style={{
                       display: "flex",
-                      gap: "0.6rem",
+                      gap: "0.5rem",
                       marginTop: "0.8rem",
                     }}
                   >
@@ -985,7 +932,7 @@ export function CartDrawer() {
                       type="button"
                       className="btn btn-secondary"
                       onClick={() => setCheckoutStep(2)}
-                      style={{ flex: 1, minHeight: "3.2rem" }}
+                      style={{ flex: 1, minHeight: "2.45rem", fontSize: "0.86rem", fontWeight: 500 }}
                     >
                       ← Back
                     </button>
@@ -993,11 +940,11 @@ export function CartDrawer() {
                       type="submit"
                       className="btn"
                       disabled={isSubmitting}
-                      style={{ flex: 2, minHeight: "3.2rem", fontSize: "1.05rem" }}
+                      style={{ flex: 2, minHeight: "2.45rem", fontSize: "0.86rem", fontWeight: 600 }}
                     >
                       {isSubmitting
                         ? "Submitting..."
-                        : `Submit Order • ₹${total}`}
+                        : `Place Order • ₹${total}`}
                     </button>
                   </div>
                 </form>

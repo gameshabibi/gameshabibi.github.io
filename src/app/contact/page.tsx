@@ -86,7 +86,7 @@ export default function ContactPage() {
                 ⚡ Prefer instant chat?
               </h3>
               <p style={{ margin: 0, fontSize: "0.88rem", color: "var(--text-secondary)" }}>
-                Message us directly on WhatsApp (+91 8966010035) for real-time help.
+                Message us directly on WhatsApp (+91 9770493784) for real-time help.
               </p>
             </div>
             <a

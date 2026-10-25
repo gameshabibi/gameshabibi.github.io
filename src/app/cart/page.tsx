@@ -274,79 +274,32 @@ export default function CartPage() {
           </nav>
 
           {placedOrderId ? (
-            <div
-              style={{
-                maxWidth: "600px",
-                margin: "2rem auto",
-                textAlign: "center",
-                padding: "3rem 2rem",
-                background: "var(--surface-panel)",
-                borderRadius: "var(--radius-lg)",
-                border: "1px solid var(--mint)",
-                boxShadow: "var(--shadow-strong)",
-              }}
-            >
-              <div
-                style={{
-                  width: "4.5rem",
-                  height: "4.5rem",
-                  borderRadius: "50%",
-                  background: "rgba(0, 255, 179, 0.15)",
-                  color: "var(--mint)",
-                  display: "grid",
-                  placeItems: "center",
-                  fontSize: "2.2rem",
-                  margin: "0 auto 1.2rem",
-                }}
-              >
-                ✔
-              </div>
-              <h1
-                style={{
-                  fontFamily: "var(--font-heading)",
-                  fontSize: "2.5rem",
-                  margin: "0 0 0.5rem",
-                  letterSpacing: "0.02em",
-                }}
-              >
-                Order Placed Successfully!
-              </h1>
-              <p
-                style={{
-                  color: "var(--text-secondary)",
-                  fontSize: "1rem",
-                  lineHeight: 1.6,
-                  margin: "0 0 1.5rem",
-                }}
-              >
-                Your payment screenshot has been submitted and recorded. Save your Order ID below:
+            <div className="order-success-card">
+              <div className="order-success-icon">✔</div>
+              <h1 className="order-success-title">Order Confirmed!</h1>
+              <p className="order-success-desc">
+                Payment receipt submitted. Our team is verifying details for instant key dispatch.
               </p>
 
-              <div
-                style={{
-                  display: "inline-block",
-                  padding: "0.8rem 2rem",
-                  background: "var(--accent-soft)",
-                  border: "1px solid rgba(245, 166, 35, 0.35)",
-                  borderRadius: "var(--radius-sm)",
-                  fontFamily: "var(--font-data)",
-                  fontSize: "1.5rem",
-                  color: "var(--accent)",
-                  fontWeight: 700,
-                  marginBottom: "1.8rem",
-                }}
-              >
-                {placedOrderId}
+              <div className="order-id-badge-wrap">
+                <span className="order-id-label">Order ID:</span>
+                <span className="order-id-code">{placedOrderId}</span>
+                <button
+                  type="button"
+                  className="order-id-inline-copy"
+                  onClick={() => handleCopyOrderId(placedOrderId)}
+                  title="Copy Order ID"
+                >
+                  {isCopied ? "✔ Copied" : "📋 Copy"}
+                </button>
               </div>
 
-              <div
-                style={{
-                  display: "flex",
-                  gap: "0.8rem",
-                  justifyContent: "center",
-                  flexWrap: "wrap",
-                }}
-              >
+              <div className="order-dispatch-note">
+                <strong>⚡ Instant Delivery Status:</strong>
+                Credentials and access guide will be delivered via WhatsApp within 5–15 minutes.
+              </div>
+
+              <div className="order-success-actions">
                 <a
                   href={getOrderWhatsAppUrl(
                     placedOrderDetails || {
@@ -357,32 +310,18 @@ export default function CartPage() {
                   )}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="btn"
-                  style={{
-                    background: "#25D366",
-                    color: "#04101c",
-                    fontWeight: 700,
-                    textDecoration: "none",
-                    boxShadow: "0 0.5rem 1.5rem rgba(37, 211, 102, 0.35)",
-                    display: "inline-flex",
-                    alignItems: "center",
-                    gap: "0.5rem",
-                  }}
+                  className="btn btn-whatsapp"
                 >
-                  💬 Confirm on WhatsApp (+91 8966010035)
+                  💬 Chat on WhatsApp
                 </a>
-                <button
-                  type="button"
-                  className="btn btn-secondary"
-                  onClick={() => handleCopyOrderId(placedOrderId)}
-                >
-                  {isCopied ? "✔ Copied!" : "📋 Copy Order ID"}
-                </button>
-                <Link href="/orders" className="btn btn-secondary">
-                  View Past Orders
-                </Link>
-                <Link href="/catalog" className="btn btn-tertiary">
+                <Link href="/catalog" className="btn btn-secondary">
                   Continue Browsing
+                </Link>
+              </div>
+
+              <div>
+                <Link href="/orders" className="order-past-link">
+                  View Past Orders →
                 </Link>
               </div>
             </div>
@@ -392,18 +331,18 @@ export default function CartPage() {
                 maxWidth: "600px",
                 margin: "4rem auto",
                 textAlign: "center",
-                padding: "4rem 2rem",
+                padding: "3.5rem 1.5rem",
                 background: "var(--surface-panel)",
                 borderRadius: "var(--radius-lg)",
                 border: "1px solid var(--border-soft)",
               }}
             >
-              <div style={{ fontSize: "3.5rem", marginBottom: "1rem" }}>🛒</div>
+              <div style={{ fontSize: "3rem", marginBottom: "0.8rem" }}>🛒</div>
               <h1
                 style={{
                   fontFamily: "var(--font-heading)",
-                  fontSize: "2.4rem",
-                  margin: "0 0 0.8rem",
+                  fontSize: "2.2rem",
+                  margin: "0 0 0.6rem",
                 }}
               >
                 Your Cart is Empty
@@ -411,18 +350,18 @@ export default function CartPage() {
               <p
                 style={{
                   color: "var(--text-secondary)",
-                  fontSize: "1rem",
-                  marginBottom: "2rem",
+                  fontSize: "0.95rem",
+                  marginBottom: "1.6rem",
                 }}
               >
                 Looks like you haven&apos;t added any games or streaming passes yet.
               </p>
-              <Link href="/catalog" className="btn">
+              <Link href="/catalog" className="btn" style={{ minHeight: "2.65rem" }}>
                 Browse Games & Passes →
               </Link>
             </div>
           ) : (
-            <div style={{ maxWidth: "880px", margin: "0 auto" }}>
+            <div style={{ maxWidth: "880px", margin: "0 auto", width: "100%", boxSizing: "border-box" }}>
               {/* Stepper Header Title */}
               <div
                 style={{
@@ -430,29 +369,29 @@ export default function CartPage() {
                   alignItems: "baseline",
                   justifyContent: "space-between",
                   flexWrap: "wrap",
-                  gap: "0.8rem",
-                  marginBottom: "1rem",
+                  gap: "0.6rem",
+                  marginBottom: "0.8rem",
                 }}
               >
                 <h1
                   style={{
                     fontFamily: "var(--font-heading)",
-                    fontSize: "2.3rem",
+                    fontSize: "clamp(1.35rem, 3.5vw, 1.8rem)",
                     margin: 0,
                     letterSpacing: "0.02em",
                   }}
                 >
                   {checkoutStep === 1
-                    ? `Step 1: Review Items (${items.reduce((s, i) => s + i.qty, 0)})`
+                    ? `Step 1: Cart Items (${items.reduce((s, i) => s + i.qty, 0)})`
                     : checkoutStep === 2
-                    ? "Step 2: Instant UPI Payment"
-                    : "Step 3: Verification & Dispatch"}
+                    ? "Step 2: Instant Payment"
+                    : "Step 3: Verification"}
                 </h1>
                 <div
                   style={{
                     fontFamily: "var(--font-data)",
                     color: "var(--accent)",
-                    fontSize: "1.25rem",
+                    fontSize: "1.05rem",
                     fontWeight: 700,
                   }}
                 >
@@ -460,7 +399,7 @@ export default function CartPage() {
                 </div>
               </div>
 
-              {/* 3-Step Interactive Checkout Stepper */}
+              {/* 3-Step Interactive Checkout Stepper (Amazon/Flipkart Compact) */}
               <nav className="checkout-stepper" aria-label="Checkout Progress">
                 <button
                   type="button"
@@ -469,9 +408,9 @@ export default function CartPage() {
                   aria-current={checkoutStep === 1 ? "step" : undefined}
                 >
                   <span className="step-dot">{checkoutStep > 1 ? "✓" : "1"}</span>
-                  <span>1. Review Items</span>
+                  <span className="step-text">1. Cart</span>
                 </button>
-                <div className="step-arrow">→</div>
+                <div className="step-arrow">›</div>
                 <button
                   type="button"
                   className={`step-pill ${
@@ -485,9 +424,9 @@ export default function CartPage() {
                   aria-current={checkoutStep === 2 ? "step" : undefined}
                 >
                   <span className="step-dot">{checkoutStep > 2 ? "✓" : "2"}</span>
-                  <span>2. UPI Payment</span>
+                  <span className="step-text">2. Pay</span>
                 </button>
-                <div className="step-arrow">→</div>
+                <div className="step-arrow">›</div>
                 <button
                   type="button"
                   className={`step-pill ${checkoutStep === 3 ? "is-active" : ""}`}
@@ -495,7 +434,7 @@ export default function CartPage() {
                   aria-current={checkoutStep === 3 ? "step" : undefined}
                 >
                   <span className="step-dot">3</span>
-                  <span>3. Dispatch & Verify</span>
+                  <span className="step-text">3. Verify</span>
                 </button>
               </nav>
 
@@ -812,12 +751,13 @@ export default function CartPage() {
                       className="btn btn-block"
                       onClick={() => goToStep(2)}
                       style={{
-                        minHeight: "3.5rem",
-                        fontSize: "1.1rem",
+                        minHeight: "2.45rem",
+                        fontSize: "0.88rem",
+                        fontWeight: 600,
                         marginBottom: "1rem",
                       }}
                     >
-                      Proceed to Step 2: UPI Payment (₹{total}) →
+                      Proceed to Pay • ₹{total} →
                     </button>
 
                     <div style={{ textAlign: "center", marginBottom: "1.5rem" }}>
@@ -853,7 +793,7 @@ export default function CartPage() {
                         <span className="trust-icon">💬</span>
                         <div>
                           <strong>Human WhatsApp Support</strong>
-                          <p>Direct chat available at +91 8966010035.</p>
+                          <p>Direct chat available at +91 9770493784.</p>
                         </div>
                       </div>
                     </div>
@@ -1094,30 +1034,31 @@ export default function CartPage() {
                   <div
                     style={{
                       display: "flex",
-                      gap: "1rem",
+                      gap: "0.6rem",
                       flexWrap: "wrap",
-                      marginBottom: "1.8rem",
+                      marginBottom: "1.5rem",
                     }}
                   >
                     <button
                       type="button"
                       className="btn btn-secondary"
                       onClick={() => goToStep(1)}
-                      style={{ flex: "1 1 140px", minHeight: "3.4rem" }}
+                      style={{ flex: "1 1 110px", minHeight: "2.45rem", fontSize: "0.86rem", fontWeight: 500 }}
                     >
-                      ← Back to Items
+                      ← Back
                     </button>
                     <button
                       type="button"
                       className="btn"
                       onClick={() => goToStep(3)}
                       style={{
-                        flex: "2 1 240px",
-                        minHeight: "3.4rem",
-                        fontSize: "1.05rem",
+                        flex: "2 1 180px",
+                        minHeight: "2.45rem",
+                        fontSize: "0.86rem",
+                        fontWeight: 600,
                       }}
                     >
-                      I Have Paid — Continue to Verification →
+                      I&apos;ve Paid → Verify
                     </button>
                   </div>
 
@@ -1285,9 +1226,9 @@ export default function CartPage() {
                     <div
                       style={{
                         display: "flex",
-                        gap: "1rem",
+                        gap: "0.6rem",
                         flexWrap: "wrap",
-                        marginTop: "1.4rem",
+                        marginTop: "1.2rem",
                       }}
                     >
                       <button
@@ -1295,22 +1236,23 @@ export default function CartPage() {
                         className="btn btn-secondary"
                         disabled={isSubmitting}
                         onClick={() => goToStep(2)}
-                        style={{ flex: "1 1 120px", minHeight: "3.5rem" }}
+                        style={{ flex: "1 1 110px", minHeight: "2.45rem", fontSize: "0.86rem", fontWeight: 500 }}
                       >
-                        ← Back to Payment
+                        ← Back
                       </button>
                       <button
                         type="submit"
                         className="btn"
                         disabled={isSubmitting}
                         style={{
-                          flex: "2 1 220px",
-                          minHeight: "3.5rem",
-                          fontSize: "1.1rem",
+                          flex: "2 1 180px",
+                          minHeight: "2.45rem",
+                          fontSize: "0.86rem",
+                          fontWeight: 600,
                           display: "inline-flex",
                           alignItems: "center",
                           justifyContent: "center",
-                          gap: "0.6rem",
+                          gap: "0.5rem",
                         }}
                       >
                         {isSubmitting ? (
@@ -1319,7 +1261,7 @@ export default function CartPage() {
                             <span>Verifying & Submitting...</span>
                           </>
                         ) : (
-                          `Submit Order • ₹${total}`
+                          `Place Order • ₹${total}`
                         )}
                       </button>
                     </div>

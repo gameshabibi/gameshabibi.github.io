@@ -264,7 +264,7 @@ export default function HomePage() {
             <Link href="/cancellation">Refunds</Link>
             <Link href="/contact">Help Desk</Link>
             <a
-              href="https://wa.me/918966010035"
+              href="https://wa.me/919770493784"
               target="_blank"
               rel="noopener noreferrer"
               style={{ color: "#25D366", fontWeight: 600 }}
