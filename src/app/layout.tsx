@@ -2,8 +2,6 @@ import type { Metadata, Viewport } from "next";
 import { Playfair_Display, Inter } from "next/font/google";
 import "@/styles/globals.css";
 import { CartProvider } from "@/context/CartContext";
-import { Toast } from "@/components/Toast";
-import { MobileBottomNav } from "@/components/MobileBottomNav";
 
 const playfairDisplay = Playfair_Display({
   subsets: ["latin"],
@@ -29,7 +27,7 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   title: "Games Habibi — PC games & digital passes",
   description:
-    "Curated PC games and digital passes from ₹169. Pay with UPI, get your login on WhatsApp or email.",
+    "Curated PC games and digital passes from ₹69. Pay with UPI, get your login on WhatsApp or email.",
   icons: {
     icon: [
       { url: "/png/favicon-16x16.png", sizes: "16x16", type: "image/png" },
@@ -99,11 +97,7 @@ export default function RootLayout({
           </defs>
         </svg>
 
-        <CartProvider>
-          {children}
-          <Toast />
-          <MobileBottomNav />
-        </CartProvider>
+        <CartProvider>{children}</CartProvider>
       </body>
     </html>
   );
