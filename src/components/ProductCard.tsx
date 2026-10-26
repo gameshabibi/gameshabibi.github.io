@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import Image from "next/image";
+import React, { useState } from "react";
+import Link from "next/link";
 import { ProductItem } from "@/data/catalog";
 import { useCart } from "@/context/CartContext";
 
@@ -10,50 +10,22 @@ interface ProductCardProps {
   defaultToCheapest?: boolean;
 }
 
-export function ProductCard({ product, defaultToCheapest = false }: ProductCardProps) {
+export function ProductCard({
+  product,
+  defaultToCheapest = false,
+}: ProductCardProps) {
   const { addItem } = useCart();
-  // Check if this is a popular/flagship game
-  const isPopularGame = (item: ProductItem) => {
-    if (item.badge && item.badge !== "Budget Pick") return true;
-    const POPULAR_KEYS = [
-      "grand theft auto",
-      "gta",
-      "red dead",
-      "black myth",
-      "god of war",
-      "forza",
-      "elden ring",
-      "ea sports",
-      "palworld",
-      "cyberpunk",
-      "spider-man",
-      "last of us",
-      "wukong",
-      "fifa",
-      "tekken",
-      "mortal kombat",
-      "call of duty",
-      "assassin's creed",
-      "sekiro",
-      "hogwarts",
-      "witcher",
-      "baldur",
-      "ghost of tsushima",
-      "stellar blade",
-      "resident evil",
-      "days gone",
-      "detroit",
-      "uncharted",
-      "hitman",
-      "dark souls",
-      "beamng",
-      "need for speed",
-      "nfs",
-      "assetto corsa",
-    ];
-    const name = item.name.toLowerCase();
-    return POPULAR_KEYS.some((k) => name.includes(k));
-  };
+  const [justAdded, setJustAdded] = useState(false);
+
+  // Compute initials for fallback watermark
+  const initials = product.name
+    .replace(/[^A-Za-z0-9 ]/g, "")
+    .split(" ")
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((w) => w[0])
+    .join("")
+    .toUpperCase();
 
   const getCheapestIdx = () => {
     if (!product.variants || product.variants.length <= 1) return 0;
@@ -68,42 +40,44 @@ export function ProductCard({ product, defaultToCheapest = false }: ProductCardP
     return minIdx;
   };
 
-  // Find default variant: if defaultToCheapest (under 100), choose lowest option.
-  // Otherwise, popular games default to ₹149 option, others to cheapest.
   const defaultIdx = () => {
     if (!product.variants || product.variants.length <= 1) return 0;
+    if (defaultToCheapest) return getCheapestIdx();
 
-    if (defaultToCheapest) {
-      return getCheapestIdx();
-    }
+    // Default to Shared tier (usually 149) if present
+    const idx149 = product.variants.findIndex((v) => v.price === 149);
+    if (idx149 !== -1) return idx149;
 
-    if (isPopularGame(product)) {
-      const idx149 = product.variants.findIndex((v) => v.price === 149);
-      if (idx149 !== -1) return idx149;
-      const sharedIdx = product.variants.findIndex((v) =>
-        v.name.toLowerCase().includes("shared") || v.name.toLowerCase().includes("offline")
-      );
-      if (sharedIdx !== -1) return sharedIdx;
-    }
+    const sharedIdx = product.variants.findIndex((v) =>
+      v.name.toLowerCase().includes("shared") || v.name.toLowerCase().includes("offline")
+    );
+    if (sharedIdx !== -1) return sharedIdx;
 
     return getCheapestIdx();
   };
 
   const [selectedVariantIdx, setSelectedVariantIdx] = useState(defaultIdx);
 
-  // When defaultToCheapest changes to true (e.g. user chooses 'Under 100'), switch selection to lowest price
-  useEffect(() => {
-    if (defaultToCheapest) {
-      setSelectedVariantIdx(getCheapestIdx());
-    }
-  }, [defaultToCheapest, product]);
-
   const currentVariant = product.variants ? product.variants[selectedVariantIdx] : null;
   const currentPrice = currentVariant ? currentVariant.price : (product.price || 0);
 
-  const handleAdd = () => {
+  const variantLabel = currentVariant
+    ? currentVariant.name.toLowerCase().includes("in your steam") ||
+      currentVariant.name.toLowerCase().includes("personal")
+      ? "Personal"
+      : currentVariant.name.toLowerCase().includes("shared")
+      ? "Shared"
+      : currentVariant.name.toLowerCase().includes("budget")
+      ? "Budget"
+      : currentVariant.name
+    : product.badge
+    ? product.badge
+    : "Pass";
+
+  const handleAdd = (e: React.MouseEvent) => {
+    e.preventDefault();
     if (typeof window !== "undefined" && navigator.vibrate) {
-      navigator.vibrate(15);
+      navigator.vibrate(14);
     }
     addItem({
       game: product.name,
@@ -111,78 +85,84 @@ export function ProductCard({ product, defaultToCheapest = false }: ProductCardP
       variant: currentVariant ? currentVariant.name : undefined,
       img: product.img,
     });
+    setJustAdded(true);
+    setTimeout(() => setJustAdded(false), 1200);
   };
 
   return (
-    <article className="product-card">
-      <div className="card-media">
-        <Image
+    <article className="card">
+      <Link
+        href={`/catalog?q=${encodeURIComponent(product.name)}`}
+        className="cover"
+        data-ini={initials}
+        tabIndex={-1}
+        aria-hidden="true"
+      >
+        <img
           src={product.img}
           alt={product.name}
-          width={400}
-          height={225}
           loading="lazy"
-          style={{ objectFit: "cover" }}
+          onError={(e) => {
+            (e.target as HTMLElement).style.display = "none";
+          }}
         />
-        {product.badge && <span className="card-badge">{product.badge}</span>}
-      </div>
+        {product.badge && <span className="tag">{product.badge}</span>}
+      </Link>
 
-      <h3 className="card-title">{product.name}</h3>
-      <p className="card-genre">{product.genre}</p>
+      <Link
+        href={`/catalog?q=${encodeURIComponent(product.name)}`}
+        className="card-title"
+      >
+        {product.name}
+      </Link>
 
-      <div className="card-footer">
-        {product.variants && product.variants.length > 1 && (
-          <div
-            className="variant-chip-group"
-            role="radiogroup"
-            aria-label={`Select access type for ${product.name}`}
-          >
-            {product.variants.map((v, idx) => {
-              const isSelected = selectedVariantIdx === idx;
-              const isBudget = v.name.toLowerCase().includes("budget");
-              const isPersonal = v.name.toLowerCase().includes("in your steam") || v.name.toLowerCase().includes("personal");
-              const isShared = v.name.toLowerCase().includes("shared");
-              
-              const shortLabel = isPersonal
-                ? "Personal"
-                : isShared
-                ? "Shared"
-                : isBudget
-                ? "Budget"
-                : v.name.length > 12
-                ? v.name.slice(0, 10) + "…"
-                : v.name;
+      {product.variants && product.variants.length > 1 && (
+        <div className="variant-chip-group" role="radiogroup">
+          {product.variants.map((v, idx) => {
+            const isSelected = selectedVariantIdx === idx;
+            const isPersonal =
+              v.name.toLowerCase().includes("in your steam") ||
+              v.name.toLowerCase().includes("personal");
+            const isShared = v.name.toLowerCase().includes("shared");
+            const isBudget = v.name.toLowerCase().includes("budget");
 
-              return (
-                <button
-                  key={idx}
-                  type="button"
-                  role="radio"
-                  aria-checked={isSelected}
-                  title={`${v.name} — ₹${v.price}${isBudget ? " (No Offers)" : ""}`}
-                  className={`variant-chip ${isSelected ? "is-selected" : ""} ${isBudget ? "is-budget" : ""}`}
-                  onClick={() => setSelectedVariantIdx(idx)}
-                >
-                  <span className="variant-chip-name">{shortLabel}</span>
-                  <span className="variant-chip-price">₹{v.price}</span>
-                </button>
-              );
-            })}
-          </div>
-        )}
+            const label = isPersonal
+              ? "Personal"
+              : isShared
+              ? "Shared"
+              : isBudget
+              ? "Budget"
+              : v.name;
 
-        <div className="card-price-row">
-          <span className="card-price">₹{currentPrice}</span>
-          <button
-            type="button"
-            className="btn card-btn"
-            onClick={handleAdd}
-            aria-label={`Add ${product.name} to cart`}
-          >
-            <span className="card-btn-full">+ Add to Cart</span>
-            <span className="card-btn-compact">+ Add</span>
-          </button>
+            return (
+              <button
+                key={idx}
+                type="button"
+                className={`variant-chip ${isSelected ? "is-selected" : ""}`}
+                onClick={() => setSelectedVariantIdx(idx)}
+                title={`${v.name} — ₹${v.price}`}
+              >
+                <span>{label}</span>
+                <span className="variant-chip-price">₹{v.price}</span>
+              </button>
+            );
+          })}
         </div>
+      )}
+
+      <div className="card-meta">
+        <span className="card-price">
+          <small>{variantLabel}</small>
+          ₹{currentPrice}
+        </span>
+        <button
+          type="button"
+          className={`card-add ${justAdded ? "done" : ""}`}
+          onClick={handleAdd}
+          aria-label={`Add ${product.name} to cart`}
+        >
+          {justAdded ? "✓" : "+"}
+        </button>
       </div>
     </article>
   );

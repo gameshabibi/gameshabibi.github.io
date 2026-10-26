@@ -2,10 +2,8 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { Header } from "@/components/Header";
 import { Hero } from "@/components/Hero";
-import { Ticker } from "@/components/Ticker";
 import { Catalog } from "@/components/Catalog";
 import { SteamGuideFAQ } from "@/components/SteamGuideFAQ";
 import { MyOrdersModal } from "@/components/MyOrdersModal";
@@ -26,252 +24,257 @@ export default function HomePage() {
     <>
       <div id="top" />
       <div className="notice-bar">
-        🚨 Limited time: 3-game bundle for ₹538 | <Link href="/catalog">Shop Now</Link>
+        ⚡ 3-game Personal Steam bundle for ₹538 (40% OFF) |{" "}
+        <Link href="/catalog">Shop Now</Link>
       </div>
+
       <Header
         onSearch={setSearchQuery}
         onOpenOrders={() => setIsOrdersOpen(true)}
       />
 
       <main>
+        {/* Editorial Hero with Slider & Ink Art */}
         <Hero />
-        <Ticker />
+
+        {/* Catalog Section with Editorial Cards */}
         <Catalog
           isHomeView
-          limit={6}
+          limit={8}
           searchQuery={searchQuery}
           onRequestGame={handleOpenRequest}
         />
 
-        {/* Interactive Steam Guide & FAQ */}
-        <SteamGuideFAQ />
-
-        {/* How It Works Section */}
-        <section id="how-it-works" className="process-section">
+        {/* Pick How You Play - 3-Tier Matrix */}
+        <section className="section">
           <div className="container">
-            <div className="section-heading">
-              <p className="eyebrow">How It Works</p>
-              <h2>Simple from search to digital delivery</h2>
+            <div className="sec-head">
+              <h2 className="sec-title">Pick how you play</h2>
+              <span className="kicker">Every game, three ways</span>
             </div>
 
-            <div className="steps-grid">
-              <article className="step-card">
-                <span className="step-number">01</span>
-                <h3>Choose your access type</h3>
-                <p>
-                  Defaults to affordable shared account access or direct personal Steam account
-                  activations with upfront pricing.
-                </p>
-              </article>
+            <div className="tiers">
+              <div className="tier">
+                <span className="kicker">In your Steam account</span>
+                <div className="price">₹299</div>
+                <h3>Personal</h3>
+                <p>The game is activated on your own Steam profile.</p>
+                <ul>
+                  <li>Lives in your own library</li>
+                  <li>Bundle discounts up to 47%</li>
+                  <li>Coupons accepted</li>
+                </ul>
+              </div>
 
-              <article className="step-card">
-                <span className="step-number">02</span>
-                <h3>Pay with UPI and confirm</h3>
-                <p>
-                  Review bundle & coupon discounts, scan the dynamic QR or tap Pay Now on
-                  your UPI app, then upload your screenshot and 12-digit UTR.
-                </p>
-              </article>
+              <div className="tier featured">
+                <span className="kicker" style={{ color: "#ff8d92" }}>
+                  Most popular
+                </span>
+                <div className="price">₹149</div>
+                <h3>Shared</h3>
+                <p>Log in with the credentials we send, download, then play offline.</p>
+                <ul>
+                  <li>Steam Guard code sent at first login</li>
+                  <li>Offline campaign &amp; local saves</li>
+                  <li>Coupons accepted</li>
+                </ul>
+              </div>
 
-              <article className="step-card">
-                <span className="step-number">03</span>
-                <h3>Instant Telegram delivery</h3>
-                <p>
-                  Your payment proof and reference ID trigger an automated Telegram bot
-                  alert for rapid credential dispatch.
-                </p>
-              </article>
+              <div className="tier">
+                <span className="kicker">Cheapest</span>
+                <div className="price">₹169</div>
+                <h3>Budget Friendly</h3>
+                <p>Our lowest price for offline single-player.</p>
+                <ul>
+                  <li>Replacement at 50% off if credentials change</li>
+                  <li>Instant delivery via WhatsApp &amp; Email</li>
+                </ul>
+              </div>
+            </div>
+
+            {/* Bundle Savings Strip */}
+            <div className="bundle-strip">
+              <span>
+                <b>Bundle &amp; save</b> &nbsp;on Personal games
+              </span>
+              <div className="steps">
+                <span>
+                  <b>25%</b> off 2
+                </span>
+                <span>
+                  <b>40%</b> off 3
+                </span>
+                <span>
+                  <b>47%</b> off 4+
+                </span>
+              </div>
+              <Link className="link-btn arrow" href="/how-it-works">
+                How it works
+              </Link>
             </div>
           </div>
         </section>
 
-        {/* About Section */}
-        <section id="about" className="catalog-section">
+        {/* Discover New Worlds - Editorial Banner with Castle & Mountains Ink Art */}
+        <section className="section">
           <div className="container">
-            <div
-              style={{
-                background: "var(--surface-panel)",
-                border: "1px solid var(--border-soft)",
-                borderRadius: "var(--radius-lg)",
-                padding: "clamp(1.8rem, 3.5vw, 3rem)",
-              }}
-            >
-              <p className="eyebrow">About Games Habibi</p>
-              <h2
-                style={{
-                  fontFamily: "var(--font-heading)",
-                  fontSize: "clamp(2rem, 3.5vw, 2.8rem)",
-                  margin: "0 0 1rem",
-                }}
+            <div className="banner">
+              <svg
+                className="ink"
+                viewBox="0 0 900 300"
+                preserveAspectRatio="xMidYMid slice"
+                role="img"
+                aria-label="Ink illustration of a castle above misty mountains"
               >
-                A storefront built around clarity, trust, and fast follow-up.
-              </h2>
-              <p
-                style={{
-                  color: "var(--text-secondary)",
-                  fontSize: "1rem",
-                  lineHeight: "1.7",
-                  maxWidth: "50rem",
-                  margin: "0 0 2rem",
-                }}
-              >
-                Games Habibi focuses on making top-tier PC gaming and premium
-                subscriptions accessible to everyone in India. With zero credit
-                card hurdles and direct UPI payments, you get transparent
-                pricing and real human support on Telegram and Instagram.
-              </p>
+                <rect width="900" height="300" fill="#0f0e0d" />
+                <circle cx="690" cy="96" r="64" fill="var(--red)" opacity=".92" />
+                <g filter="url(#rough)">
+                  <path
+                    d="M0 210 C100 160 170 190 260 150 C340 114 420 170 520 140 C620 110 720 160 900 120 L900 300 L0 300Z"
+                    fill="#2a2724"
+                  />
+                  <path
+                    d="M0 250 C120 214 200 238 300 204 C400 172 500 226 620 200 C730 176 820 214 900 190 L900 300 L0 300Z"
+                    fill="#1b1917"
+                  />
+                  <g fill="#34302c">
+                    <path d="M610 156 h70 v-14 h-6 l-29 -24 l-29 24 h-6z" />
+                    <rect x="622" y="156" width="46" height="46" />
+                    <path d="M628 118 l23 -30 l23 30z" />
+                  </g>
+                </g>
+                <g fill="#0f0e0d">
+                  <path d="M772 218 q10 -22 20 0 q-10 -6 -20 0z" />
+                  <circle cx="782" cy="204" r="5" />
+                  <path d="M774 222 q8 -4 16 0 l4 28 q-12 5 -24 0z" />
+                </g>
+                <rect y="190" width="900" height="110" fill="url(#mistDark)" />
+              </svg>
 
-              <div
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
-                  gap: "1.5rem",
-                }}
-              >
-                <div
-                  style={{
-                    background: "rgba(25, 18, 48, 0.6)",
-                    border: "1px solid rgba(245, 166, 35, 0.12)",
-                    borderRadius: "var(--radius-sm)",
-                    padding: "1.2rem",
-                  }}
-                >
-                  <h3 style={{ margin: "0 0 0.4rem", fontSize: "1.1rem" }}>
-                    🚀 Fast Turnaround
-                  </h3>
-                  <p style={{ margin: 0, fontSize: "0.88rem", color: "var(--text-secondary)" }}>
-                    Digital credentials dispatched directly to your email or
-                    chat as soon as payment is confirmed.
-                  </p>
-                </div>
-
-                <div
-                  style={{
-                    background: "rgba(25, 18, 48, 0.6)",
-                    border: "1px solid rgba(245, 166, 35, 0.12)",
-                    borderRadius: "var(--radius-sm)",
-                    padding: "1.2rem",
-                  }}
-                >
-                  <h3 style={{ margin: "0 0 0.4rem", fontSize: "1.1rem" }}>
-                    💎 Transparent Pricing
-                  </h3>
-                  <p style={{ margin: 0, fontSize: "0.88rem", color: "var(--text-secondary)" }}>
-                    All prices are in INR (₹) with live bundle discounts and zero
-                    hidden transaction fees.
-                  </p>
-                </div>
-
-                <div
-                  style={{
-                    background: "rgba(25, 18, 48, 0.6)",
-                    border: "1px solid rgba(245, 166, 35, 0.12)",
-                    borderRadius: "var(--radius-sm)",
-                    padding: "1.2rem",
-                  }}
-                >
-                  <h3 style={{ margin: "0 0 0.4rem", fontSize: "1.1rem" }}>
-                    💬 Dedicated Support
-                  </h3>
-                  <p style={{ margin: 0, fontSize: "0.88rem", color: "var(--text-secondary)" }}>
-                    Reach us via Email, Instagram, or our direct Help Desk if you
-                    need custom titles or assistance.
-                  </p>
-                </div>
+              <div className="banner-in">
+                <h2 className="display">Discover new worlds</h2>
+                <p>
+                  Curated titles and passes for every kind of gamer — open worlds,
+                  horror, racing, and blockbuster RPGs.
+                </p>
+                <Link className="btn red arrow" href="/catalog">
+                  Browse Catalog
+                </Link>
               </div>
             </div>
           </div>
         </section>
 
-        {/* Support & Policies Section */}
-        <section id="contact" className="support-section">
+        {/* How It Works - 3 Steps Grid */}
+        <section className="section">
           <div className="container">
-            <div className="section-heading">
-              <p className="eyebrow">Support</p>
-              <h2>Need help before or after checkout?</h2>
-              <p>
-                Reach out for order inquiries, delivery status, or custom game
-                requests that are not listed in the storefront yet.
-              </p>
+            <div className="sec-head">
+              <h2 className="sec-title">How it works</h2>
+              <span className="kicker">Three steps</span>
             </div>
 
-            <div className="support-grid">
-              <article className="support-card">
-                <p className="meta-label">Email</p>
-                <h3>Primary support channel</h3>
-                <a className="contact-link" href="mailto:mr.bgmi9098@gmail.com">
-                  mr.bgmi9098@gmail.com
-                </a>
-                <p style={{ color: "var(--text-secondary)", fontSize: "0.88rem", margin: 0 }}>
-                  Best for transaction details, payment verification, and refund requests.
+            <div className="steps3">
+              <div className="s">
+                <div className="n">01</div>
+                <h3>Pick your access</h3>
+                <p>
+                  Choose between Shared access for offline campaigns, or Personal
+                  activations directly on your own Steam library.
                 </p>
-              </article>
+              </div>
 
-              <article className="support-card">
-                <p className="meta-label">Instagram</p>
-                <h3>Social updates</h3>
-                <a
-                  className="contact-link"
-                  target="_blank"
-                  rel="noreferrer"
-                  href="https://www.instagram.com/games_habibi/"
-                >
-                  @games_habibi
-                </a>
-                <p style={{ color: "var(--text-secondary)", fontSize: "0.88rem", margin: 0 }}>
-                  Great for quick DMs and custom title availability checks.
+              <div className="s">
+                <div className="n">02</div>
+                <h3>Pay with UPI</h3>
+                <p>
+                  Scan the dynamic UPI QR or copy the ID on mobile, complete the
+                  transfer, and attach your 12-digit UTR reference.
                 </p>
-              </article>
+              </div>
 
-              <article className="support-card">
-                <p className="meta-label">Policy Hub</p>
-                <h3>Policies & terms</h3>
-                <div className="policy-links">
-                  <Link href="/privacy">Privacy Policy</Link>
-                  <Link href="/terms">Terms of Service</Link>
-                  <Link href="/shipping">Shipping Policy</Link>
-                  <Link href="/cancellation">Refund Policy</Link>
-                  <Link href="/contact">Support Ticket Form</Link>
-                </div>
-              </article>
+              <div className="s">
+                <div className="n">03</div>
+                <h3>Get your login</h3>
+                <p>
+                  Credentials and Steam Guard codes are delivered promptly to
+                  WhatsApp or Email for instant game download.
+                </p>
+              </div>
             </div>
           </div>
         </section>
+
+        {/* Interactive FAQ & Steam Guide */}
+        <SteamGuideFAQ />
       </main>
 
+      {/* Editorial Void Market Footer */}
       <footer className="site-footer">
-        <div className="container footer-inner">
-          <div style={{ display: "flex", alignItems: "center", gap: "0.85rem" }}>
-            <Image
-              src="/png/apple-touch-icon.png"
-              alt="Games Habibi Logo"
-              width={40}
-              height={40}
-              className="brand-logo"
-            />
-            <div>
-              <p className="footer-brand">Games Habibi</p>
-              <p className="footer-copy">
-                Premium digital storefront with mobile-friendly UPI checkout and direct support.
-              </p>
-            </div>
+        <div className="container foot-grid">
+          <div>
+            <Link className="logo" href="/">
+              GAMES HABIBI<i></i>
+            </Link>
+            <p className="foot-note">
+              PC games and digital passes at honest prices. Pay with UPI, get
+              your login by WhatsApp or email.
+            </p>
           </div>
 
-          <div className="footer-links">
-            <Link href="/privacy">Privacy</Link>
-            <Link href="/terms">Terms</Link>
-            <Link href="/shipping">Shipping</Link>
-            <Link href="/cancellation">Refunds</Link>
-            <Link href="/contact">Help Desk</Link>
+          <div>
+            <h4>Shop</h4>
+            <Link href="/catalog">All games</Link>
+            <Link href="/catalog?filter=under100">Under ₹100</Link>
+            <Link href="/catalog?filter=services">Passes &amp; tools</Link>
+            <Link href="/cart">Cart</Link>
+          </div>
+
+          <div>
+            <h4>Help</h4>
+            <Link href="/how-it-works">Guides &amp; FAQ</Link>
+            <button
+              type="button"
+              onClick={() => setIsOrdersOpen(true)}
+              style={{
+                background: "none",
+                border: "none",
+                padding: "0.22rem 0",
+                color: "inherit",
+                cursor: "pointer",
+                textAlign: "left",
+              }}
+            >
+              My orders
+            </button>
             <a
               href="https://wa.me/919770493784"
               target="_blank"
               rel="noopener noreferrer"
-              style={{ color: "#25D366", fontWeight: 600 }}
             >
-              💬 WhatsApp
+              WhatsApp
+            </a>
+            <a href="mailto:mr.bgmi9098@gmail.com">Email</a>
+            <a
+              href="https://www.instagram.com/games_habibi/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Instagram
             </a>
           </div>
+
+          <div>
+            <h4>Policies</h4>
+            <Link href="/cancellation">Refunds &amp; replacements</Link>
+            <Link href="/shipping">Digital delivery</Link>
+            <Link href="/terms">Terms of service</Link>
+            <Link href="/privacy">Privacy</Link>
+          </div>
+        </div>
+
+        <div className="container foot-base">
+          <span>© 2026 Games Habibi. Digital delivery only — nothing is shipped physically.</span>
+          <span>Game titles and artwork belong to their respective owners.</span>
         </div>
       </footer>
 

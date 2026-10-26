@@ -86,15 +86,17 @@ export function MobileBottomNav({ onFocusSearch }: { onFocusSearch?: () => void 
             <span
               style={{
                 position: "absolute",
-                top: "-0.4rem",
-                right: "-0.6rem",
-                background: "var(--accent-strong)",
-                color: "#04101c",
-                fontFamily: "var(--font-data)",
-                fontSize: "0.68rem",
+                top: "-0.35rem",
+                right: "-0.55rem",
+                background: "var(--red)",
+                color: "#fff",
+                fontSize: "0.62rem",
                 fontWeight: 700,
-                padding: "0.08rem 0.35rem",
-                borderRadius: "999rem",
+                padding: "0 4px",
+                borderRadius: "9px",
+                lineHeight: "15px",
+                minWidth: "15px",
+                textAlign: "center",
               }}
             >
               {totalQty}
