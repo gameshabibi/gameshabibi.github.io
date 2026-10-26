@@ -280,7 +280,7 @@
   <div class="sec-head"><h2 class="sec-title">How it works</h2><span class="kicker">Three steps</span></div>
   <div class="steps3">
     <div class="s"><div class="n">01</div><h3>Choose your access</h3><p>Pick Personal, Shared or Budget on any game. Prices are upfront, in rupees.</p></div>
-    <div class="s"><div class="n">02</div><h3>Pay with UPI</h3><p>Scan the QR or tap Pay Now. Then add your 12-digit UTR and a screenshot.</p></div>
+    <div class="s"><div class="n">02</div><h3>Pay with UPI</h3><p>Scan the QR code or copy the UPI ID. Then attach your payment screenshot (UTR optional).</p></div>
     <div class="s"><div class="n">03</div><h3>Get your login</h3><p>We verify and send credentials to you — usually within 15–30 minutes (${esc(CFG.hours)}).</p></div>
   </div>
 </div></section>`;
@@ -598,13 +598,12 @@
   function stepPayment(c) {
     const link = upiLink(c.total); const svg = qrSvg(link);
     return `<form class="form" id="f-pay" novalidate style="max-width:640px">
-      <div class="pay-box"><div class="qr">${svg || `<div class="qr-fallback">QR unavailable — use the UPI ID or Pay Now button.</div>`}</div>
+      <div class="pay-box"><div class="qr">${svg || `<div class="qr-fallback">QR unavailable — use the UPI ID above.</div>`}</div>
         <div><span class="kicker">Pay exactly</span><div class="pay-amt">${inr(c.total)}</div>
           <span class="kicker">UPI ID</span>
           <div class="upi-id"><span>${esc(CFG.upiId)}</span><button type="button" class="link-btn" id="copy-upi">Copy</button></div>
-          <a class="btn red block" href="${esc(link)}">Pay now in UPI app</a>
-          <p class="muted" style="font-size:.76rem;margin-top:.7rem">On mobile, tap Pay now. On desktop, scan the QR with GPay, PhonePe or Paytm.</p></div></div>
-      <div class="f"><label for="c-utr">12-digit UTR / reference number</label><input class="field ${ck.err.utr ? "bad" : ""}" id="c-utr" inputmode="numeric" maxlength="12" autocomplete="off" placeholder="123456789012" value="${esc(ck.utr)}"><p class="hint">Find it in your UPI app under transaction details.</p>${fieldErr("utr")}</div>
+          <p class="muted" style="font-size:.76rem;margin-top:.7rem">Scan the QR code with any UPI app (GPay, PhonePe, Paytm) or copy the UPI ID above.</p></div></div>
+      <div class="f"><label for="c-utr">12-digit UTR / reference number <span class="muted">(optional)</span></label><input class="field ${ck.err.utr ? "bad" : ""}" id="c-utr" inputmode="numeric" maxlength="12" autocomplete="off" placeholder="12-digit UTR (optional)" value="${esc(ck.utr)}"><p class="hint">Optional: Find it in your UPI app under transaction details.</p>${fieldErr("utr")}</div>
       <div class="f"><label for="c-file">Payment screenshot</label>
         <label class="upload" for="c-file"><span id="up-text">${ck.file ? "Change screenshot" : "Tap to choose an image (JPG, PNG, WEBP · max 5 MB)"}</span>${ck.fileUrl ? `<img src="${ck.fileUrl}" alt="Your payment screenshot preview">` : ""}</label>
         <input class="sr" id="c-file" type="file" accept="image/*">${fieldErr("file")}</div>
@@ -614,7 +613,7 @@
     return `<div class="review">
         <div class="r"><span>Name</span><b>${esc(ck.name)}</b></div><div class="r"><span>Email</span><b>${esc(ck.email)}</b></div>
         ${ck.phone ? `<div class="r"><span>WhatsApp</span><b>${esc(ck.phone)}</b></div>` : ""}
-        <div class="r"><span>UTR</span><b>${esc(ck.utr)}</b></div><div class="r"><span>Screenshot</span><b>${esc(ck.file ? ck.file.name : "—")}</b></div>
+        <div class="r"><span>UTR</span><b>${esc(ck.utr || "Not provided")}</b></div><div class="r"><span>Screenshot</span><b>${esc(ck.file ? ck.file.name : "—")}</b></div>
         <div class="r"><span>Amount paid</span><b>${inr(c.total)}</b></div></div>
       ${ck.err.submit ? `<p class="err" style="margin-top:1rem;color:var(--red)">${esc(ck.err.submit)}</p>` : ""}
       <p class="muted" style="font-size:.82rem;margin:1rem 0;max-width:560px">By placing this order you confirm you've already paid ${inr(c.total)} by UPI and agree to the <a href="#/policy/terms" style="text-decoration:underline">terms</a>.</p>
@@ -623,7 +622,7 @@
   function waUrl(o) {
     const lines = ["Hi Games Habibi! I've placed an order and paid by UPI.", "", "Order ID: " + o.id, "Name: " + o.name,
       "Items:"].concat(o.items.map((i) => "• " + i.n + " (" + i.label + ") ×" + i.q + " — " + inr(i.price * i.q)))
-      .concat(["Total paid: " + inr(o.total), "UTR: " + o.utr, "", "I'm attaching my payment screenshot below. Please verify and send my access. Thanks!"]);
+      .concat(["Total paid: " + inr(o.total), "UTR: " + (o.utr || "Attached in screenshot"), "", "I'm attaching my payment screenshot below. Please verify and send my access. Thanks!"]);
     return "https://wa.me/" + CFG.whatsapp + "?text=" + encodeURIComponent(lines.join("\n"));
   }
   function checkoutDone() {
@@ -660,18 +659,22 @@
     if (f2) {
       $("#copy-upi").addEventListener("click", () => copy(CFG.upiId, "UPI ID copied"));
       $("#back1").addEventListener("click", () => go(1));
-      $("#c-utr").addEventListener("input", (e) => { e.target.value = e.target.value.replace(/\D/g, "").slice(0, 12); ck.utr = e.target.value; });
+      $("#c-utr").addEventListener("input", (e) => {
+        e.target.value = e.target.value.replace(/\D/g, "").slice(0, 12);
+        ck.utr = e.target.value;
+        if (!ck.utr || /^\d{12}$/.test(ck.utr)) delete ck.err.utr;
+      });
       $("#c-file").addEventListener("change", (e) => {
         const file = e.target.files[0]; if (!file) return;
         ck.err.file = "";
         if (!/^image\//.test(file.type)) ck.err.file = "Please choose an image file.";
         else if (file.size > 5 * 1024 * 1024) ck.err.file = "Screenshot must be under 5 MB.";
         if (ck.err.file) { ck.file = null; } else { if (ck.fileUrl) URL.revokeObjectURL(ck.fileUrl); ck.file = file; ck.fileUrl = URL.createObjectURL(file); }
-        ck.utr = $("#c-utr").value; if (/^\d{12}$/.test(ck.utr)) delete ck.err.utr; render();
+        ck.utr = ($("#c-utr").value || "").trim(); if (!ck.utr || /^\d{12}$/.test(ck.utr)) delete ck.err.utr; render();
       });
       f2.addEventListener("submit", (e) => {
-        e.preventDefault(); ck.utr = $("#c-utr").value; ck.err = {};
-        if (!/^\d{12}$/.test(ck.utr)) ck.err.utr = "UTR must be exactly 12 digits.";
+        e.preventDefault(); ck.utr = ($("#c-utr").value || "").trim(); ck.err = {};
+        if (ck.utr && !/^\d{12}$/.test(ck.utr)) ck.err.utr = "If provided, UTR must be exactly 12 digits.";
         if (!ck.file) ck.err.file = "Please add your payment screenshot.";
         if (Object.keys(ck.err).length) { render(); const bad = $(".field.bad"); if (bad) bad.focus(); return; }
         go(3);

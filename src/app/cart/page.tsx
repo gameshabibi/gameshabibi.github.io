@@ -975,20 +975,6 @@ export default function CartPage() {
                       </div>
                     </div>
 
-                    {/* Method 3: Optional Fallback Browser Link */}
-                    <div style={{ textAlign: "center", marginBottom: "1rem" }}>
-                      <a
-                        href={upiUrl}
-                        style={{
-                          fontSize: "0.82rem",
-                          color: "var(--text-muted)",
-                          textDecoration: "underline",
-                        }}
-                      >
-                        ⚡ Or try opening UPI app directly (may be blocked by your bank)
-                      </a>
-                    </div>
-
                     {/* 3 Step Instruction Checklist */}
                     <div
                       style={{

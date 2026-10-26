@@ -717,19 +717,6 @@ export function CartDrawer() {
                       </button>
                     </div>
 
-                    <div style={{ textAlign: "center", marginBottom: "0.8rem" }}>
-                      <a
-                        href={upiUrl}
-                        style={{
-                          fontSize: "0.78rem",
-                          color: "var(--text-muted)",
-                          textDecoration: "underline",
-                        }}
-                      >
-                        ⚡ Or try opening UPI app directly (may be blocked by your bank)
-                      </a>
-                    </div>
-
                     <div
                       style={{
                         textAlign: "center",
@@ -877,7 +864,7 @@ export function CartDrawer() {
                     <input
                       type="text"
                       id="drawerCustomerUtr"
-                      placeholder="12-digit UPI UTR / Ref"
+                      placeholder="12-digit UPI UTR / Ref (Optional)"
                       maxLength={16}
                       value={customerUtr}
                       onChange={(e) =>
