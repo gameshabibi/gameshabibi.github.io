@@ -179,7 +179,7 @@ export default function HomePage() {
             <h4>Help</h4>
             <a href="#/guides">Guides &amp; FAQ</a>
             <a href="#/orders">My orders</a>
-            <a id="foot-wa" href="https://wa.me/918966010035" target="_blank" rel="noopener">
+            <a id="foot-wa" href="https://wa.me/919770493784" target="_blank" rel="noopener">
               WhatsApp
             </a>
             <a id="foot-mail" href="mailto:mr.bgmi9098@gmail.com">

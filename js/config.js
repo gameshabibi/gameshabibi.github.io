@@ -4,7 +4,7 @@
 window.HABIBI_CONFIG = {
   storeName: "Games Habibi",
   upiId: "prashantsingh896@ybl",      // UPI VPA used for the QR code and Pay Now button
-  whatsapp: "918966010035",           // country code + number, no "+" or spaces
+  whatsapp: "919770493784",           // country code + number, no "+" or spaces
   email: "mr.bgmi9098@gmail.com",
   instagram: "games_habibi",
   hours: "10:00 AM – 11:30 PM IST",
