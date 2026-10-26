@@ -99,9 +99,23 @@ export function ProductCard({
         aria-hidden="true"
       >
         <img
+          className="cover-bg"
+          src={product.img}
+          alt=""
+          aria-hidden="true"
+          loading="lazy"
+        />
+        <img
+          className="cover-img"
           src={product.img}
           alt={product.name}
           loading="lazy"
+          onLoad={(e) => {
+            const img = e.currentTarget;
+            if (img.naturalWidth > img.naturalHeight * 1.12) {
+              img.closest(".cover")?.classList.add("is-wide");
+            }
+          }}
           onError={(e) => {
             (e.target as HTMLElement).style.display = "none";
           }}

@@ -174,7 +174,7 @@
      Shared components
   ------------------------------------------------------------------- */
   const coverEl = (it, extra, tagHtml) =>
-    `<span class="cover ${extra || ""}" data-ini="${esc(ini(it.n))}"><img src="${esc(it.i)}" alt="" loading="lazy" onerror="this.remove()">${tagHtml || ""}</span>`;
+    `<span class="cover ${extra || ""}" data-ini="${esc(ini(it.n))}"><img class="cover-bg" src="${esc(it.i)}" alt="" aria-hidden="true" loading="lazy"><img class="cover-img" src="${esc(it.i)}" alt="" loading="lazy" onload="if(this.naturalWidth>this.naturalHeight*1.12)this.closest('.cover').classList.add('is-wide')" onerror="this.remove()">${tagHtml || ""}</span>`;
 
   function card(it) {
     const tier = getTier(); let vi = 0, price, label;
@@ -185,7 +185,7 @@
     }
     const tag = it.b ? `<span class="tag">${esc(it.b)}</span>` : it.u ? `<span class="tag">Upcoming</span>` : "";
     return `<article class="card">
-      <a class="cover" href="#/game/${esc(it.id)}" tabindex="-1" aria-hidden="true" data-ini="${esc(ini(it.n))}"><img src="${esc(it.i)}" alt="" loading="lazy" onerror="this.remove()">${tag}</a>
+      <a class="cover" href="#/game/${esc(it.id)}" tabindex="-1" aria-hidden="true" data-ini="${esc(ini(it.n))}"><img class="cover-bg" src="${esc(it.i)}" alt="" aria-hidden="true" loading="lazy"><img class="cover-img" src="${esc(it.i)}" alt="" loading="lazy" onload="if(this.naturalWidth>this.naturalHeight*1.12)this.closest('.cover').classList.add('is-wide')" onerror="this.remove()">${tag}</a>
       <a class="card-title" href="#/game/${esc(it.id)}">${esc(it.n)}</a>
       <div class="card-meta">
         <span class="card-price"><small>${esc(label)}</small>${inr(price)}</span>
