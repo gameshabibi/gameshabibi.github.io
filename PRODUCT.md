@@ -42,7 +42,7 @@ Zero-friction digital game and streaming acquisition tailored specifically for t
 
 ## Evidence on Hand
 
-- Production catalog and live storefront on GitHub Pages (`gameshabibi.github.io`).
+- Production catalog and live storefront on Vercel (`gameshabibi.vercel.app`) with seamless redirect from GitHub Pages (`gameshabibi.github.io`).
 - Functional UPI QR generation and Telegram bot order routing code.
 - Brand assets: App icons, web manifests, and favicons (`png/`, `favicon.ico`, `site.webmanifest`).
 

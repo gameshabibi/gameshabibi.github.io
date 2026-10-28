@@ -1,131 +1,158 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>Games Habibi — PC games &amp; digital passes</title>
-  <meta name="description" content="Curated PC games and digital passes from ₹69. Pay with UPI, get your login on WhatsApp or email.">
-  <meta name="theme-color" content="#ebe6da">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Games Habibi — Moving to gameshabibi.vercel.app</title>
+  <meta name="description" content="Games Habibi has moved to gameshabibi.vercel.app. Redirecting you to the official store.">
+  <meta name="robots" content="noindex, follow">
+  <link rel="canonical" href="https://gameshabibi.vercel.app">
+  <meta http-equiv="refresh" content="0; url=https://gameshabibi.vercel.app">
   <script>
-    try {
-      if (JSON.parse(localStorage.getItem("gh_theme") || "null") === "dark") {
-        document.documentElement.dataset.theme = "dark";
+    (function() {
+      var targetHost = "https://gameshabibi.vercel.app";
+      var path = window.location.pathname || "";
+      var search = window.location.search || "";
+      var hash = window.location.hash || "";
+
+      // Handle legacy hash routes (e.g. #/cart, #/games, #/orders)
+      if (hash.startsWith("#/")) {
+        var subRoute = hash.slice(2);
+        var subParts = subRoute.split("?");
+        var cleanRoute = subParts[0];
+        var hashSearch = subParts[1] ? ("?" + subParts[1]) : "";
+        var query = search || hashSearch;
+
+        if (cleanRoute === "cart") {
+          window.location.replace(targetHost + "/cart" + query);
+          return;
+        } else if (cleanRoute === "orders") {
+          window.location.replace(targetHost + "/orders" + query);
+          return;
+        } else if (cleanRoute === "games") {
+          window.location.replace(targetHost + "/games" + query);
+          return;
+        } else if (cleanRoute === "guides" || cleanRoute === "guide") {
+          window.location.replace(targetHost + "/guide" + query);
+          return;
+        } else if (cleanRoute === "collections") {
+          window.location.replace(targetHost + "/catalog" + query);
+          return;
+        } else if (cleanRoute.startsWith("policy/")) {
+          var pol = cleanRoute.replace("policy/", "");
+          if (pol === "refunds") pol = "cancellation";
+          window.location.replace(targetHost + "/" + pol + query);
+          return;
+        }
       }
-    } catch (e) {}
+
+      // Normalize root path
+      if (path === "/" || path === "/index.html") {
+        path = "";
+      }
+
+      var destination = targetHost + path + search + hash;
+      window.location.replace(destination);
+    })();
   </script>
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%230f0e0d'/%3E%3Ccircle cx='16' cy='16' r='8' fill='%23c3161c'/%3E%3C/svg%3E">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      background-color: #0b0914;
+      color: #f3f4f6;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+    }
+    .card {
+      background: rgba(22, 18, 38, 0.85);
+      border: 1px solid rgba(139, 92, 246, 0.3);
+      box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.7), 0 0 30px rgba(139, 92, 246, 0.15);
+      border-radius: 1rem;
+      padding: 2.5rem 2rem;
+      max-width: 440px;
+      width: 100%;
+      text-align: center;
+      backdrop-filter: blur(12px);
+    }
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      background: linear-gradient(135deg, #a78bfa, #ec4899);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 1.25rem;
+      display: inline-block;
+    }
+    .spinner {
+      width: 40px;
+      height: 40px;
+      margin: 0 auto 1.5rem;
+      border: 3px solid rgba(139, 92, 246, 0.2);
+      border-top-color: #a78bfa;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    h1 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+      color: #ffffff;
+    }
+    p {
+      font-size: 0.95rem;
+      color: #9ca3af;
+      line-height: 1.5;
+      margin-bottom: 1.75rem;
+    }
+    .btn {
+      display: inline-block;
+      width: 100%;
+      padding: 0.85rem 1.25rem;
+      background: linear-gradient(135deg, #7c3aed, #db2777);
+      color: #ffffff;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.95rem;
+      border-radius: 0.6rem;
+      transition: transform 0.15s ease, opacity 0.15s ease;
+      box-shadow: 0 4px 14px rgba(124, 58, 237, 0.4);
+    }
+    .btn:hover {
+      opacity: 0.95;
+      transform: translateY(-1px);
+    }
+  </style>
 </head>
 <body>
-
-<!-- shared SVG filters for the ink illustrations -->
-<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
-  <defs>
-    <filter id="rough" x="-5%" y="-5%" width="110%" height="110%">
-      <feTurbulence type="fractalNoise" baseFrequency=".035" numOctaves="3" seed="7" result="n"/>
-      <feDisplacementMap in="SourceGraphic" in2="n" scale="10"/>
-    </filter>
-    <filter id="splat" x="-20%" y="-20%" width="140%" height="140%">
-      <feTurbulence type="fractalNoise" baseFrequency=".6" numOctaves="2" seed="3" result="n"/>
-      <feDisplacementMap in="SourceGraphic" in2="n" scale="9"/>
-    </filter>
-    <linearGradient id="mist" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#ebe6da" stop-opacity="0"/>
-      <stop offset="1" stop-color="#ebe6da" stop-opacity=".92"/>
-    </linearGradient>
-    <linearGradient id="mistDark" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#0f0e0d" stop-opacity="0"/>
-      <stop offset="1" stop-color="#0f0e0d" stop-opacity=".9"/>
-    </linearGradient>
-  </defs>
-</svg>
-
-<a class="skip" href="#app">Skip to content</a>
-
-<header class="site-header" id="site-header">
-  <div class="container bar">
-    <a class="logo" href="#/" aria-label="Games Habibi home">GAMES HABIBI</a>
-    <nav class="main-nav" id="main-nav" aria-label="Main">
-      <a href="#/games" data-nav="games">Games</a>
-      <a href="#/collections" data-nav="collections">Collections</a>
-      <a href="#/guides" data-nav="guides">Guides</a>
-      <a href="#/orders" data-nav="orders">Orders</a>
-    </nav>
-    <div class="bar-actions">
-      <button class="icon-btn" id="open-search" aria-label="Search games" aria-expanded="false" aria-controls="search-panel">
-        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
-      </button>
-      <button class="icon-btn theme-toggle" id="theme-toggle" type="button" aria-label="Switch to dark mode" aria-pressed="false">
-        <svg class="theme-icon-light" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"/></svg>
-        <svg class="theme-icon-dark" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 14.2A8.5 8.5 0 0 1 9.8 3.5 8.5 8.5 0 1 0 20.5 14.2Z"/></svg>
-      </button>
-      <a class="icon-btn cart-link" href="#/cart" aria-label="Cart">
-        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h2.5l2.2 10.2a1.5 1.5 0 0 0 1.5 1.2h8.1a1.5 1.5 0 0 0 1.5-1.1L20.5 8H6.2"/><circle cx="9.5" cy="19.5" r="1.2"/><circle cx="17" cy="19.5" r="1.2"/></svg>
-        <span class="cart-count" id="cart-count" hidden>0</span>
-      </a>
-      <button class="icon-btn menu-btn" id="menu-btn" aria-label="Menu" aria-expanded="false" aria-controls="main-nav">
-        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
-      </button>
-    </div>
+  <div class="card">
+    <div class="spinner" aria-hidden="true"></div>
+    <div class="logo">Games Habibi</div>
+    <h1>Redirecting you to our new store…</h1>
+    <p>Games Habibi has migrated to our official Next.js storefront. You are being redirected automatically to <strong>gameshabibi.vercel.app</strong>.</p>
+    <a id="redirect-link" class="btn" href="https://gameshabibi.vercel.app">Click here if not redirected</a>
   </div>
-</header>
-
-<div class="search-panel" id="search-panel" hidden>
-  <div class="container">
-    <form id="search-form" role="search" autocomplete="off">
-      <label class="sr" for="search-input">Search games and passes</label>
-      <input id="search-input" type="search" placeholder="Search 580+ games…" enterkeyhint="search">
-      <button type="button" class="link-btn" id="close-search">Close</button>
-    </form>
-    <ul class="search-results" id="search-results"></ul>
-  </div>
-</div>
-
-<main id="app" tabindex="-1"></main>
-
-<footer class="site-footer">
-  <div class="container foot-grid">
-    <div>
-      <a class="logo" href="#/">GAMES HABIBI<i></i></a>
-      <p class="foot-note">PC games and digital passes at honest prices. Pay with UPI, get your login by WhatsApp or email.</p>
-    </div>
-    <div>
-      <h4>Shop</h4>
-      <a href="#/games">All games</a>
-      <a href="#/collections">Collections</a>
-      <a href="#/games?type=passes">Passes &amp; tools</a>
-      <a href="#/cart">Cart</a>
-    </div>
-    <div>
-      <h4>Help</h4>
-      <a href="#/guides">Guides &amp; FAQ</a>
-      <a href="#/orders">My orders</a>
-      <a id="foot-wa" href="#" target="_blank" rel="noopener">WhatsApp</a>
-      <a id="foot-mail" href="#">Email</a>
-      <a id="foot-ig" href="#" target="_blank" rel="noopener">Instagram</a>
-    </div>
-    <div>
-      <h4>Policies</h4>
-      <a href="#/policy/refunds">Refunds &amp; replacements</a>
-      <a href="#/policy/shipping">Digital delivery</a>
-      <a href="#/policy/terms">Terms of service</a>
-      <a href="#/policy/privacy">Privacy</a>
-    </div>
-  </div>
-  <div class="container foot-base">
-    <span>© 2026 Games Habibi. Digital delivery only — nothing is shipped.</span>
-    <span>Game titles and artwork belong to their respective owners.</span>
-  </div>
-</footer>
-
-<div class="toast" id="toast" role="status" aria-live="polite"></div>
-
-<script src="js/config.js"></script>
-<script src="js/data.js"></script>
-<script src="js/qrcode.js"></script>
-<script src="js/app.js"></script>
+  <script>
+    // Update button target to destination if path/query existed
+    (function() {
+      var link = document.getElementById("redirect-link");
+      if (link && window.location.pathname) {
+        var path = window.location.pathname === "/index.html" ? "" : window.location.pathname;
+        link.href = "https://gameshabibi.vercel.app" + path + window.location.search + window.location.hash;
+      }
+    })();
+  </script>
 </body>
 </html>
