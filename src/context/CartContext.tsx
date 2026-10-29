@@ -1,9 +1,12 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect } from "react";
+import { games, services, ProductItem } from "@/data/catalog";
 
 export interface CartItem {
   id: string;
+  v?: number;
+  q?: number;
   game: string;
   price: number;
   qty: number;
@@ -11,20 +14,32 @@ export interface CartItem {
   img?: string;
 }
 
+export interface PastOrderItem {
+  id: string;
+  v: number;
+  n: string;
+  label: string;
+  q: number;
+  price: number;
+}
+
 export interface PastOrder {
   id: string;
   date: string;
   name: string;
   email: string;
+  phone?: string;
   games: string;
+  items?: PastOrderItem[];
   total: number;
   utr?: string;
   coupon?: string;
+  sent?: boolean;
 }
 
 interface CartContextType {
   items: CartItem[];
-  addItem: (item: Omit<CartItem, "id" | "qty">) => void;
+  addItem: (item: Omit<CartItem, "id" | "qty"> & { id?: string }) => void;
   removeItem: (index: number) => void;
   updateQty: (index: number, delta: number) => void;
   clearCart: () => void;
@@ -56,6 +71,108 @@ const COUPON_LIST: Record<string, { type: "percent" | "flat"; value: number }> =
   LEVELUP: { type: "percent", value: 15 },
 };
 
+const ALL_PRODUCTS: ProductItem[] = [...services, ...games];
+const PRODUCT_BY_ID = new Map<string, ProductItem>(
+  ALL_PRODUCTS.map((p) => [p.id, p])
+);
+const PRODUCT_BY_NAME = new Map<string, ProductItem>(
+  ALL_PRODUCTS.map((p) => [p.name.toLowerCase(), p])
+);
+
+function normalizeCartItem(raw: Record<string, unknown>): CartItem | null {
+  if (!raw || typeof raw !== "object") return null;
+
+  // Case 1: Saved by vanilla app.js ({ id, v, q }) or hybrid format
+  const rawId = typeof raw.id === "string" ? raw.id : "";
+  const rawGame = typeof raw.game === "string" ? raw.game : "";
+  const prod =
+    PRODUCT_BY_ID.get(rawId) ||
+    (rawGame ? PRODUCT_BY_NAME.get(rawGame.toLowerCase()) : undefined);
+
+  const qty =
+    typeof raw.qty === "number" && raw.qty > 0
+      ? raw.qty
+      : typeof raw.q === "number" && raw.q > 0
+      ? raw.q
+      : 0;
+  if (qty <= 0) return null;
+
+  if (prod) {
+    let vIdx = typeof raw.v === "number" && raw.v >= 0 ? raw.v : 0;
+    if (typeof raw.v !== "number" && prod.variants && typeof raw.variant === "string") {
+      const foundIdx = prod.variants.findIndex(
+        (v) => v.name.toLowerCase() === String(raw.variant).toLowerCase()
+      );
+      if (foundIdx > -1) vIdx = foundIdx;
+    }
+    const variantObj = prod.variants
+      ? prod.variants[vIdx] || prod.variants[0]
+      : undefined;
+    const price =
+      typeof raw.price === "number" && raw.price > 0
+        ? raw.price
+        : variantObj
+        ? variantObj.price
+        : prod.price || 0;
+    const variantName =
+      typeof raw.variant === "string" && raw.variant
+        ? raw.variant
+        : variantObj?.name;
+
+    return {
+      id: prod.id,
+      v: vIdx,
+      q: qty,
+      game: prod.name,
+      price,
+      qty,
+      variant: variantName,
+      img: prod.img,
+    };
+  }
+
+  // Fallback for custom items not in catalog
+  if (rawGame && typeof raw.price === "number") {
+    return {
+      id: rawId || `${rawGame}-default`,
+      v: typeof raw.v === "number" ? raw.v : 0,
+      q: qty,
+      game: rawGame,
+      price: raw.price,
+      qty,
+      variant: typeof raw.variant === "string" ? raw.variant : undefined,
+      img: typeof raw.img === "string" ? raw.img : undefined,
+    };
+  }
+
+  return null;
+}
+
+function normalizeOrder(raw: Record<string, unknown>): PastOrder | null {
+  if (!raw || typeof raw !== "object" || typeof raw.id !== "string") return null;
+  const rawItems = Array.isArray(raw.items) ? (raw.items as PastOrderItem[]) : undefined;
+  const gamesStr =
+    typeof raw.games === "string" && raw.games
+      ? raw.games
+      : rawItems
+      ? rawItems.map((i) => `${i.n} (${i.label}) x${i.q}`).join(", ")
+      : "Digital purchase";
+
+  return {
+    id: raw.id,
+    date: typeof raw.date === "string" ? raw.date : new Date().toISOString(),
+    name: typeof raw.name === "string" ? raw.name : "Customer",
+    email: typeof raw.email === "string" ? raw.email : "",
+    phone: typeof raw.phone === "string" ? raw.phone : undefined,
+    games: gamesStr,
+    items: rawItems,
+    total: typeof raw.total === "number" ? raw.total : Number(raw.total) || 0,
+    utr: typeof raw.utr === "string" ? raw.utr : undefined,
+    coupon: typeof raw.coupon === "string" ? raw.coupon : undefined,
+    sent: typeof raw.sent === "boolean" ? raw.sent : true,
+  };
+}
+
 export const isBudgetFriendlyItem = (item: { variant?: string; price: number }) => {
   return (
     item.variant?.toLowerCase().includes("budget") ||
@@ -79,15 +196,30 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     try {
       const savedCart = localStorage.getItem("gh_cart");
       if (savedCart) {
-        setItems(JSON.parse(savedCart));
+        const parsed = JSON.parse(savedCart);
+        if (Array.isArray(parsed)) {
+          const normalized = parsed
+            .map((entry) => normalizeCartItem(entry))
+            .filter((x): x is CartItem => x !== null);
+          setItems(normalized);
+        }
       }
       const savedOrders = localStorage.getItem("gh_orders");
       if (savedOrders) {
-        setPastOrders(JSON.parse(savedOrders));
+        const parsedOrders = JSON.parse(savedOrders);
+        if (Array.isArray(parsedOrders)) {
+          const normalizedOrders = parsedOrders
+            .map((o) => normalizeOrder(o))
+            .filter((x): x is PastOrder => x !== null);
+          setPastOrders(normalizedOrders);
+        }
       }
       const savedCoupon = localStorage.getItem("gh_coupon");
-      if (savedCoupon && COUPON_LIST[savedCoupon]) {
-        setAppliedCoupon(savedCoupon);
+      if (savedCoupon) {
+        const cleanCoupon = savedCoupon.replace(/^"|"$/g, "");
+        if (COUPON_LIST[cleanCoupon]) {
+          setAppliedCoupon(cleanCoupon);
+        }
       }
     } catch (err) {
       console.warn("Storage load error:", err);
@@ -95,11 +227,16 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     setIsLoaded(true);
   }, []);
 
-  // Save cart to localStorage
+  // Save cart to localStorage in hybrid format compatible with both app.js and React
   useEffect(() => {
     if (!isLoaded) return;
     try {
-      localStorage.setItem("gh_cart", JSON.stringify(items));
+      const synced = items.map((i) => ({
+        ...i,
+        q: i.qty,
+        v: typeof i.v === "number" ? i.v : 0,
+      }));
+      localStorage.setItem("gh_cart", JSON.stringify(synced));
     } catch (err) {
       console.warn("Storage save error:", err);
     }
@@ -123,19 +260,33 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     } catch {}
   };
 
-  const addItem = (item: Omit<CartItem, "id" | "qty">) => {
+  const addItem = (item: Omit<CartItem, "id" | "qty"> & { id?: string }) => {
+    const prod =
+      (item.id ? PRODUCT_BY_ID.get(item.id) : undefined) ||
+      PRODUCT_BY_NAME.get(item.game.toLowerCase());
+    let vIdx = typeof item.v === "number" ? item.v : 0;
+    if (prod?.variants && item.variant) {
+      const idx = prod.variants.findIndex(
+        (v) => v.name.toLowerCase() === item.variant!.toLowerCase()
+      );
+      if (idx > -1) vIdx = idx;
+    }
+
     setItems((prev) => {
       const existingIdx = prev.findIndex(
         (i) => i.game === item.game && i.variant === item.variant
       );
       if (existingIdx > -1) {
         const next = [...prev];
-        next[existingIdx].qty += 1;
+        const nextQty = Math.min(10, next[existingIdx].qty + 1);
+        next[existingIdx] = { ...next[existingIdx], qty: nextQty, q: nextQty };
         return next;
       }
       const newItem: CartItem = {
         ...item,
-        id: `${item.game}-${item.variant || "default"}-${Date.now()}`,
+        id: prod ? prod.id : `${item.game}-${item.variant || "default"}-${Date.now()}`,
+        v: vIdx,
+        q: 1,
         qty: 1,
       };
       return [...prev, newItem];
@@ -157,7 +308,8 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       if (newQty <= 0) {
         return next.filter((_, idx) => idx !== index);
       }
-      next[index].qty = newQty;
+      const clamped = Math.min(10, newQty);
+      next[index] = { ...next[index], qty: clamped, q: clamped };
       return next;
     });
   };
@@ -208,7 +360,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     if (COUPON_LIST[clean]) {
       setAppliedCoupon(clean);
       try {
-        localStorage.setItem("gh_coupon", clean);
+        localStorage.setItem("gh_coupon", JSON.stringify(clean));
       } catch {}
       playFeedback("success");
       return { success: true, message: `Coupon ${clean} applied!` };
@@ -275,8 +427,22 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const total = Math.max(0, subtotal - bundleDiscount - couponDiscount + tip);
 
   const saveOrder = (order: PastOrder) => {
+    const orderWithItems: PastOrder = {
+      ...order,
+      items:
+        order.items ||
+        items.map((i) => ({
+          id: i.id,
+          v: typeof i.v === "number" ? i.v : 0,
+          n: i.game,
+          label: i.variant || "Digital pass",
+          q: i.qty,
+          price: i.price,
+        })),
+      sent: true,
+    };
     setPastOrders((prev) => {
-      const next = [order, ...prev].slice(0, 50);
+      const next = [orderWithItems, ...prev].slice(0, 50);
       try {
         localStorage.setItem("gh_orders", JSON.stringify(next));
         localStorage.setItem("lastOrderId", order.id);

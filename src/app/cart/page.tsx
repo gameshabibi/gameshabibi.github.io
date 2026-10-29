@@ -49,7 +49,6 @@ export default function CartPage() {
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Auto-restore customer contact info from session storage
   useEffect(() => {
     try {
       const savedName = sessionStorage.getItem("gh_draft_name");
@@ -110,7 +109,6 @@ export default function CartPage() {
     }
   };
 
-  // Generate UPI QR code data url using clean format that works across all apps
   const upiUrl = `upi://pay?pa=${encodeURIComponent(
     PAYMENT_ID
   )}&am=${total.toFixed(2)}&cu=INR`;
@@ -176,6 +174,7 @@ export default function CartPage() {
       formData.append("utr", customerUtr || "Not provided");
       formData.append("customerUtr", customerUtr || "Not provided");
       formData.append("games", gamesList);
+      formData.append("items", gamesList);
       formData.append("total", total.toString());
       formData.append("tip", tip.toString());
       if (appliedCoupon) formData.append("coupon", appliedCoupon);
@@ -189,12 +188,10 @@ export default function CartPage() {
 
       const data = await res.json();
 
-      // Check both data.ok and data.success to avoid missing valid responses
       if (!res.ok || (!data.ok && !data.success)) {
         throw new Error(data.error || data.message || "Order submission failed");
       }
 
-      // Add a slight realistic delay (at least 800ms) so user perceives the verification submission
       const elapsed = Date.now() - startTime;
       if (elapsed < 800) {
         await new Promise((resolve) => setTimeout(resolve, 800 - elapsed));
@@ -217,16 +214,10 @@ export default function CartPage() {
         coupon: appliedCoupon || undefined,
       };
 
-      // 1. Record the order in history and storage
       saveOrder(orderRecord);
-
-      // 2. Empty the cart completely
       clearCart();
-
-      // 3. Play the distinct celebratory order success sound
       playFeedback("order-success");
 
-      // 4. Update placed order state to display result
       setPlacedOrderId(orderId);
       setPlacedOrderDetails({
         orderId,
@@ -270,7 +261,7 @@ export default function CartPage() {
               Store
             </Link>
             <span>/</span>
-            <span style={{ color: "var(--accent)" }}>Cart & Checkout</span>
+            <span style={{ color: "var(--accent)" }}>Cart &amp; Checkout</span>
           </nav>
 
           {placedOrderId ? (
@@ -295,8 +286,8 @@ export default function CartPage() {
               </div>
 
               <div className="order-dispatch-note">
-                <strong>⚡ Instant Delivery Status:</strong>
-                Credentials and access guide will be delivered via WhatsApp within 5–15 minutes.
+                <strong>⚡ Instant Delivery Status: </strong>
+                Credentials and access guide will be delivered via WhatsApp or email within 15–30 minutes.
               </div>
 
               <div className="order-success-actions">
@@ -326,43 +317,17 @@ export default function CartPage() {
               </div>
             </div>
           ) : items.length === 0 ? (
-            <div
-              style={{
-                maxWidth: "600px",
-                margin: "4rem auto",
-                textAlign: "center",
-                padding: "3.5rem 1.5rem",
-                background: "var(--surface-panel)",
-                borderRadius: "var(--radius-lg)",
-                border: "1px solid var(--border-soft)",
-              }}
-            >
-              <div style={{ fontSize: "3rem", marginBottom: "0.8rem" }}>🛒</div>
-              <h1
-                style={{
-                  fontFamily: "var(--font-heading)",
-                  fontSize: "2.2rem",
-                  margin: "0 0 0.6rem",
-                }}
-              >
-                Your Cart is Empty
-              </h1>
-              <p
-                style={{
-                  color: "var(--text-secondary)",
-                  fontSize: "0.95rem",
-                  marginBottom: "1.6rem",
-                }}
-              >
+            <div className="empty" style={{ maxWidth: "600px", margin: "4rem auto" }}>
+              <h3>Your Cart is Empty</h3>
+              <p>
                 Looks like you haven&apos;t added any games or streaming passes yet.
               </p>
-              <Link href="/catalog" className="btn" style={{ minHeight: "2.65rem" }}>
-                Browse Games & Passes →
+              <Link href="/catalog" className="btn red">
+                Browse Games &amp; Passes →
               </Link>
             </div>
           ) : (
             <div style={{ maxWidth: "880px", margin: "0 auto", width: "100%", boxSizing: "border-box" }}>
-              {/* Stepper Header Title */}
               <div
                 style={{
                   display: "flex",
@@ -389,17 +354,16 @@ export default function CartPage() {
                 </h1>
                 <div
                   style={{
-                    fontFamily: "var(--font-data)",
+                    fontFamily: "var(--serif)",
                     color: "var(--accent)",
-                    fontSize: "1.05rem",
-                    fontWeight: 700,
+                    fontSize: "1.25rem",
+                    fontWeight: 800,
                   }}
                 >
                   Total: ₹{total}
                 </div>
               </div>
 
-              {/* 3-Step Interactive Checkout Stepper (Amazon/Flipkart Compact) */}
               <nav className="checkout-stepper" aria-label="Checkout Progress">
                 <button
                   type="button"
@@ -448,9 +412,7 @@ export default function CartPage() {
                     alignItems: "start",
                   }}
                 >
-                  {/* Left Column: Items List, Coupons, Tip */}
                   <div>
-                    {/* Bundle Banner */}
                     <div className="bundle-banner" style={{ marginBottom: "1.2rem" }}>
                       <span style={{ fontSize: "1.2rem" }}>🎁</span>
                       <div>
@@ -459,7 +421,6 @@ export default function CartPage() {
                       </div>
                     </div>
 
-                    {/* Items List */}
                     <div className="cart-items-list" style={{ marginBottom: "1.5rem" }}>
                       {items.map((item, idx) => (
                         <div className="cart-item-row" key={item.id}>
@@ -486,7 +447,7 @@ export default function CartPage() {
                                 <span
                                   style={{
                                     fontSize: "0.72rem",
-                                    color: "var(--accent-gold, #f59e0b)",
+                                    color: "var(--warning)",
                                     display: "block",
                                   }}
                                 >
@@ -545,56 +506,36 @@ export default function CartPage() {
                     {/* Promo / Coupon Code Section */}
                     <div
                       style={{
-                        background: "rgba(25, 18, 48, 0.6)",
+                        background: "var(--card)",
                         padding: "1.1rem",
-                        borderRadius: "var(--radius-md)",
-                        border: "1px solid rgba(245, 166, 35, 0.15)",
-                        marginBottom: "1.5rem",
+                        border: "1px solid var(--line-strong)",
+                        marginBottom: "1.2rem",
                       }}
                     >
                       <label
                         style={{
                           display: "block",
-                          fontSize: "0.85rem",
+                          fontSize: "0.72rem",
+                          letterSpacing: "0.12em",
+                          textTransform: "uppercase",
                           color: "var(--text-secondary)",
-                          marginBottom: "0.4rem",
-                          fontWeight: 600,
+                          marginBottom: "0.5rem",
+                          fontWeight: 700,
                         }}
                       >
                         Have a Promo / Coupon Code?
                       </label>
                       {appliedCoupon ? (
-                        <div
-                          style={{
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "space-between",
-                            background: "rgba(0, 255, 179, 0.1)",
-                            border: "1px solid var(--mint)",
-                            borderRadius: "var(--radius-sm)",
-                            padding: "0.4rem 0.8rem",
-                          }}
-                        >
-                          <span
-                            style={{
-                              color: "var(--mint)",
-                              fontWeight: 700,
-                              fontSize: "0.92rem",
-                              fontFamily: "var(--font-data)",
-                            }}
-                          >
+                        <div className="applied" style={{ margin: 0 }}>
+                          <span style={{ fontWeight: 700 }}>
                             {couponEligibleCount > 1
                               ? `🏷️ ${appliedCoupon} APPLIED (-₹${couponDiscount})`
                               : `🏷️ ${appliedCoupon} (Requires >1 game: -₹0)`}
                           </span>
                           <button
                             type="button"
+                            className="rm"
                             onClick={removeCoupon}
-                            style={{
-                              color: "var(--danger)",
-                              fontSize: "0.85rem",
-                              fontWeight: 600,
-                            }}
                           >
                             Remove
                           </button>
@@ -603,32 +544,19 @@ export default function CartPage() {
                         <>
                           <form
                             onSubmit={handleApplyCoupon}
-                            style={{ display: "flex", gap: "0.6rem" }}
+                            style={{ display: "flex", gap: "0.5rem" }}
                           >
                             <input
                               type="text"
                               placeholder="e.g. HABIBI10, FIRST50"
                               value={couponInput}
                               onChange={(e) => setCouponInput(e.target.value)}
-                              style={{
-                                flex: 1,
-                                background: "rgba(18, 14, 35, 0.9)",
-                                border: "1px solid var(--border-soft)",
-                                borderRadius: "var(--radius-sm)",
-                                color: "var(--text-primary)",
-                                padding: "0.55rem 0.85rem",
-                                fontSize: "0.88rem",
-                                textTransform: "uppercase",
-                              }}
+                              className="field"
+                              style={{ flex: 1, textTransform: "uppercase" }}
                             />
                             <button
                               type="submit"
-                              className="btn btn-secondary"
-                              style={{
-                                minHeight: "2.6rem",
-                                padding: "0.4rem 1.2rem",
-                                fontSize: "0.85rem",
-                              }}
+                              className="btn ghost sm"
                             >
                               Apply
                             </button>
@@ -636,7 +564,7 @@ export default function CartPage() {
                           <span
                             style={{
                               display: "block",
-                              fontSize: "0.78rem",
+                              fontSize: "0.76rem",
                               color: "var(--text-muted)",
                               marginTop: "0.35rem",
                             }}
@@ -650,7 +578,7 @@ export default function CartPage() {
                           style={{
                             display: "block",
                             fontSize: "0.8rem",
-                            color: "var(--warning)",
+                            color: "var(--danger)",
                             marginTop: "0.4rem",
                           }}
                         >
@@ -662,19 +590,20 @@ export default function CartPage() {
                     {/* Tip Contribution */}
                     <div
                       style={{
-                        background: "rgba(25, 18, 48, 0.6)",
+                        background: "var(--card)",
                         padding: "1.1rem",
-                        borderRadius: "var(--radius-md)",
-                        border: "1px solid rgba(245, 166, 35, 0.15)",
+                        border: "1px solid var(--line-strong)",
                       }}
                     >
                       <label
                         style={{
-                          fontSize: "0.85rem",
+                          fontSize: "0.72rem",
+                          letterSpacing: "0.12em",
+                          textTransform: "uppercase",
                           color: "var(--text-secondary)",
                           display: "block",
                           marginBottom: "0.4rem",
-                          fontWeight: 600,
+                          fontWeight: 700,
                         }}
                       >
                         Storefront Tip / Server Support (Optional)
@@ -689,9 +618,7 @@ export default function CartPage() {
                           }
                           placeholder="₹ Tip"
                         />
-                        <span
-                          style={{ fontSize: "0.84rem", color: "var(--text-muted)" }}
-                        >
+                        <span style={{ fontSize: "0.82rem", color: "var(--text-muted)" }}>
                           Directly fuels fast Telegram bot delivery
                         </span>
                       </div>
@@ -700,35 +627,32 @@ export default function CartPage() {
 
                   {/* Right Column: Pricing Breakdown & Proceed CTA */}
                   <div>
-                    <h2
-                      style={{
-                        fontFamily: "var(--font-heading)",
-                        fontSize: "1.8rem",
-                        margin: "0 0 1rem",
-                        letterSpacing: "0.02em",
-                      }}
-                    >
-                      Order Summary
-                    </h2>
-
-                    <div
-                      className="pricing-card"
-                      style={{ marginBottom: "1.5rem", padding: "1.2rem 1.4rem" }}
-                    >
+                    <div className="pricing-card" style={{ marginBottom: "1.2rem" }}>
+                      <h2
+                        style={{
+                          fontFamily: "var(--serif)",
+                          fontSize: "1.1rem",
+                          textTransform: "uppercase",
+                          letterSpacing: "0.04em",
+                          marginBottom: "0.8rem",
+                        }}
+                      >
+                        Order Summary
+                      </h2>
                       <div className="pricing-row">
                         <span>Subtotal</span>
                         <span>₹{subtotal}</span>
                       </div>
                       {bundleDiscount > 0 && (
-                        <div className="pricing-row" style={{ color: "var(--mint)" }}>
+                        <div className="pricing-row" style={{ color: "var(--red)" }}>
                           <span>Bundle Discount ({bundleCount} titles)</span>
-                          <span>-₹{bundleDiscount}</span>
+                          <span>−₹{bundleDiscount}</span>
                         </div>
                       )}
                       {couponDiscount > 0 && (
-                        <div className="pricing-row" style={{ color: "var(--mint)" }}>
+                        <div className="pricing-row" style={{ color: "var(--red)" }}>
                           <span>Coupon Discount ({appliedCoupon})</span>
-                          <span>-₹{couponDiscount}</span>
+                          <span>−₹{couponDiscount}</span>
                         </div>
                       )}
                       {tip > 0 && (
@@ -737,25 +661,17 @@ export default function CartPage() {
                           <span>+₹{tip}</span>
                         </div>
                       )}
-                      <div
-                        className="pricing-row total-row"
-                        style={{ fontSize: "1.35rem" }}
-                      >
-                        <span>Total Amount</span>
+                      <div className="pricing-row total-row">
+                        <span>Total</span>
                         <span>₹{total}</span>
                       </div>
                     </div>
 
                     <button
                       type="button"
-                      className="btn btn-block"
+                      className="btn red btn-block"
                       onClick={() => goToStep(2)}
-                      style={{
-                        minHeight: "2.45rem",
-                        fontSize: "0.88rem",
-                        fontWeight: 600,
-                        marginBottom: "1rem",
-                      }}
+                      style={{ marginBottom: "1rem" }}
                     >
                       Proceed to Pay • ₹{total} →
                     </button>
@@ -765,7 +681,7 @@ export default function CartPage() {
                         href="/catalog"
                         style={{
                           color: "var(--text-secondary)",
-                          fontSize: "0.9rem",
+                          fontSize: "0.86rem",
                           textDecoration: "underline",
                         }}
                       >
@@ -773,20 +689,19 @@ export default function CartPage() {
                       </Link>
                     </div>
 
-                    {/* Trust card */}
                     <div className="trust-guarantee-card">
                       <div className="trust-item">
                         <span className="trust-icon">🛡️</span>
                         <div>
-                          <strong>100% Replacement Warranty</strong>
-                          <p>Guaranteed active login & lifetime assistance.</p>
+                          <strong>Replacement Warranty</strong>
+                          <p>Guaranteed active login &amp; direct support.</p>
                         </div>
                       </div>
                       <div className="trust-item">
                         <span className="trust-icon">⚡</span>
                         <div>
                           <strong>Fast Telegram Bot Dispatch</strong>
-                          <p>Automated payment check & rapid dispatch.</p>
+                          <p>Automated payment check &amp; rapid dispatch.</p>
                         </div>
                       </div>
                       <div className="trust-item">
@@ -804,120 +719,65 @@ export default function CartPage() {
               {/* ================= STEP 2: UPI PAYMENT ================= */}
               {checkoutStep === 2 && (
                 <div style={{ maxWidth: "620px", margin: "0 auto" }}>
-                  <div
-                    className="upi-box"
-                    style={{ marginBottom: "1.8rem", padding: "1.8rem" }}
-                  >
+                  <div className="upi-box" style={{ marginBottom: "1.5rem" }}>
                     <div style={{ textAlign: "center", marginBottom: "1.2rem" }}>
-                      <span
-                        style={{
-                          fontSize: "0.85rem",
-                          color: "var(--text-secondary)",
-                          textTransform: "uppercase",
-                          letterSpacing: "0.05em",
-                          fontFamily: "var(--font-data)",
-                        }}
-                      >
-                        Amount To Pay
-                      </span>
-                      <div
-                        style={{
-                          fontSize: "2.8rem",
-                          fontWeight: 800,
-                          color: "var(--accent)",
-                          fontFamily: "var(--font-data)",
-                          lineHeight: 1.1,
-                          margin: "0.3rem 0",
-                        }}
-                      >
-                        ₹{total}
-                      </div>
-                      <p
-                        style={{
-                          margin: 0,
-                          color: "var(--text-muted)",
-                          fontSize: "0.9rem",
-                        }}
-                      >
-                        Scan QR Code or transfer to UPI ID below inside any UPI app
+                      <span className="kicker">Amount To Pay</span>
+                      <div className="pay-amt">₹{total}</div>
+                      <p className="muted" style={{ fontSize: "0.88rem" }}>
+                        Scan QR code, download it for GPay/PhonePe gallery scan, or copy the UPI ID below
                       </p>
                     </div>
 
-                    {/* Bank Anti-Scam Advisory Notice */}
-                    <div
-                      style={{
-                        background: "rgba(245, 166, 35, 0.1)",
-                        border: "1px solid rgba(245, 166, 35, 0.35)",
-                        borderRadius: "var(--radius-sm)",
-                        padding: "0.85rem 1rem",
-                        marginBottom: "1.4rem",
-                        fontSize: "0.84rem",
-                        lineHeight: 1.5,
-                        color: "#ffda88",
-                      }}
-                    >
-                      <strong style={{ display: "block", marginBottom: "0.2rem", color: "#ffd066" }}>
-                        🛡️ Recommended Payment Method (Prevents Bank Blocks):
-                      </strong>
-                      Banks and UPI apps (GPay / PhonePe) often flag direct browser website redirect links as a scam precaution.
-                      <strong> Scanning the QR code or transferring to the UPI ID inside your app works 100% smoothly without any bank blocks.</strong>
+                    <div className="nudge" style={{ marginBottom: "1.2rem" }}>
+                      <strong>🛡️ Recommended Payment Method (Zero Bank Blocks):</strong>{" "}
+                      Scan the QR code below (or download it and choose <b>&ldquo;Upload from Gallery&rdquo;</b> inside GPay / PhonePe) for 100% smooth transfers.
                     </div>
 
-                    {/* Method 1: QR Code (Primary & 100% Reliable) */}
                     <div
                       style={{
                         textAlign: "center",
                         padding: "1.4rem",
-                        background: "rgba(10, 7, 22, 0.85)",
-                        borderRadius: "var(--radius-md)",
-                        border: "1px solid rgba(0, 255, 179, 0.25)",
-                        marginBottom: "1.4rem",
+                        background: "var(--paper)",
+                        border: "1px solid var(--line-strong)",
+                        marginBottom: "1.2rem",
                       }}
                     >
-                      <span
-                        style={{
-                          display: "inline-block",
-                          padding: "0.2rem 0.6rem",
-                          background: "rgba(0, 255, 179, 0.15)",
-                          color: "var(--mint)",
-                          fontSize: "0.75rem",
-                          fontWeight: 700,
-                          borderRadius: "999px",
-                          marginBottom: "0.6rem",
-                          textTransform: "uppercase",
-                        }}
-                      >
-                        Method 1: 100% Guaranteed (No Blocks)
-                      </span>
                       <p
                         style={{
-                          margin: "0 0 0.9rem",
-                          fontSize: "0.95rem",
-                          color: "var(--text-primary)",
-                          fontWeight: 600,
+                          margin: "0 0 0.8rem",
+                          fontSize: "0.88rem",
+                          fontWeight: 700,
+                          textTransform: "uppercase",
+                          letterSpacing: "0.08em",
                         }}
                       >
                         Scan with GPay, PhonePe, Paytm, or BHIM
                       </p>
                       {qrSrc ? (
-                        <div
-                          className="qr-frame"
-                          style={{
-                            display: "inline-block",
-                            padding: "0.6rem",
-                            background: "#fff",
-                            borderRadius: "10px",
-                            boxShadow: "0 4px 20px rgba(0, 0, 0, 0.5)",
-                          }}
-                        >
-                          <Image
-                            src={qrSrc}
-                            alt="Payment UPI QR"
-                            width={210}
-                            height={210}
-                            unoptimized
-                            style={{ display: "block", borderRadius: "6px" }}
-                          />
+                        <div style={{ display: "inline-grid", gap: "0.7rem", justifyItems: "center" }}>
+                          <div
+                            className="qr"
+                            style={{ display: "inline-block" }}
+                          >
+                            <Image
+                              src={qrSrc}
+                              alt="Payment UPI QR"
+                              width={210}
+                              height={210}
+                              unoptimized
+                              style={{ display: "block" }}
+                            />
+                          </div>
+                          <a
+                            href={qrSrc}
+                            download={`GamesHabibi-UPI-Rs${total}.png`}
+                            className="btn ghost sm"
+                            onClick={() =>
+                              showToast("QR downloaded! Open GPay/PhonePe → Scan from Gallery.")
+                            }
+                          >
+                            ⬇ Download QR for GPay / PhonePe Gallery
+                          </a>
                         </div>
                       ) : (
                         <div
@@ -932,36 +792,12 @@ export default function CartPage() {
                       )}
                     </div>
 
-                    {/* Method 2: Copy UPI ID */}
-                    <div
-                      style={{
-                        background: "rgba(25, 18, 48, 0.75)",
-                        border: "1px solid rgba(245, 166, 35, 0.25)",
-                        borderRadius: "var(--radius-md)",
-                        padding: "1.1rem",
-                        marginBottom: "1.4rem",
-                      }}
-                    >
-                      <span
-                        style={{
-                          display: "inline-block",
-                          padding: "0.2rem 0.6rem",
-                          background: "rgba(245, 166, 35, 0.15)",
-                          color: "var(--accent)",
-                          fontSize: "0.75rem",
-                          fontWeight: 700,
-                          borderRadius: "999px",
-                          marginBottom: "0.5rem",
-                          textTransform: "uppercase",
-                        }}
-                      >
-                        Method 2: In-App UPI Transfer
-                      </span>
-                      <p style={{ margin: "0 0 0.6rem", fontSize: "0.85rem", color: "var(--text-secondary)" }}>
-                        Open your UPI app, tap <strong>&ldquo;Pay to UPI ID&rdquo;</strong> and enter:
+                    <div style={{ marginBottom: "1rem" }}>
+                      <p style={{ margin: "0 0 0.4rem", fontSize: "0.82rem", color: "var(--text-secondary)" }}>
+                        Or open your UPI app, tap <strong>&ldquo;Pay to UPI ID&rdquo;</strong> and enter:
                       </p>
                       <div className="upi-id-pill" style={{ margin: 0 }}>
-                        <span className="upi-id-text">
+                        <span>
                           UPI ID: <strong>{PAYMENT_ID}</strong>
                         </span>
                         <button
@@ -970,53 +806,12 @@ export default function CartPage() {
                           className="upi-copy-action-btn"
                           aria-label="Copy UPI ID"
                         >
-                          {isUpiCopied ? "✔ Copied!" : "📋 Copy UPI ID"}
+                          {isUpiCopied ? "✔ Copied!" : "Copy UPI ID"}
                         </button>
-                      </div>
-                    </div>
-
-                    {/* 3 Step Instruction Checklist */}
-                    <div
-                      style={{
-                        display: "grid",
-                        gap: "0.6rem",
-                        background: "rgba(255, 255, 255, 0.03)",
-                        padding: "1rem",
-                        borderRadius: "var(--radius-sm)",
-                        fontSize: "0.88rem",
-                        color: "var(--text-secondary)",
-                      }}
-                    >
-                      <div style={{ display: "flex", gap: "0.6rem" }}>
-                        <span style={{ color: "var(--accent)", fontWeight: 700 }}>
-                          1.
-                        </span>
-                        <span>
-                          Pay exact amount <strong>₹{total}</strong> to{" "}
-                          <strong>{PAYMENT_ID}</strong>.
-                        </span>
-                      </div>
-                      <div style={{ display: "flex", gap: "0.6rem" }}>
-                        <span style={{ color: "var(--accent)", fontWeight: 700 }}>
-                          2.
-                        </span>
-                        <span>
-                          Take a screenshot of the completed payment receipt in your
-                          UPI app.
-                        </span>
-                      </div>
-                      <div style={{ display: "flex", gap: "0.6rem" }}>
-                        <span style={{ color: "var(--accent)", fontWeight: 700 }}>
-                          3.
-                        </span>
-                        <span>
-                          Click below to upload the screenshot for automatic fulfillment.
-                        </span>
                       </div>
                     </div>
                   </div>
 
-                  {/* Step Navigation Controls */}
                   <div
                     style={{
                       display: "flex",
@@ -1029,41 +824,17 @@ export default function CartPage() {
                       type="button"
                       className="btn btn-secondary"
                       onClick={() => goToStep(1)}
-                      style={{ flex: "1 1 110px", minHeight: "2.45rem", fontSize: "0.86rem", fontWeight: 500 }}
                     >
                       ← Back
                     </button>
                     <button
                       type="button"
-                      className="btn"
+                      className="btn red"
                       onClick={() => goToStep(3)}
-                      style={{
-                        flex: "2 1 180px",
-                        minHeight: "2.45rem",
-                        fontSize: "0.86rem",
-                        fontWeight: 600,
-                      }}
+                      style={{ flex: 1 }}
                     >
-                      I&apos;ve Paid → Verify
+                      I&apos;ve Paid → Upload Screenshot
                     </button>
-                  </div>
-
-                  {/* Trust card */}
-                  <div className="trust-guarantee-card">
-                    <div className="trust-item">
-                      <span className="trust-icon">🛡️</span>
-                      <div>
-                        <strong>100% Replacement Warranty</strong>
-                        <p>Guaranteed active login & lifetime assistance.</p>
-                      </div>
-                    </div>
-                    <div className="trust-item">
-                      <span className="trust-icon">⚡</span>
-                      <div>
-                        <strong>Fast Telegram Bot Dispatch</strong>
-                        <p>Automated payment check & rapid dispatch.</p>
-                      </div>
-                    </div>
                   </div>
                 </div>
               )}
@@ -1075,11 +846,10 @@ export default function CartPage() {
                     onSubmit={handleSubmit}
                     className="order-form"
                     style={{
+                      maxWidth: "100%",
                       background: "var(--surface-panel)",
-                      border: "1px solid var(--border-soft)",
-                      borderRadius: "var(--radius-md)",
+                      border: "1px solid var(--ink)",
                       padding: "1.8rem",
-                      boxShadow: "var(--shadow-strong)",
                     }}
                   >
                     <div
@@ -1087,37 +857,20 @@ export default function CartPage() {
                         display: "flex",
                         justifyContent: "space-between",
                         alignItems: "center",
-                        borderBottom: "1px solid rgba(255, 255, 255, 0.08)",
+                        borderBottom: "1px solid var(--line)",
                         paddingBottom: "1rem",
-                        marginBottom: "1.4rem",
+                        marginBottom: "0.6rem",
                       }}
                     >
                       <div>
-                        <h3 style={{ margin: "0 0 0.2rem", fontSize: "1.3rem" }}>
-                          Confirm & Submit Order
+                        <h3 style={{ fontFamily: "var(--serif)", margin: "0 0 0.2rem", fontSize: "1.3rem" }}>
+                          Confirm &amp; Submit Order
                         </h3>
-                        <p
-                          style={{
-                            margin: 0,
-                            fontSize: "0.85rem",
-                            color: "var(--text-secondary)",
-                          }}
-                        >
+                        <p style={{ margin: 0, fontSize: "0.85rem", color: "var(--text-secondary)" }}>
                           Attach screenshot to trigger automated verification
                         </p>
                       </div>
-                      <span
-                        style={{
-                          padding: "0.35rem 0.85rem",
-                          background: "rgba(0, 255, 179, 0.12)",
-                          color: "var(--mint)",
-                          border: "1px solid var(--mint)",
-                          borderRadius: "var(--radius-sm)",
-                          fontFamily: "var(--font-data)",
-                          fontWeight: 700,
-                          fontSize: "0.95rem",
-                        }}
-                      >
+                      <span className="price" style={{ fontSize: "1.35rem", color: "var(--red)" }}>
                         ₹{total}
                       </span>
                     </div>
@@ -1137,7 +890,7 @@ export default function CartPage() {
 
                     <div>
                       <label htmlFor="customerEmail">
-                        Your Email (Credentials & receipt sent here)
+                        Your Email (Credentials &amp; receipt sent here)
                       </label>
                       <input
                         type="email"
@@ -1203,8 +956,7 @@ export default function CartPage() {
                     </div>
 
                     {isSubmitting && submittingStatus && (
-                      <div className="submitting-banner">
-                        <span className="submitting-spinner" />
+                      <div className="nudge">
                         <span>{submittingStatus}</span>
                       </div>
                     )}
@@ -1214,7 +966,7 @@ export default function CartPage() {
                         display: "flex",
                         gap: "0.6rem",
                         flexWrap: "wrap",
-                        marginTop: "1.2rem",
+                        marginTop: "0.8rem",
                       }}
                     >
                       <button
@@ -1222,57 +974,19 @@ export default function CartPage() {
                         className="btn btn-secondary"
                         disabled={isSubmitting}
                         onClick={() => goToStep(2)}
-                        style={{ flex: "1 1 110px", minHeight: "2.45rem", fontSize: "0.86rem", fontWeight: 500 }}
                       >
                         ← Back
                       </button>
                       <button
                         type="submit"
-                        className="btn"
+                        className="btn red"
                         disabled={isSubmitting}
-                        style={{
-                          flex: "2 1 180px",
-                          minHeight: "2.45rem",
-                          fontSize: "0.86rem",
-                          fontWeight: 600,
-                          display: "inline-flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          gap: "0.5rem",
-                        }}
+                        style={{ flex: 1 }}
                       >
-                        {isSubmitting ? (
-                          <>
-                            <span className="submitting-spinner" />
-                            <span>Verifying & Submitting...</span>
-                          </>
-                        ) : (
-                          `Place Order • ₹${total}`
-                        )}
+                        {isSubmitting
+                          ? "Verifying & Submitting..."
+                          : `Place Order • ₹${total} →`}
                       </button>
-                    </div>
-
-                    <div
-                      style={{
-                        marginTop: "1.2rem",
-                        textAlign: "center",
-                        fontSize: "0.85rem",
-                        color: "var(--text-muted)",
-                      }}
-                    >
-                      Prefer manual assistance?{" "}
-                      <a
-                        href={getOrderWhatsAppUrl({
-                          orderId: "PRE-ORDER",
-                          games: items.map((i) => i.game).join(", "),
-                          total: total,
-                        })}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        style={{ color: "#25D366", fontWeight: 600 }}
-                      >
-                        Chat directly on WhatsApp →
-                      </a>
                     </div>
                   </form>
                 </div>
@@ -1284,22 +998,7 @@ export default function CartPage() {
 
       <footer className="site-footer">
         <div className="container footer-inner">
-          <div style={{ display: "flex", alignItems: "center", gap: "0.85rem" }}>
-            <Image
-              src="/png/apple-touch-icon.png"
-              alt="Games Habibi Logo"
-              width={40}
-              height={40}
-              className="brand-logo"
-            />
-            <div>
-              <p className="footer-brand">Games Habibi</p>
-              <p className="footer-copy">
-                Premium digital storefront with mobile-friendly UPI checkout and direct support.
-              </p>
-            </div>
-          </div>
-
+          <p className="footer-brand">Games Habibi</p>
           <div className="footer-links">
             <Link href="/privacy">Privacy</Link>
             <Link href="/terms">Terms</Link>

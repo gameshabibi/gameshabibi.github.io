@@ -12,7 +12,7 @@ window.HABIBI_CONFIG = {
   // Optional: a URL that accepts a multipart POST (fields: orderId, name, email,
   // phone, items, total, coupon, utr, photo). Leave "" to run without a backend —
   // the customer then sends their proof on WhatsApp after placing the order.
-  orderEndpoint: "",
+  orderEndpoint: "/api/order",
 
   // Discount rules
   coupons: {

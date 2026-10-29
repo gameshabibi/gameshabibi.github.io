@@ -52,12 +52,13 @@ export function PolicyLayout({
             }}
           >
             <article
+              className="policy"
               style={{
+                maxWidth: "100%",
                 background: "var(--surface-panel)",
-                border: "1px solid var(--border-soft)",
-                borderRadius: "var(--radius-lg)",
+                border: "1px solid var(--ink)",
                 padding: "clamp(1.5rem, 3.5vw, 2.8rem)",
-                boxShadow: "var(--shadow-strong)",
+                boxShadow: "var(--shadow-soft)",
                 lineHeight: 1.7,
                 color: "var(--text-secondary)",
               }}
@@ -67,9 +68,8 @@ export function PolicyLayout({
 
             <div
               style={{
-                background: "rgba(25, 18, 48, 0.6)",
-                border: "1px solid rgba(245, 166, 35, 0.15)",
-                borderRadius: "var(--radius-md)",
+                background: "var(--card)",
+                border: "1px solid var(--line-strong)",
                 padding: "1.4rem",
                 display: "flex",
                 flexWrap: "wrap",
@@ -78,11 +78,11 @@ export function PolicyLayout({
                 justifyContent: "space-between",
               }}
             >
-              <span style={{ fontWeight: 600, color: "var(--text-primary)" }}>
-                Policy & Storefront Navigation:
+              <span style={{ fontWeight: 700, color: "var(--text-primary)" }}>
+                Policy &amp; Storefront Navigation:
               </span>
               <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap", fontSize: "0.9rem" }}>
-                <Link href="/" style={{ color: "var(--accent)" }}>
+                <Link href="/" style={{ color: "var(--accent)", fontWeight: 600 }}>
                   Storefront
                 </Link>
                 <Link href="/privacy" style={{ color: "var(--text-secondary)" }}>
@@ -97,7 +97,7 @@ export function PolicyLayout({
                 <Link href="/cancellation" style={{ color: "var(--text-secondary)" }}>
                   Refunds
                 </Link>
-                <Link href="/contact" style={{ color: "var(--mint)" }}>
+                <Link href="/contact" style={{ color: "var(--mint)", fontWeight: 600 }}>
                   Contact Support
                 </Link>
               </div>

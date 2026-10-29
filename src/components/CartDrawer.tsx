@@ -59,7 +59,6 @@ export function CartDrawer() {
     }
   };
 
-  // Lock body scroll and listen for Escape key when cart drawer is open
   useEffect(() => {
     if (!isDrawerOpen) return;
 
@@ -79,7 +78,6 @@ export function CartDrawer() {
     };
   }, [isDrawerOpen, closeDrawer]);
 
-  // Auto-restore customer contact info from draft storage
   useEffect(() => {
     try {
       const savedName = sessionStorage.getItem("gh_draft_name");
@@ -113,7 +111,6 @@ export function CartDrawer() {
     }
   };
 
-  // Generate UPI deep link & QR code whenever total changes
   const upiUrl = `upi://pay?pa=${encodeURIComponent(
     PAYMENT_ID
   )}&pn=Games%20Habibi&am=${total.toFixed(2)}&cu=INR&tn=Games%20Habibi%20Order`;
@@ -163,7 +160,7 @@ export function CartDrawer() {
     setIsSubmitting(true);
     const startTime = Date.now();
 
-    const generatedId = "ORD-" + Math.floor(100000 + Math.random() * 900000);
+    const generatedId = `GH-${Date.now().toString().slice(-6)}`;
     const gamesSummary = items
       .map((i) => `${i.game}${i.variant ? ` (${i.variant})` : ""} x ${i.qty}`)
       .join(", ");
@@ -174,6 +171,7 @@ export function CartDrawer() {
     formData.append("utr", customerUtr || "Not provided");
     formData.append("coupon", appliedCoupon || "None");
     formData.append("games", gamesSummary);
+    formData.append("items", gamesSummary);
     formData.append("total", total.toString());
     formData.append("orderId", generatedId);
     formData.append("photo", paymentFile);
@@ -190,13 +188,11 @@ export function CartDrawer() {
         throw new Error(data.error || data.message || "Order dispatch error");
       }
 
-      // Add minimum delay so user perceives loading progress
       const elapsed = Date.now() - startTime;
       if (elapsed < 800) {
         await new Promise((r) => setTimeout(r, 800 - elapsed));
       }
 
-      // Success: Play distinct celebratory order success sound
       playFeedback("order-success");
 
       const orderRecord = {
@@ -257,7 +253,6 @@ export function CartDrawer() {
         aria-modal="true"
         aria-label="Shopping Cart"
       >
-        <div className="drawer-handle" aria-hidden="true" />
         <div className="drawer-header">
           <h2>
             {checkoutStep === 1
@@ -271,10 +266,10 @@ export function CartDrawer() {
               href="/cart"
               onClick={closeDrawer}
               style={{
-                fontSize: "0.78rem",
+                fontSize: "0.75rem",
                 color: "var(--accent)",
                 textDecoration: "underline",
-                fontWeight: 600,
+                fontWeight: 700,
               }}
             >
               Full Page ↗
@@ -313,8 +308,8 @@ export function CartDrawer() {
               </div>
 
               <div className="order-dispatch-note">
-                <strong>⚡ Instant Delivery Status:</strong>
-                Credentials and access guide will be delivered via WhatsApp within 5–15 minutes.
+                <strong>⚡ Instant Delivery Status: </strong>
+                Credentials and access guide will be delivered via WhatsApp within 15–30 minutes.
               </div>
 
               <div className="order-success-actions">
@@ -347,16 +342,8 @@ export function CartDrawer() {
               </div>
             </div>
           ) : items.length === 0 ? (
-            <div
-              style={{
-                textAlign: "center",
-                padding: "3.5rem 1rem",
-                color: "var(--text-muted)",
-              }}
-            >
-              <p style={{ fontSize: "1.1rem", marginBottom: "1rem" }}>
-                Your cart is empty.
-              </p>
+            <div className="empty">
+              <p>Your cart is empty.</p>
               <button
                 type="button"
                 className="btn btn-secondary"
@@ -367,7 +354,6 @@ export function CartDrawer() {
             </div>
           ) : (
             <>
-              {/* 3-Step Interactive Stepper (Amazon/Flipkart Compact) */}
               <div className="checkout-stepper">
                 <button
                   type="button"
@@ -406,8 +392,7 @@ export function CartDrawer() {
               {/* STEP 1: REVIEW ITEMS */}
               {checkoutStep === 1 && (
                 <>
-                  {/* Bundle Banner */}
-                  <div className="bundle-banner">
+                  <div className="bundle-banner" style={{ marginTop: 0 }}>
                     <span>🎁</span>
                     <div>
                       <strong>Bundle Savings: </strong>
@@ -415,78 +400,48 @@ export function CartDrawer() {
                     </div>
                   </div>
 
-                  {/* Items List */}
                   <div className="cart-items-list">
                     {items.map((item, idx) => (
                       <div className="cart-item-row" key={item.id}>
                         <div className="cart-item-info">
-                          <strong>{item.game}</strong>
-                          {item.variant && <span>{item.variant}</span>}
-                          {item.variant?.toLowerCase().includes("budget") && (
-                            <span
-                              style={{
-                                fontSize: "0.72rem",
-                                color: "var(--accent-gold, #f59e0b)",
-                              }}
+                          <strong className="cart-item-title">{item.game}</strong>
+                          {item.variant && <span className="cart-item-variant">{item.variant}</span>}
+                        </div>
+
+                        <div className="cart-item-right">
+                          <div className="cart-item-ctrls">
+                            <button
+                              type="button"
+                              className="qty-btn"
+                              onClick={() => updateQty(idx, -1)}
+                              aria-label="Decrease quantity"
                             >
-                              ⚡ Budget (No Offers)
-                            </span>
-                          )}
-                        </div>
+                              −
+                            </button>
+                            <span className="qty-val">{item.qty}</span>
+                            <button
+                              type="button"
+                              className="qty-btn"
+                              onClick={() => updateQty(idx, 1)}
+                              aria-label="Increase quantity"
+                            >
+                              +
+                            </button>
+                          </div>
 
-                        <div className="cart-item-ctrls">
+                          <div className="cart-item-price">
+                            ₹{item.price * item.qty}
+                          </div>
+
                           <button
                             type="button"
-                            className="qty-btn"
-                            onClick={() => {
-                              if (typeof window !== "undefined" && navigator.vibrate)
-                                navigator.vibrate(10);
-                              updateQty(idx, -1);
-                            }}
-                            aria-label="Decrease quantity"
+                            className="cart-item-remove-btn"
+                            onClick={() => removeItem(idx)}
+                            aria-label="Remove item"
                           >
-                            −
-                          </button>
-                          <span
-                            style={{
-                              fontFamily: "var(--font-data)",
-                              minWidth: "1.2rem",
-                              textAlign: "center",
-                              fontWeight: 700,
-                            }}
-                          >
-                            {item.qty}
-                          </span>
-                          <button
-                            type="button"
-                            className="qty-btn"
-                            onClick={() => {
-                              if (typeof window !== "undefined" && navigator.vibrate)
-                                navigator.vibrate(10);
-                              updateQty(idx, 1);
-                            }}
-                            aria-label="Increase quantity"
-                          >
-                            +
+                            &times;
                           </button>
                         </div>
-
-                        <div className="cart-item-price">
-                          ₹{item.price * item.qty}
-                        </div>
-
-                        <button
-                          type="button"
-                          onClick={() => removeItem(idx)}
-                          style={{
-                            color: "var(--danger)",
-                            fontSize: "1rem",
-                            marginLeft: "0.2rem",
-                          }}
-                          aria-label="Remove item"
-                        >
-                          &times;
-                        </button>
                       </div>
                     ))}
                   </div>
@@ -494,16 +449,18 @@ export function CartDrawer() {
                   {/* Promo / Coupon Code Section */}
                   <div
                     style={{
-                      background: "rgba(25, 18, 48, 0.6)",
+                      background: "var(--card)",
                       padding: "0.85rem",
-                      borderRadius: "var(--radius-sm)",
-                      border: "1px solid rgba(245, 166, 35, 0.12)",
+                      border: "1px solid var(--line-strong)",
                     }}
                   >
                     <label
                       style={{
                         display: "block",
-                        fontSize: "0.82rem",
+                        fontSize: "0.72rem",
+                        letterSpacing: "0.1em",
+                        textTransform: "uppercase",
+                        fontWeight: 700,
                         color: "var(--text-secondary)",
                         marginBottom: "0.35rem",
                       }}
@@ -511,127 +468,50 @@ export function CartDrawer() {
                       Have a Promo / Coupon Code?
                     </label>
                     {appliedCoupon ? (
-                      <div
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "space-between",
-                          background: "rgba(0, 255, 179, 0.1)",
-                          border: "1px solid var(--mint)",
-                          padding: "0.4rem 0.8rem",
-                          borderRadius: "var(--radius-sm)",
-                        }}
-                      >
-                        <span
-                          style={{
-                            color: "var(--mint)",
-                            fontWeight: 700,
-                            fontSize: "0.88rem",
-                            fontFamily: "var(--font-data)",
-                          }}
-                        >
+                      <div className="applied" style={{ margin: 0 }}>
+                        <span style={{ fontWeight: 700 }}>
                           {couponEligibleCount > 1
                             ? `🏷️ ${appliedCoupon} APPLIED (-₹${couponDiscount})`
                             : `🏷️ ${appliedCoupon} (Requires >1 game: -₹0)`}
                         </span>
                         <button
                           type="button"
+                          className="rm"
                           onClick={removeCoupon}
-                          style={{
-                            color: "var(--danger)",
-                            fontSize: "0.82rem",
-                            fontWeight: 600,
-                          }}
                         >
                           Remove
                         </button>
                       </div>
                     ) : (
-                      <>
-                        <form
-                          onSubmit={handleApplyCoupon}
-                          style={{ display: "flex", gap: "0.5rem" }}
-                        >
-                          <input
-                            type="text"
-                            placeholder="e.g. HABIBI10, FIRST50"
-                            value={couponInput}
-                            onChange={(e) => setCouponInput(e.target.value)}
-                            style={{
-                              flex: 1,
-                              background: "rgba(18, 14, 35, 0.9)",
-                              border: "1px solid var(--border-soft)",
-                              borderRadius: "var(--radius-sm)",
-                              color: "var(--text-primary)",
-                              padding: "0.45rem 0.75rem",
-                              fontSize: "0.85rem",
-                              textTransform: "uppercase",
-                            }}
-                          />
-                          <button
-                            type="submit"
-                            className="btn btn-secondary"
-                            style={{
-                              minHeight: "2.4rem",
-                              padding: "0.4rem 1rem",
-                              fontSize: "0.82rem",
-                            }}
-                          >
-                            Apply
-                          </button>
-                        </form>
-                        <span
-                          style={{
-                            display: "block",
-                            fontSize: "0.74rem",
-                            color: "var(--text-muted)",
-                            marginTop: "0.3rem",
-                          }}
-                        >
-                          * Requires &gt;1 game in cart (excluding Budget Friendly).
-                        </span>
-                      </>
+                      <form
+                        onSubmit={handleApplyCoupon}
+                        style={{ display: "flex", gap: "0.5rem" }}
+                      >
+                        <input
+                          type="text"
+                          placeholder="HABIBI10, FIRST50"
+                          value={couponInput}
+                          onChange={(e) => setCouponInput(e.target.value)}
+                          className="field"
+                          style={{ flex: 1, textTransform: "uppercase" }}
+                        />
+                        <button type="submit" className="btn ghost sm">
+                          Apply
+                        </button>
+                      </form>
                     )}
                     {couponMessage && !appliedCoupon && (
                       <span
                         style={{
                           display: "block",
                           fontSize: "0.76rem",
-                          color: "var(--warning)",
+                          color: "var(--danger)",
                           marginTop: "0.35rem",
                         }}
                       >
                         {couponMessage}
                       </span>
                     )}
-                  </div>
-
-                  {/* Tip Contribution */}
-                  <div>
-                    <label
-                      style={{
-                        fontSize: "0.82rem",
-                        color: "var(--text-secondary)",
-                      }}
-                    >
-                      Storefront Tip / Support (Optional)
-                    </label>
-                    <div className="tip-box">
-                      <input
-                        type="number"
-                        min="0"
-                        value={tip}
-                        onChange={(e) =>
-                          setTip(Math.max(0, Number(e.target.value) || 0))
-                        }
-                        placeholder="₹ Tip"
-                      />
-                      <span
-                        style={{ fontSize: "0.8rem", color: "var(--text-muted)" }}
-                      >
-                        Directly supports Games Habibi
-                      </span>
-                    </div>
                   </div>
 
                   {/* Pricing Breakdown */}
@@ -641,34 +521,27 @@ export function CartDrawer() {
                       <span>₹{subtotal}</span>
                     </div>
                     {bundleDiscount > 0 && (
-                      <div className="pricing-row" style={{ color: "var(--mint)" }}>
+                      <div className="pricing-row" style={{ color: "var(--red)" }}>
                         <span>Bundle Discount ({bundleCount} titles)</span>
-                        <span>-₹{bundleDiscount}</span>
+                        <span>−₹{bundleDiscount}</span>
                       </div>
                     )}
                     {couponDiscount > 0 && (
-                      <div className="pricing-row" style={{ color: "var(--mint)" }}>
+                      <div className="pricing-row" style={{ color: "var(--red)" }}>
                         <span>Coupon Discount ({appliedCoupon})</span>
-                        <span>-₹{couponDiscount}</span>
-                      </div>
-                    )}
-                    {tip > 0 && (
-                      <div className="pricing-row">
-                        <span>Storefront Tip</span>
-                        <span>+₹{tip}</span>
+                        <span>−₹{couponDiscount}</span>
                       </div>
                     )}
                     <div className="pricing-row total-row">
-                      <span>Total Amount</span>
+                      <span>Total</span>
                       <span>₹{total}</span>
                     </div>
                   </div>
 
                   <button
                     type="button"
-                    className="btn btn-block"
+                    className="btn red btn-block"
                     onClick={() => setCheckoutStep(2)}
-                    style={{ minHeight: "2.45rem", fontSize: "0.88rem", fontWeight: 600 }}
                   >
                     Proceed to Pay • ₹{total} →
                   </button>
@@ -680,31 +553,12 @@ export function CartDrawer() {
                 <div style={{ display: "grid", gap: "1rem" }}>
                   <div className="upi-box">
                     <div className="upi-box-header">
-                      <h3>🔐 Instant UPI Payment</h3>
+                      <h3>Instant UPI Payment</h3>
                       <span className="upi-instant-badge">₹{total}</span>
                     </div>
 
-                    <div
-                      style={{
-                        background: "rgba(245, 166, 35, 0.1)",
-                        border: "1px solid rgba(245, 166, 35, 0.35)",
-                        borderRadius: "var(--radius-sm)",
-                        padding: "0.75rem 0.85rem",
-                        fontSize: "0.82rem",
-                        lineHeight: 1.45,
-                        color: "#ffda88",
-                        marginBottom: "0.8rem",
-                      }}
-                    >
-                      <strong style={{ display: "block", color: "#ffd066", marginBottom: "0.2rem" }}>
-                        🛡️ Recommended (Avoids Bank Fraud Blocks):
-                      </strong>
-                      Banks and UPI apps (GPay / PhonePe) often block direct browser links to individual UPI IDs.
-                      <strong> Scan the QR or Copy the UPI ID below to pay directly inside your app without blocks.</strong>
-                    </div>
-
                     <div className="upi-id-pill" style={{ marginBottom: "0.8rem" }}>
-                      <span className="upi-id-text">
+                      <span>
                         UPI ID: <strong>{PAYMENT_ID}</strong>
                       </span>
                       <button
@@ -713,7 +567,7 @@ export function CartDrawer() {
                         className="upi-copy-action-btn"
                         aria-label="Copy UPI ID"
                       >
-                        {isUpiCopied ? "✔ Copied" : "📋 Copy"}
+                        {isUpiCopied ? "✔ Copied" : "Copy"}
                       </button>
                     </div>
 
@@ -721,9 +575,8 @@ export function CartDrawer() {
                       style={{
                         textAlign: "center",
                         padding: "1rem",
-                        background: "rgba(10, 7, 22, 0.9)",
-                        borderRadius: "var(--radius-md)",
-                        border: "1px solid rgba(245, 166, 35, 0.2)",
+                        background: "var(--paper)",
+                        border: "1px solid var(--line-strong)",
                       }}
                     >
                       <p
@@ -737,23 +590,24 @@ export function CartDrawer() {
                         Scan QR Code with any UPI App
                       </p>
                       {qrSrc ? (
-                        <div
-                          className="qr-frame"
-                          style={{
-                            display: "inline-block",
-                            padding: "0.4rem",
-                            background: "#fff",
-                            borderRadius: "8px",
-                          }}
-                        >
-                          <Image
-                            src={qrSrc}
-                            alt="Payment UPI QR"
-                            width={170}
-                            height={170}
-                            unoptimized
-                            style={{ display: "block", borderRadius: "4px" }}
-                          />
+                        <div style={{ display: "inline-grid", gap: "0.6rem", justifyItems: "center" }}>
+                          <div className="qr" style={{ display: "inline-block" }}>
+                            <Image
+                              src={qrSrc}
+                              alt="Payment UPI QR"
+                              width={170}
+                              height={170}
+                              unoptimized
+                              style={{ display: "block" }}
+                            />
+                          </div>
+                          <a
+                            href={qrSrc}
+                            download={`GamesHabibi-UPI-Rs${total}.png`}
+                            className="btn ghost sm"
+                          >
+                            ⬇ Download QR Image
+                          </a>
                         </div>
                       ) : (
                         <div
@@ -774,36 +628,17 @@ export function CartDrawer() {
                       type="button"
                       className="btn btn-secondary"
                       onClick={() => setCheckoutStep(1)}
-                      style={{ flex: 1, minHeight: "2.45rem", fontSize: "0.86rem", fontWeight: 500 }}
                     >
                       ← Back
                     </button>
                     <button
                       type="button"
-                      className="btn"
+                      className="btn red"
                       onClick={() => setCheckoutStep(3)}
-                      style={{ flex: 2, minHeight: "2.45rem", fontSize: "0.86rem", fontWeight: 600 }}
+                      style={{ flex: 1 }}
                     >
                       I&apos;ve Paid → Verify
                     </button>
-                  </div>
-
-                  {/* Trust & Guarantee Card */}
-                  <div className="trust-guarantee-card">
-                    <div className="trust-item">
-                      <span className="trust-icon">🛡️</span>
-                      <div>
-                        <strong>100% Replacement Warranty</strong>
-                        <p>Guaranteed active login & lifetime assistance.</p>
-                      </div>
-                    </div>
-                    <div className="trust-item">
-                      <span className="trust-icon">⚡</span>
-                      <div>
-                        <strong>Fast Telegram Bot Dispatch</strong>
-                        <p>Automated payment check & rapid dispatch.</p>
-                      </div>
-                    </div>
                   </div>
                 </div>
               )}
@@ -816,19 +651,13 @@ export function CartDrawer() {
                       display: "flex",
                       justifyContent: "space-between",
                       alignItems: "center",
-                      marginBottom: "0.6rem",
+                      marginBottom: "0.4rem",
                     }}
                   >
-                    <h3 style={{ margin: 0, fontSize: "1.1rem" }}>
-                      Upload Proof & Dispatch
+                    <h3 style={{ fontFamily: "var(--serif)", margin: 0, fontSize: "1.1rem" }}>
+                      Upload Proof &amp; Dispatch
                     </h3>
-                    <span
-                      style={{
-                        color: "var(--mint)",
-                        fontFamily: "var(--font-data)",
-                        fontWeight: 700,
-                      }}
-                    >
+                    <span className="price" style={{ color: "var(--red)" }}>
                       ₹{total}
                     </span>
                   </div>
@@ -912,22 +741,21 @@ export function CartDrawer() {
                     style={{
                       display: "flex",
                       gap: "0.5rem",
-                      marginTop: "0.8rem",
+                      marginTop: "0.6rem",
                     }}
                   >
                     <button
                       type="button"
                       className="btn btn-secondary"
                       onClick={() => setCheckoutStep(2)}
-                      style={{ flex: 1, minHeight: "2.45rem", fontSize: "0.86rem", fontWeight: 500 }}
                     >
                       ← Back
                     </button>
                     <button
                       type="submit"
-                      className="btn"
+                      className="btn red"
                       disabled={isSubmitting}
-                      style={{ flex: 2, minHeight: "2.45rem", fontSize: "0.86rem", fontWeight: 600 }}
+                      style={{ flex: 1 }}
                     >
                       {isSubmitting
                         ? "Submitting..."

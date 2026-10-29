@@ -29,7 +29,7 @@ export function SteamGuideFAQ() {
     },
     {
       q: "What is the replacement policy for Budget accounts?",
-      a: "On Budget Friendly accounts (₹169), if a password is ever modified later, an identical replacement account will be provided at a 50% discount. For Shared accounts (₹149), you enjoy lifetime access and direct support.",
+      a: "On Budget Friendly accounts (₹69), if a password is ever modified later, an identical replacement account will be provided at a 50% discount. For Shared accounts (₹149), you enjoy lifetime access and direct support.",
     },
   ];
 
@@ -186,7 +186,7 @@ export function SteamGuideFAQ() {
               >
                 <span className="kicker">Ultra Budget</span>
                 <span className="price" style={{ fontSize: "1.5rem" }}>
-                  ₹169 <small style={{ fontSize: "0.8rem", color: "var(--muted)" }}>/ game</small>
+                  ₹69 <small style={{ fontSize: "0.8rem", color: "var(--muted)" }}>/ game</small>
                 </span>
               </div>
 

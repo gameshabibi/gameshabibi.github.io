@@ -49,63 +49,62 @@ export default function AboutPage() {
           <article
             style={{
               background: "var(--surface-panel)",
-              border: "1px solid var(--border-soft)",
-              borderRadius: "var(--radius-lg)",
+              border: "1px solid var(--ink)",
               padding: "clamp(1.8rem, 4vw, 3rem)",
-              boxShadow: "var(--shadow-strong)",
+              boxShadow: "var(--shadow-soft)",
               marginBottom: "2.5rem",
               lineHeight: 1.7,
               color: "var(--text-secondary)",
             }}
           >
-            <h2 style={{ color: "var(--text-primary)", marginTop: 0, fontSize: "1.5rem" }}>
-              Our Story & Mission
+            <h2 style={{ fontFamily: "var(--serif)", color: "var(--text-primary)", marginTop: 0, fontSize: "1.5rem" }}>
+              Our Story &amp; Mission
             </h2>
-            <p>
+            <p style={{ marginTop: "0.6rem" }}>
               Games Habibi was founded with a straightforward goal: eliminate the frustrating payment barriers faced by Indian gamers. International game stores and services often demand international credit cards, charge hidden foreign exchange conversion fees, or hit buyers with steep pricing.
             </p>
-            <p>
+            <p style={{ marginTop: "0.8rem" }}>
               We solve this by curating the hottest PC game titles, Steam activations, and digital subscriptions (such as Netflix and YouTube Premium) with transparent pricing in INR (₹) and instant local UPI payments via Google Pay, PhonePe, and Paytm.
             </p>
 
-            <h2 style={{ color: "var(--text-primary)", marginTop: "2rem", fontSize: "1.5rem" }}>
+            <h2 style={{ fontFamily: "var(--serif)", color: "var(--text-primary)", marginTop: "2rem", fontSize: "1.5rem" }}>
               The Games Habibi Commitments
             </h2>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "1.2rem", marginTop: "1rem" }}>
-              <div style={{ background: "rgba(25, 18, 48, 0.6)", padding: "1.2rem", borderRadius: "var(--radius-sm)", border: "1px solid rgba(245, 166, 35, 0.12)" }}>
+              <div style={{ background: "var(--paper)", padding: "1.2rem", border: "1px solid var(--line-strong)" }}>
                 <strong style={{ color: "var(--accent)", display: "block", marginBottom: "0.3rem" }}>
                   ⚡ Instant UPI Checkout
                 </strong>
                 <span style={{ fontSize: "0.88rem" }}>
-                  Pay in seconds with QR codes and deep links. Zero credit card or registration hoops.
+                  Pay in seconds with QR codes and gallery downloads. Zero credit card or registration hoops.
                 </span>
               </div>
 
-              <div style={{ background: "rgba(25, 18, 48, 0.6)", padding: "1.2rem", borderRadius: "var(--radius-sm)", border: "1px solid rgba(245, 166, 35, 0.12)" }}>
+              <div style={{ background: "var(--paper)", padding: "1.2rem", border: "1px solid var(--line-strong)" }}>
                 <strong style={{ color: "var(--mint)", display: "block", marginBottom: "0.3rem" }}>
-                  🛡️ 24h Replacement Guarantee
+                  🛡️ Replacement Guarantee
                 </strong>
                 <span style={{ fontSize: "0.88rem" }}>
                   Every game and service key is backed by our instant verification and replacement guarantee.
                 </span>
               </div>
 
-              <div style={{ background: "rgba(25, 18, 48, 0.6)", padding: "1.2rem", borderRadius: "var(--radius-sm)", border: "1px solid rgba(245, 166, 35, 0.12)" }}>
+              <div style={{ background: "var(--paper)", padding: "1.2rem", border: "1px solid var(--line-strong)" }}>
                 <strong style={{ color: "var(--text-primary)", display: "block", marginBottom: "0.3rem" }}>
                   💬 Real Human Support
                 </strong>
                 <span style={{ fontSize: "0.88rem" }}>
-                  Direct communication through Telegram, Instagram, and Email whenever you need assistance.
+                  Direct communication through WhatsApp, Telegram, Instagram, and Email whenever you need assistance.
                 </span>
               </div>
             </div>
           </article>
 
           <div style={{ textAlign: "center", display: "flex", gap: "1rem", justifyContent: "center", flexWrap: "wrap" }}>
-            <Link href="/catalog" className="btn" style={{ minHeight: "3rem", padding: "0.7rem 1.8rem" }}>
+            <Link href="/catalog" className="btn">
               Browse Catalog
             </Link>
-            <Link href="/contact" className="btn btn-secondary" style={{ minHeight: "3rem", padding: "0.7rem 1.8rem" }}>
+            <Link href="/contact" className="btn btn-secondary">
               Contact Help Desk
             </Link>
           </div>

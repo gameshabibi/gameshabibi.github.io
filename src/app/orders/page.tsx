@@ -30,7 +30,7 @@ export default function OrdersPage() {
                 margin: "0 0 0.8rem",
               }}
             >
-              Track Orders & Purchase History
+              Track Orders &amp; Purchase History
             </h1>
             <p style={{ color: "var(--text-secondary)", fontSize: "1.05rem", margin: 0 }}>
               Review past digital purchases, copy your Order IDs, or request fulfillment follow-up with our support team.
@@ -53,13 +53,13 @@ export default function OrdersPage() {
           >
             <input
               type="text"
-              placeholder="Search by Order ID (e.g. ORD-123456)..."
+              placeholder="Search by Order ID (e.g. GH-123456)..."
               value={searchId}
               onChange={(e) => setSearchId(e.target.value)}
               style={{
                 flex: 1,
                 minWidth: "220px",
-                background: "rgba(25, 18, 48, 0.85)",
+                background: "var(--paper)",
                 border: "1px solid var(--border-soft)",
                 borderRadius: "var(--radius-sm)",
                 color: "var(--text-primary)",
@@ -102,13 +102,16 @@ export default function OrdersPage() {
           ) : (
             <div style={{ display: "grid", gap: "1.2rem" }}>
               {filteredOrders.map((ord) => {
-                const formattedDate = new Date(ord.date).toLocaleDateString("en-IN", {
-                  day: "numeric",
-                  month: "short",
-                  year: "numeric",
-                  hour: "2-digit",
-                  minute: "2-digit",
-                });
+                const parsedDate = new Date(ord.date);
+                const formattedDate = Number.isNaN(parsedDate.getTime())
+                  ? ord.date
+                  : parsedDate.toLocaleDateString("en-IN", {
+                      day: "numeric",
+                      month: "short",
+                      year: "numeric",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    });
 
                 const emailSubject = encodeURIComponent(`Order Status Inquiry: ${ord.id}`);
                 const emailBody = encodeURIComponent(
@@ -120,7 +123,7 @@ export default function OrdersPage() {
                     key={ord.id}
                     style={{
                       background: "var(--surface-panel)",
-                      border: "1px solid var(--border-soft)",
+                      border: "1px solid var(--ink)",
                       borderRadius: "var(--radius-md)",
                       padding: "1.5rem",
                       display: "grid",
@@ -133,7 +136,7 @@ export default function OrdersPage() {
                         <span style={{ fontFamily: "var(--font-data)", color: "var(--accent)", fontSize: "1.25rem", fontWeight: 700 }}>
                           {ord.id}
                         </span>
-                        <span style={{ fontSize: "0.78rem", background: "rgba(0, 255, 179, 0.12)", color: "var(--mint)", padding: "0.15rem 0.6rem", borderRadius: "var(--radius-full)", fontWeight: 600 }}>
+                        <span className="badge">
                           Submitted
                         </span>
                       </div>
@@ -147,7 +150,7 @@ export default function OrdersPage() {
                       {ord.games}
                     </p>
 
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "0.8rem", paddingTop: "0.8rem", borderTop: "1px solid rgba(255, 255, 255, 0.08)" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "0.8rem", paddingTop: "0.8rem", borderTop: "1px solid var(--line)" }}>
                       <div style={{ display: "flex", gap: "1.5rem", fontSize: "0.88rem" }}>
                         <span>
                           <strong>Total: </strong>
@@ -173,33 +176,19 @@ export default function OrdersPage() {
                           })}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="btn"
-                          style={{
-                            background: "#25D366",
-                            color: "#04101c",
-                            fontWeight: 700,
-                            textDecoration: "none",
-                            minHeight: "2.4rem",
-                            fontSize: "0.82rem",
-                            padding: "0.4rem 1rem",
-                            display: "inline-flex",
-                            alignItems: "center",
-                            gap: "0.35rem",
-                          }}
+                          className="btn btn-whatsapp sm"
                         >
                           💬 WhatsApp
                         </a>
                         <a
                           href={`mailto:mr.bgmi9098@gmail.com?subject=${emailSubject}&body=${emailBody}`}
-                          className="btn btn-secondary"
-                          style={{ minHeight: "2.4rem", fontSize: "0.82rem", padding: "0.4rem 1rem" }}
+                          className="btn btn-secondary sm"
                         >
                           ✉️ Email
                         </a>
                         <Link
                           href="/contact"
-                          className="btn btn-secondary"
-                          style={{ minHeight: "2.4rem", fontSize: "0.82rem", padding: "0.4rem 1rem" }}
+                          className="btn btn-secondary sm"
                         >
                           Help Desk
                         </Link>

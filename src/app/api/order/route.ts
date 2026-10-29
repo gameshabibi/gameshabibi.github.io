@@ -1,7 +1,43 @@
 import { NextRequest, NextResponse } from "next/server";
 
+function escapeHtml(str: string): string {
+  return String(str ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+// Simple in-memory rate limit (per serverless instance)
+const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
+const RATE_LIMIT_WINDOW_MS = 60_000;
+const MAX_REQ_PER_WINDOW = 8;
+
+function isRateLimited(ip: string): boolean {
+  const now = Date.now();
+  const entry = rateLimitMap.get(ip);
+  if (!entry || now > entry.resetAt) {
+    rateLimitMap.set(ip, { count: 1, resetAt: now + RATE_LIMIT_WINDOW_MS });
+    return false;
+  }
+  entry.count += 1;
+  return entry.count > MAX_REQ_PER_WINDOW;
+}
+
 export async function POST(req: NextRequest) {
   try {
+    const ip =
+      req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+      req.headers.get("x-real-ip") ||
+      "unknown";
+    if (isRateLimited(ip)) {
+      return NextResponse.json(
+        { ok: false, error: "Too many order attempts. Please wait a minute and try again." },
+        { status: 429 }
+      );
+    }
+
     const formData = await req.formData();
     const name =
       (formData.get("name") as string) ||
@@ -11,13 +47,21 @@ export async function POST(req: NextRequest) {
       (formData.get("email") as string) ||
       (formData.get("customerEmail") as string) ||
       "Not provided";
+    const phone =
+      (formData.get("phone") as string) ||
+      (formData.get("customerPhone") as string) ||
+      "";
     const utr =
       (formData.get("utr") as string) ||
       (formData.get("customerUtr") as string) ||
       "Not provided";
     const coupon = (formData.get("coupon") as string) || "None";
-    const games = (formData.get("games") as string) || "Not specified";
+    const games =
+      (formData.get("games") as string) ||
+      (formData.get("items") as string) ||
+      "Not specified";
     const total = (formData.get("total") as string) || "0";
+    const tip = (formData.get("tip") as string) || "0";
     const orderId =
       (formData.get("orderId") as string) ||
       "ORD-" + Math.floor(100000 + Math.random() * 900000);
@@ -70,16 +114,20 @@ export async function POST(req: NextRequest) {
     const caption = [
       "🎮 <b>NEW GAMES HABIBI ORDER</b>",
       "",
-      `🆔 <b>Order ID:</b> <code>${orderId}</code>`,
-      `👤 <b>Customer:</b> ${name}`,
-      `📧 <b>Email:</b> ${email}`,
-      `💰 <b>Total Paid:</b> ₹${total}`,
-      coupon && coupon !== "None" ? `🏷️ <b>Coupon Applied:</b> <code>${coupon}</code>` : null,
-      `🔢 <b>UPI UTR / Ref:</b> <code>${utr}</code>`,
+      `🆔 <b>Order ID:</b> <code>${escapeHtml(orderId)}</code>`,
+      `👤 <b>Customer:</b> ${escapeHtml(name)}`,
+      `📧 <b>Email:</b> ${escapeHtml(email)}`,
+      phone ? `📱 <b>WhatsApp / Phone:</b> <code>${escapeHtml(phone)}</code>` : null,
+      `💰 <b>Total Paid:</b> ₹${escapeHtml(total)}`,
+      Number(tip) > 0 ? `💝 <b>Tip Included:</b> ₹${escapeHtml(tip)}` : null,
+      coupon && coupon !== "None"
+        ? `🏷️ <b>Coupon Applied:</b> <code>${escapeHtml(coupon)}</code>`
+        : null,
+      `🔢 <b>UPI UTR / Ref:</b> <code>${escapeHtml(utr || "Not provided")}</code>`,
       `📦 <b>Purchased Items:</b>`,
-      `${games}`,
+      `${escapeHtml(games)}`,
       "",
-      `⏰ <i>Submitted at: ${timestamp}</i>`,
+      `⏰ <i>Submitted at: ${escapeHtml(timestamp)}</i>`,
     ]
       .filter(Boolean)
       .join("\n")

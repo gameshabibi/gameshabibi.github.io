@@ -26,7 +26,11 @@
   const GAMES = window.CATALOG.games;
   const ALL = SERVICES.concat(GAMES);
   const BY_ID = {};
-  ALL.forEach((x) => (BY_ID[x.id] = x));
+  const BY_NAME = {};
+  ALL.forEach((x) => {
+    BY_ID[x.id] = x;
+    BY_NAME[x.n.toLowerCase()] = x;
+  });
 
   const TIER = {
     personal: { label: "Personal", title: "In your Steam account", blurb: "Activated on your own Steam account." },
@@ -59,22 +63,57 @@
   /* ------------------------------------------------------------------
      Cart & pricing
   ------------------------------------------------------------------- */
-  let cart = store.get("gh_cart", []).filter((l) => BY_ID[l.id] && l.q > 0);
-  let couponCode = store.get("gh_coupon", "");
+  function normalizeLine(l) {
+    if (!l || typeof l !== "object") return null;
+    const it = BY_ID[l.id] || (l.game ? BY_NAME[String(l.game).toLowerCase()] : null);
+    if (!it) return null;
+    const q = Number(l.q != null ? l.q : l.qty);
+    if (!q || q <= 0) return null;
+    let v = typeof l.v === "number" && l.v >= 0 ? l.v : 0;
+    if (typeof l.v !== "number" && it.v && l.variant) {
+      const idx = it.v.findIndex((x) => x[0].toLowerCase() === String(l.variant).toLowerCase());
+      if (idx > -1) v = idx;
+    }
+    const vo = it.v ? it.v[v] || it.v[0] : null;
+    const clampedQ = Math.min(10, q);
+    return {
+      id: it.id,
+      v: it.v ? Math.max(0, v) : 0,
+      q: clampedQ,
+      game: it.n,
+      price: vo ? vo[1] : it.p,
+      qty: clampedQ,
+      variant: vo ? vo[0] : undefined,
+      img: "/" + it.i.replace(/^\//, "")
+    };
+  }
+
+  let cart = store.get("gh_cart", []).map(normalizeLine).filter(Boolean);
+  let couponCode = String(store.get("gh_coupon", "") || "").replace(/^"|"$/g, "");
   if (couponCode && !CFG.coupons[couponCode]) couponCode = "";
 
-  function saveCart() { store.set("gh_cart", cart); updateCount(); }
+  function saveCart() {
+    cart = cart.map(normalizeLine).filter(Boolean);
+    store.set("gh_cart", cart);
+    updateCount();
+  }
   function updateCount() {
     const n = cart.reduce((s, l) => s + l.q, 0);
     const el = $("#cart-count");
-    el.textContent = n; el.hidden = n === 0;
+    if (el) { el.textContent = n; el.hidden = n === 0; }
   }
   function addToCart(id, vi, qty) {
     const it = BY_ID[id]; if (!it) return;
     vi = it.v ? Math.max(0, vi) : 0;
     const line = cart.find((l) => l.id === id && l.v === vi);
-    if (line) line.q = Math.min(10, line.q + (qty || 1)); else cart.push({ id: id, v: vi, q: qty || 1 });
+    if (line) {
+      line.q = Math.min(10, line.q + (qty || 1));
+      line.qty = line.q;
+    } else {
+      cart.push(normalizeLine({ id: id, v: vi, q: qty || 1 }));
+    }
     saveCart();
+    playSound("success");
   }
   function lineKey(l) { return l.id + "|" + l.v; }
 
@@ -173,8 +212,13 @@
   /* ------------------------------------------------------------------
      Shared components
   ------------------------------------------------------------------- */
+  const imgSrc = (i) => "/" + String(i || "").replace(/^\//, "");
+  const coverImgs = (it) => {
+    const src = esc(imgSrc(it.i));
+    return `<img class="cover-bg" src="${src}" alt="" aria-hidden="true" loading="lazy" onerror="this.remove()"><img class="cover-img" src="${src}" alt="${esc(it.n)}" loading="lazy" onload="if(this.naturalWidth>this.naturalHeight*1.12)this.parentNode.classList.add('is-wide')" onerror="this.remove()">`;
+  };
   const coverEl = (it, extra, tagHtml) =>
-    `<span class="cover ${extra || ""}" data-ini="${esc(ini(it.n))}"><img src="${esc(it.i)}" alt="${esc(it.n)}" loading="lazy" onerror="this.remove()">${tagHtml || ""}</span>`;
+    `<span class="cover ${extra || ""}" data-ini="${esc(ini(it.n))}">${coverImgs(it)}${tagHtml || ""}</span>`;
 
   function card(it) {
     const tier = getTier(); let vi = 0, price, label;
@@ -185,7 +229,7 @@
     }
     const tag = it.b ? `<span class="tag">${esc(it.b)}</span>` : it.u ? `<span class="tag">Upcoming</span>` : "";
     return `<article class="card">
-      <a class="cover" href="#/game/${esc(it.id)}" tabindex="-1" aria-hidden="true" data-ini="${esc(ini(it.n))}"><img src="${esc(it.i)}" alt="${esc(it.n)}" loading="lazy" onerror="this.remove()">${tag}</a>
+      <a class="cover" href="#/game/${esc(it.id)}" tabindex="-1" aria-hidden="true" data-ini="${esc(ini(it.n))}">${coverImgs(it)}${tag}</a>
       <a class="card-title" href="#/game/${esc(it.id)}">${esc(it.n)}</a>
       <div class="card-meta">
         <span class="card-price"><small>${esc(label)}</small>${inr(price)}</span>
@@ -202,6 +246,14 @@
     toastTimer = setTimeout(() => t.classList.remove("show"), 3200);
   }
   const buzz = () => { try { navigator.vibrate && navigator.vibrate(12); } catch (e) {} };
+  const playSound = (type) => {
+    try {
+      const path = type === "error" ? "/audio/error.wav" : type === "order-success" ? "/audio/order-success.wav" : "/audio/succ.wav";
+      const a = new Audio(path);
+      a.volume = 0.45;
+      a.play().catch(() => {});
+    } catch (e) {}
+  };
 
   /* ------------------------------------------------------------------
      Pages
@@ -356,8 +408,8 @@
       const shown = list.slice(0, st.shown);
       $("#grid").innerHTML = list.length
         ? `<div class="grid">${shown.map(card).join("")}</div>`
-        : `<div class="empty"><h3>Nothing matches “${esc(st.q || st.tag)}”.</h3><p>Try a different spelling or clear the filters. Can't find a title? Ask us — we can usually source it.</p>
-           <div class="form-actions" style="justify-content:center"><button class="btn" id="reset">Clear filters</button><a class="btn ghost" target="_blank" rel="noopener" href="https://wa.me/${CFG.whatsapp}?text=${encodeURIComponent("Hi! Do you have this game: " + (st.q || ""))}">Ask on WhatsApp</a></div></div>`;
+        : `<div class="empty"><h3>Nothing matches “${esc(st.q || st.tag)}”.</h3><p>Try a different spelling or clear the filters. Can't find a title? Request it and we'll source it for you.</p>
+           <div class="form-actions" style="justify-content:center"><button class="btn" id="reset">Clear filters</button><a class="btn red" href="#/contact?tab=request&game=${encodeURIComponent(st.q || "")}">Request this game</a><a class="btn ghost" target="_blank" rel="noopener" href="https://wa.me/${CFG.whatsapp}?text=${encodeURIComponent("Hi! Do you have this game: " + (st.q || ""))}">Ask on WhatsApp</a></div></div>`;
       $("#more").innerHTML = list.length > st.shown
         ? `<span>Showing ${shown.length} of ${list.length}</span><div class="form-actions" style="justify-content:center"><button class="btn" id="more24">Load 24 more</button><button class="btn ghost" id="moreAll">Show all</button></div>`
         : list.length > 24 ? `<span>All ${list.length} loaded</span>` : "";
@@ -598,16 +650,54 @@
   function stepPayment(c) {
     const link = upiLink(c.total); const svg = qrSvg(link);
     return `<form class="form" id="f-pay" novalidate style="max-width:640px">
-      <div class="pay-box"><div class="qr">${svg || `<div class="qr-fallback">QR unavailable — use the UPI ID above.</div>`}</div>
+      <div class="pay-box"><div class="qr" id="qr-box">${svg || `<div class="qr-fallback">QR unavailable — use the UPI ID above.</div>`}</div>
         <div><span class="kicker">Pay exactly</span><div class="pay-amt">${inr(c.total)}</div>
           <span class="kicker">UPI ID</span>
           <div class="upi-id"><span>${esc(CFG.upiId)}</span><button type="button" class="link-btn" id="copy-upi">Copy</button></div>
-          <p class="muted" style="font-size:.76rem;margin-top:.7rem">Scan the QR code with any UPI app (GPay, PhonePe, Paytm) or copy the UPI ID above.</p></div></div>
+          <div style="display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:.6rem"><button type="button" class="link-btn" id="dl-qr">Download QR for GPay / PhonePe gallery</button></div>
+          <p class="muted" style="font-size:.76rem;margin-top:.5rem">Scan the QR code with any UPI app (GPay, PhonePe, Paytm), upload the saved QR from your gallery, or copy the UPI ID above.</p></div></div>
       <div class="f"><label for="c-utr">12-digit UTR / reference number <span class="muted">(optional)</span></label><input class="field ${ck.err.utr ? "bad" : ""}" id="c-utr" inputmode="numeric" maxlength="12" autocomplete="off" placeholder="12-digit UTR (optional)" value="${esc(ck.utr)}"><p class="hint">Optional: Find it in your UPI app under transaction details.</p>${fieldErr("utr")}</div>
       <div class="f"><label for="c-file">Payment screenshot</label>
         <label class="upload" for="c-file"><span id="up-text">${ck.file ? "Change screenshot" : "Tap to choose an image (JPG, PNG, WEBP · max 5 MB)"}</span>${ck.fileUrl ? `<img src="${ck.fileUrl}" alt="Your payment screenshot preview">` : ""}</label>
         <input class="sr" id="c-file" type="file" accept="image/*">${fieldErr("file")}</div>
       <div class="form-actions"><button class="btn red arrow" type="submit">Review order</button><button class="btn ghost" type="button" id="back1">Back</button></div></form>`;
+  }
+  function downloadQrPng(total) {
+    const svgEl = $("#qr-box svg");
+    if (!svgEl) { toast("QR not ready"); return; }
+    try {
+      const xml = new XMLSerializer().serializeToString(svgEl);
+      const img = new Image();
+      const blob = new Blob([xml], { type: "image/svg+xml;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        canvas.width = 520;
+        canvas.height = 600;
+        const ctx = canvas.getContext("2d");
+        ctx.fillStyle = "#ffffff";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = "#0f0e0d";
+        ctx.font = "bold 24px sans-serif";
+        ctx.textAlign = "center";
+        ctx.fillText("GAMES HABIBI — PAY " + inr(total), 260, 48);
+        ctx.font = "16px monospace";
+        ctx.fillStyle = "#4b4740";
+        ctx.fillText("UPI ID: " + CFG.upiId, 260, 78);
+        ctx.drawImage(img, 50, 100, 420, 420);
+        ctx.font = "14px sans-serif";
+        ctx.fillText("Open GPay / PhonePe -> Scan QR -> Upload from Gallery", 260, 562);
+        URL.revokeObjectURL(url);
+        const a = document.createElement("a");
+        a.download = "games-habibi-upi-qr.png";
+        a.href = canvas.toDataURL("image/png");
+        a.click();
+        toast("QR saved — upload it in your UPI app");
+      };
+      img.src = url;
+    } catch (e) {
+      toast("Could not save QR — copy the UPI ID instead");
+    }
   }
   function stepReview(c) {
     return `<div class="review">
@@ -620,8 +710,11 @@
       <div class="form-actions"><button class="btn red" id="place" ${ck.placing ? "disabled" : ""}>${ck.placing ? "Placing order…" : "Place order"}</button><button class="btn ghost" id="back2" ${ck.placing ? "disabled" : ""}>Back</button></div>`;
   }
   function waUrl(o) {
-    const lines = ["Hi Games Habibi! I've placed an order and paid by UPI.", "", "Order ID: " + o.id, "Name: " + o.name,
-      "Items:"].concat(o.items.map((i) => "• " + i.n + " (" + i.label + ") ×" + i.q + " — " + inr(i.price * i.q)))
+    const itemLines = Array.isArray(o.items) && o.items.length
+      ? o.items.map((i) => "• " + i.n + " (" + i.label + ") ×" + i.q + " — " + inr(i.price * i.q))
+      : ["• " + (o.games || "Digital purchase")];
+    const lines = ["Hi Games Habibi! I've placed an order and paid by UPI.", "", "Order ID: " + o.id, "Name: " + (o.name || "Customer"),
+      "Items:"].concat(itemLines)
       .concat(["Total paid: " + inr(o.total), "UTR: " + (o.utr || "Attached in screenshot"), "", "I'm attaching my payment screenshot below. Please verify and send my access. Thanks!"]);
     return "https://wa.me/" + CFG.whatsapp + "?text=" + encodeURIComponent(lines.join("\n"));
   }
@@ -630,10 +723,10 @@
     return `${pageHead("Order placed")}<div class="container"><div class="done-box">
       <div class="check" aria-hidden="true">✓</div><h1 class="display">Thank you${o.name ? ", " + esc(o.name.split(" ")[0]) : ""}</h1>
       <p class="muted">Save your Order ID:</p><div class="oid">${esc(o.id)}</div>
-      <ol><li><span>${o.sent ? "Your payment details have been sent to us." : "Send your payment screenshot on WhatsApp — tap the green button below."}</span></li>
+      <ol><li><span>${o.sent ? "Your payment screenshot and order details have been sent to our verification bot." : "Send your payment screenshot on WhatsApp — tap the green button below."}</span></li>
           <li><span>We verify the payment (usually 15–30 minutes, ${esc(CFG.hours)}).</span></li>
           <li><span>Your login is delivered to ${esc(o.email)}${o.phone ? " and WhatsApp" : ""}.</span></li></ol>
-      <div class="btns"><a class="btn" style="background:#1f9d55;border-color:#1f9d55;color:#fff" target="_blank" rel="noopener" href="${esc(waUrl(o))}">Send proof on WhatsApp</a>
+      <div class="btns"><a class="btn" style="background:#1f9d55;border-color:#1f9d55;color:#fff" target="_blank" rel="noopener" href="${esc(waUrl(o))}">${o.sent ? "Message on WhatsApp" : "Send proof on WhatsApp"}</a>
         <button class="btn ghost" id="copy-oid">Copy order ID</button><a class="btn ghost" href="#/orders">My orders</a></div></div></div>`;
   }
   function bindCheckout() {
@@ -658,6 +751,8 @@
     const f2 = $("#f-pay");
     if (f2) {
       $("#copy-upi").addEventListener("click", () => copy(CFG.upiId, "UPI ID copied"));
+      const dlBtn = $("#dl-qr");
+      if (dlBtn) dlBtn.addEventListener("click", () => downloadQrPng(calc().total));
       $("#back1").addEventListener("click", () => go(1));
       $("#c-utr").addEventListener("input", (e) => {
         e.target.value = e.target.value.replace(/\D/g, "").slice(0, 12);
@@ -669,14 +764,14 @@
         ck.err.file = "";
         if (!/^image\//.test(file.type)) ck.err.file = "Please choose an image file.";
         else if (file.size > 5 * 1024 * 1024) ck.err.file = "Screenshot must be under 5 MB.";
-        if (ck.err.file) { ck.file = null; } else { if (ck.fileUrl) URL.revokeObjectURL(ck.fileUrl); ck.file = file; ck.fileUrl = URL.createObjectURL(file); }
+        if (ck.err.file) { ck.file = null; playSound("error"); } else { if (ck.fileUrl) URL.revokeObjectURL(ck.fileUrl); ck.file = file; ck.fileUrl = URL.createObjectURL(file); }
         ck.utr = ($("#c-utr").value || "").trim(); if (!ck.utr || /^\d{12}$/.test(ck.utr)) delete ck.err.utr; render();
       });
       f2.addEventListener("submit", (e) => {
         e.preventDefault(); ck.utr = ($("#c-utr").value || "").trim(); ck.err = {};
         if (ck.utr && !/^\d{12}$/.test(ck.utr)) ck.err.utr = "If provided, UTR must be exactly 12 digits.";
         if (!ck.file) ck.err.file = "Please add your payment screenshot.";
-        if (Object.keys(ck.err).length) { render(); const bad = $(".field.bad"); if (bad) bad.focus(); return; }
+        if (Object.keys(ck.err).length) { playSound("error"); render(); const bad = $(".field.bad"); if (bad) bad.focus(); return; }
         go(3);
       });
     }
@@ -685,8 +780,10 @@
       $("#back2").addEventListener("click", () => go(2));
       place.addEventListener("click", async () => {
         const c = calc(); ck.placing = true; ck.err = {}; $("#ck-main").innerHTML = stepReview(c); bindCheckout();
+        const itemsSummary = c.lines.map((x) => x.it.n + " (" + x.label + ") x" + x.qty).join(", ");
         const order = {
           id: newOrderId(), date: new Date().toISOString(), name: ck.name, email: ck.email, phone: ck.phone, utr: ck.utr,
+          games: itemsSummary,
           items: c.lines.map((x) => ({ id: x.it.id, v: x.l.v, n: x.it.n, label: x.label, q: x.qty, price: x.price })),
           subtotal: c.subtotal, bundle: c.bundle, coupon: couponCode, couponAmt: c.couponAmt, total: c.total, sent: false
         };
@@ -694,16 +791,24 @@
           try {
             const fd = new FormData();
             fd.append("orderId", order.id); fd.append("name", order.name); fd.append("email", order.email); fd.append("phone", order.phone);
-            fd.append("items", order.items.map((i) => i.n + " (" + i.label + ") x" + i.q).join(", ")); fd.append("total", order.total);
-            fd.append("coupon", order.coupon || ""); fd.append("utr", order.utr); fd.append("photo", ck.file);
+            fd.append("items", itemsSummary); fd.append("games", itemsSummary); fd.append("total", String(order.total));
+            fd.append("coupon", order.coupon || "None"); fd.append("utr", order.utr || "Not provided"); fd.append("photo", ck.file);
             const res = await fetch(CFG.orderEndpoint, { method: "POST", body: fd });
-            if (!res.ok) throw new Error("bad status");
-            order.sent = true;
+            const data = await res.json().catch(() => ({}));
+            if (res.ok && (data.ok || data.success)) {
+              order.sent = true;
+            } else if (res.status >= 400 && res.status < 500) {
+              playSound("error");
+              ck.placing = false;
+              ck.err.submit = data.error || "Please verify your payment screenshot and try again.";
+              $("#ck-main").innerHTML = stepReview(c); bindCheckout(); return;
+            }
           } catch (err) {
-            ck.placing = false; ck.err.submit = "We couldn't reach the order server. Check your connection and try again, or message us on WhatsApp.";
-            $("#ck-main").innerHTML = stepReview(c); bindCheckout(); return;
+            // If backend is unreachable, still record order locally and guide user to send proof via WhatsApp
+            order.sent = false;
           }
         }
+        playSound("order-success");
         const orders = store.get("gh_orders", []); orders.unshift(order); store.set("gh_orders", orders.slice(0, 50));
         cart = []; clearCoupon(); saveCart();
         if (ck.fileUrl) URL.revokeObjectURL(ck.fileUrl);
@@ -722,10 +827,16 @@
   function pageOrders() {
     const orders = store.get("gh_orders", []);
     const recent = store.get("gh_recent", []).map((i) => BY_ID[i]).filter(Boolean).slice(0, 6);
-    const list = orders.length ? orders.map((o) => `<article class="order" data-oid="${esc(o.id)}">
-        <div class="order-h"><div><b>${esc(o.id)}</b><div class="muted" style="font-size:.76rem">${new Date(o.date).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })} · UTR ${esc(o.utr)}</div></div><span class="badge">${o.sent ? "Submitted" : "Awaiting proof on WhatsApp"}</span></div>
-        <ul>${o.items.map((i) => `<li><span>${esc(i.n)} <span class="muted">· ${esc(i.label)} ×${i.q}</span></span><span>${inr(i.price * i.q)}</span></li>`).join("")}</ul>
-        <div class="order-f"><span class="t">${inr(o.total)}</span><div class="form-actions" style="margin:0"><a class="btn ghost sm" target="_blank" rel="noopener" href="${esc(waUrl(o))}">Message on WhatsApp</a><button class="btn sm" data-reorder>Order again</button></div></div></article>`).join("")
+    const list = orders.length ? orders.map((o) => {
+      const itemsHtml = Array.isArray(o.items) && o.items.length
+        ? o.items.map((i) => `<li><span>${esc(i.n)} <span class="muted">· ${esc(i.label)} ×${i.q}</span></span><span>${inr(i.price * i.q)}</span></li>`).join("")
+        : `<li><span>${esc(o.games || "Digital purchase")}</span><span>${inr(o.total)}</span></li>`;
+      const canReorder = Array.isArray(o.items) && o.items.length > 0;
+      return `<article class="order" data-oid="${esc(o.id)}">
+        <div class="order-h"><div><b>${esc(o.id)}</b><div class="muted" style="font-size:.76rem">${new Date(o.date).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}${o.utr && o.utr !== "Not provided" ? " · UTR " + esc(o.utr) : ""}</div></div><span class="badge">${o.sent !== false ? "Submitted" : "Awaiting proof on WhatsApp"}</span></div>
+        <ul>${itemsHtml}</ul>
+        <div class="order-f"><span class="t">${inr(o.total)}</span><div class="form-actions" style="margin:0"><a class="btn ghost sm" target="_blank" rel="noopener" href="${esc(waUrl(o))}">Message on WhatsApp</a>${canReorder ? `<button class="btn sm" data-reorder>Order again</button>` : ""}</div></div></article>`;
+    }).join("")
       : `<div class="empty"><h3>No orders yet</h3><p>Orders you place on this device will show up here.</p><a class="btn arrow" href="#/games">Browse games</a></div>`;
     return `${pageHead("My orders", "Your purchases and recently viewed games.")}
 <div class="container"><div class="orders">${list}</div>
@@ -734,11 +845,132 @@
   }
   function bindOrders() {
     $$("[data-reorder]").forEach((b) => b.addEventListener("click", () => {
-      const o = store.get("gh_orders", []).find((x) => x.id === b.closest(".order").dataset.oid); if (!o) return;
+      const o = store.get("gh_orders", []).find((x) => x.id === b.closest(".order").dataset.oid); if (!o || !Array.isArray(o.items)) return;
       o.items.forEach((i) => { if (BY_ID[i.id]) addToCart(i.id, i.v, i.q); });
       toast("Items added to your cart", "#/cart", "View cart");
     }));
     const c = $("#clear-orders"); if (c) c.addEventListener("click", () => { if (confirm("Remove saved orders from this browser?")) { store.del("gh_orders"); render(); } });
+  }
+
+  /* ---------- Contact & Game Request ---------- */
+  function pageContact(q) {
+    const tab = q.get("tab") === "request" || q.get("game") ? "request" : "support";
+    const initGame = q.get("game") || "";
+    const d = session.get("gh_draft", {});
+    return `${pageHead(tab === "request" ? "Request a game" : "Help & support", "Direct line to our team via Telegram & WhatsApp.")}
+<div class="container"><div class="two-col">
+  <div>
+    <div class="tabs" role="tablist" style="margin-top:0;margin-bottom:1.6rem">
+      <button role="tab" aria-selected="${tab === "support"}" data-ctab="support">Support &amp; order help</button>
+      <button role="tab" aria-selected="${tab === "request"}" data-ctab="request">Request an unlisted game</button>
+    </div>
+
+    <div data-cpanel="support" ${tab === "support" ? "" : "hidden"}>
+      <form class="form" id="f-support">
+        <input type="text" name="website" style="display:none" tabindex="-1" autocomplete="off">
+        <div class="f"><label for="s-name">Your name</label><input class="field" id="s-name" required value="${esc(d.name || "")}" placeholder="Rahul Sharma"></div>
+        <div class="f"><label for="s-email">Email</label><input class="field" id="s-email" type="email" required value="${esc(d.email || "")}" placeholder="rahul@example.com"></div>
+        <div class="f"><label for="s-oid">Order ID <span class="muted">(optional)</span></label><input class="field" id="s-oid" placeholder="GH-... or ORD-..."></div>
+        <div class="f"><label for="s-msg">How can we help?</label><textarea class="field" id="s-msg" rows="4" required placeholder="Describe your question or order issue..."></textarea></div>
+        <p class="msg" id="s-status"></p>
+        <div class="form-actions"><button class="btn red arrow" type="submit" id="s-btn">Send to support</button>
+          <a class="btn ghost" target="_blank" rel="noopener" href="https://wa.me/${CFG.whatsapp}">Chat on WhatsApp</a></div>
+      </form>
+    </div>
+
+    <div data-cpanel="request" ${tab === "request" ? "" : "hidden"}>
+      <form class="form" id="f-request">
+        <input type="text" name="website" style="display:none" tabindex="-1" autocomplete="off">
+        <div class="f"><label for="r-game">Game title</label><input class="field" id="r-game" required value="${esc(initGame)}" placeholder="e.g. Call of Duty, Forza, FIFA..."></div>
+        <div class="form-row">
+          <div class="f"><label for="r-plat">Platform</label>
+            <select class="field" id="r-plat"><option>Steam (PC)</option><option>Epic Games</option><option>EA App / Rockstar</option><option>Xbox / PC Game Pass</option></select></div>
+          <div class="f"><label for="r-budget">Expected budget (₹) <span class="muted">(optional)</span></label>
+            <input class="field" id="r-budget" type="number" placeholder="149"></div>
+        </div>
+        <div class="f"><label for="r-contact">Your WhatsApp or Email</label><input class="field" id="r-contact" required value="${esc(d.phone || d.email || "")}" placeholder="+91 98765 43210 or email"></div>
+        <div class="f"><label for="r-notes">Notes <span class="muted">(optional)</span></label><input class="field" id="r-notes" placeholder="Shared offline or personal Steam activation"></div>
+        <p class="msg" id="r-status"></p>
+        <div class="form-actions"><button class="btn red arrow" type="submit" id="r-btn">Submit game request</button>
+          <a class="btn ghost" target="_blank" rel="noopener" href="https://wa.me/${CFG.whatsapp}?text=${encodeURIComponent("Hi! Can you source this game: " + initGame)}">Ask on WhatsApp</a></div>
+      </form>
+    </div>
+  </div>
+  <aside class="summary">
+    <h2>Direct contact</h2>
+    <p class="muted" style="font-size:.86rem;margin-bottom:1rem">Active hours: <b>${esc(CFG.hours)}</b>. Typical response time is under 15 minutes.</p>
+    <div class="srow"><span>WhatsApp</span><a href="https://wa.me/${CFG.whatsapp}" target="_blank" rel="noopener" style="text-decoration:underline">+${esc(CFG.whatsapp)}</a></div>
+    <div class="srow"><span>Email</span><a href="mailto:${esc(CFG.email)}" style="text-decoration:underline">${esc(CFG.email)}</a></div>
+    <div class="srow"><span>Instagram</span><a href="https://www.instagram.com/${esc(CFG.instagram)}/" target="_blank" rel="noopener" style="text-decoration:underline">@${esc(CFG.instagram)}</a></div>
+  </aside>
+</div></div>`;
+  }
+  function bindContact() {
+    $$("[data-ctab]").forEach((b) => b.addEventListener("click", () => {
+      $$("[data-ctab]").forEach((x) => x.setAttribute("aria-selected", x === b));
+      $$("[data-cpanel]").forEach((p) => (p.hidden = p.dataset.cpanel !== b.dataset.ctab));
+    }));
+    const fs = $("#f-support");
+    if (fs) fs.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const btn = $("#s-btn"), st = $("#s-status");
+      btn.disabled = true; btn.textContent = "Sending…"; st.textContent = "";
+      try {
+        const res = await fetch("/api/contact", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name: $("#s-name").value.trim(),
+            email: $("#s-email").value.trim(),
+            orderId: $("#s-oid").value.trim(),
+            message: $("#s-msg").value.trim()
+          })
+        });
+        const data = await res.json();
+        if (!res.ok || !data.ok) throw new Error(data.error || "Could not send message.");
+        playSound("success");
+        st.className = "msg ok";
+        st.textContent = data.message || "Sent! We'll reply shortly.";
+        $("#s-msg").value = "";
+      } catch (err) {
+        playSound("error");
+        st.className = "msg bad";
+        st.textContent = err.message || "Could not reach support server — please message us on WhatsApp.";
+      } finally {
+        btn.disabled = false; btn.textContent = "Send to support";
+      }
+    });
+    const fr = $("#f-request");
+    if (fr) fr.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const btn = $("#r-btn"), st = $("#r-status");
+      btn.disabled = true; btn.textContent = "Submitting…"; st.textContent = "";
+      try {
+        const res = await fetch("/api/request-game", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            gameTitle: $("#r-game").value.trim(),
+            platform: $("#r-plat").value,
+            budget: $("#r-budget").value.trim(),
+            contact: $("#r-contact").value.trim(),
+            notes: $("#r-notes").value.trim()
+          })
+        });
+        const data = await res.json();
+        if (!res.ok || !data.ok) throw new Error(data.error || "Could not submit request.");
+        playSound("success");
+        st.className = "msg ok";
+        st.textContent = data.message || "Request sent! We'll check availability and message you.";
+        $("#r-game").value = ""; $("#r-notes").value = "";
+      } catch (err) {
+        playSound("error");
+        st.className = "msg bad";
+        st.textContent = err.message || "Could not submit — please ask us on WhatsApp.";
+      } finally {
+        btn.disabled = false; btn.textContent = "Submit game request";
+      }
+    });
   }
 
   /* ---------- Guides ---------- */
@@ -826,12 +1058,14 @@
   /* ------------------------------------------------------------------
      Router
   ------------------------------------------------------------------- */
-  const TITLES = { "": "Games Habibi — PC games & digital passes", games: "All games", collections: "Collections", guides: "Guides & FAQ", cart: "Cart", checkout: "Checkout", orders: "My orders" };
+  const TITLES = { "": "Games Habibi — PC games & digital passes", games: "All games", collections: "Collections", guides: "Guides & FAQ", cart: "Cart", checkout: "Checkout", orders: "My orders", contact: "Help & game requests" };
   let lastKey = "";
 
   function render() {
     if (revealObserver) { revealObserver.disconnect(); revealObserver = null; }
     if (typeof cleanup === "function") { cleanup(); cleanup = null; }
+    cart = store.get("gh_cart", []).map(normalizeLine).filter(Boolean);
+    updateCount();
     const raw = location.hash.replace(/^#/, "") || "/";
     const [path, qs] = raw.split("?"); const parts = path.split("/").filter(Boolean).map(decodeURIComponent);
     const q = new URLSearchParams(qs || ""); const r = parts[0] || "";
@@ -847,6 +1081,7 @@
     else if (r === "cart") { app.innerHTML = pageCart(); post = bindCart; }
     else if (r === "checkout") { const h = pageCheckout(); if (h) { app.innerHTML = h; post = bindCheckout; } }
     else if (r === "orders") { app.innerHTML = pageOrders(); post = bindOrders; }
+    else if (r === "contact") { app.innerHTML = pageContact(q); post = bindContact; }
     else if (r === "policy") app.innerHTML = pagePolicy(parts[1]);
     else app.innerHTML = notFound();
 
@@ -890,9 +1125,11 @@
     const dark = theme === "dark";
     if (dark) document.documentElement.dataset.theme = "dark";
     else delete document.documentElement.dataset.theme;
-    themeToggle.setAttribute("aria-pressed", String(dark));
-    themeToggle.setAttribute("aria-label", "Switch to " + (dark ? "light" : "dark") + " mode");
-    themeMeta.content = dark ? "#171614" : "#ebe6da";
+    if (themeToggle) {
+      themeToggle.setAttribute("aria-pressed", String(dark));
+      themeToggle.setAttribute("aria-label", "Switch to " + (dark ? "light" : "dark") + " mode");
+    }
+    if (themeMeta) themeMeta.content = dark ? "#171614" : "#ebe6da";
     store.set("gh_theme", dark ? "dark" : "light");
   }
   themeToggle.addEventListener("click", () => {
@@ -916,8 +1153,8 @@
     const n = si.value.trim().toLowerCase();
     if (n.length < 2) { sr.innerHTML = ""; return; }
     const hits = ALL.filter((x) => x.q.indexOf(n) > -1).sort((a, b) => (b.n.toLowerCase().indexOf(n) === 0) - (a.n.toLowerCase().indexOf(n) === 0) || byPop(a, b));
-    if (!hits.length) { sr.innerHTML = `<li class="search-none">No match for “${esc(si.value)}”. <a href="#/games?q=${encodeURIComponent(si.value)}" style="text-decoration:underline">Ask us to source it</a>.</li>`; return; }
-    sr.innerHTML = hits.slice(0, 8).map((x) => `<li><a href="#/game/${esc(x.id)}"><span class="thumb cover" style="width:38px;height:50px;aspect-ratio:auto" data-ini="${esc(ini(x.n))}"><img src="${esc(x.i)}" alt="" onerror="this.remove()"></span><span><b>${esc(x.n)}</b><small>from ${inr(x.min)}</small></span></a></li>`).join("") +
+    if (!hits.length) { sr.innerHTML = `<li class="search-none">No match for “${esc(si.value)}”. <a href="#/contact?tab=request&game=${encodeURIComponent(si.value)}" style="text-decoration:underline">Request this game</a>.</li>`; return; }
+    sr.innerHTML = hits.slice(0, 8).map((x) => `<li><a href="#/game/${esc(x.id)}"><span class="thumb cover" style="width:38px;height:50px;aspect-ratio:auto" data-ini="${esc(ini(x.n))}"><img src="${esc(imgSrc(x.i))}" alt="" onerror="this.remove()"></span><span><b>${esc(x.n)}</b><small>from ${inr(x.min)}</small></span></a></li>`).join("") +
       (hits.length > 8 ? `<li style="grid-column:1/-1"><a class="more" href="#/games?q=${encodeURIComponent(si.value.trim())}">See all ${hits.length} results →</a></li>` : "");
   });
   $("#search-form").addEventListener("submit", (e) => { e.preventDefault(); const v = si.value.trim(); if (v) { location.hash = "#/games?q=" + encodeURIComponent(v); } });

@@ -1,9 +1,49 @@
 import { NextRequest, NextResponse } from "next/server";
 
+function escapeHtml(str: string): string {
+  return String(str ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
+
+function isRateLimited(ip: string): boolean {
+  const now = Date.now();
+  const entry = rateLimitMap.get(ip);
+  if (!entry || now > entry.resetAt) {
+    rateLimitMap.set(ip, { count: 1, resetAt: now + 60_000 });
+    return false;
+  }
+  entry.count += 1;
+  return entry.count > 6;
+}
+
 export async function POST(req: NextRequest) {
   try {
+    const ip =
+      req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+      req.headers.get("x-real-ip") ||
+      "unknown";
+    if (isRateLimited(ip)) {
+      return NextResponse.json(
+        { ok: false, error: "Too many requests. Please wait a minute and try again." },
+        { status: 429 }
+      );
+    }
+
     const body = await req.json();
-    const { gameTitle, platform, contact, budget, notes } = body;
+    const { gameTitle, platform, contact, budget, notes, website } = body;
+
+    if (website) {
+      return NextResponse.json({
+        ok: true,
+        message: "Game request submitted!",
+      });
+    }
 
     if (!gameTitle || !contact) {
       return NextResponse.json(
@@ -30,13 +70,13 @@ export async function POST(req: NextRequest) {
     const text = [
       "🎯 <b>NEW UNLISTED GAME REQUEST</b>",
       "",
-      `🎮 <b>Requested Title:</b> <code>${gameTitle}</code>`,
-      `💻 <b>Preferred Platform:</b> ${platform || "Steam / PC"}`,
-      `📱 <b>Customer Contact:</b> <code>${contact}</code>`,
-      `💰 <b>Expected Budget:</b> ${budget ? `₹${budget}` : "Standard"}`,
-      notes ? `📝 <b>Notes:</b> ${notes}` : null,
+      `🎮 <b>Requested Title:</b> <code>${escapeHtml(String(gameTitle).slice(0, 150))}</code>`,
+      `💻 <b>Preferred Platform:</b> ${escapeHtml(String(platform || "Steam / PC").slice(0, 80))}`,
+      `📱 <b>Customer Contact:</b> <code>${escapeHtml(String(contact).slice(0, 150))}</code>`,
+      `💰 <b>Expected Budget:</b> ${budget ? `₹${escapeHtml(String(budget).slice(0, 30))}` : "Standard"}`,
+      notes ? `📝 <b>Notes:</b> ${escapeHtml(String(notes).slice(0, 800))}` : null,
       "",
-      `⏰ <i>Submitted at: ${timestamp}</i>`,
+      `⏰ <i>Submitted at: ${escapeHtml(timestamp)}</i>`,
     ]
       .filter(Boolean)
       .join("\n");

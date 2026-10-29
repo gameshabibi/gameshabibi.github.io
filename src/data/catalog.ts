@@ -3359,27 +3359,6 @@ export const games: ProductItem[] = [
     ]
   },
   {
-    "id": "game-doom-eternal-1",
-    "name": "Doom Eternal",
-    "link": "https://pokopow.com/doom-eternal/",
-    "img": "/png/games/doom-eternal.webp",
-    "genre": "Action-Adventure, Story Rich, Exploration",
-    "variants": [
-      {
-        "name": "In your steam account",
-        "price": 299
-      },
-      {
-        "name": "Shared Steam Account",
-        "price": 149
-      },
-      {
-        "name": "Budget Friendly",
-        "price": 69
-      }
-    ]
-  },
-  {
     "id": "game-doom-eternal",
     "name": "DOOM Eternal: Deluxe Edition",
     "link": "https://store.steampowered.com/app/782330/DOOM_Eternal/",
@@ -5033,27 +5012,6 @@ export const games: ProductItem[] = [
     "name": "Half Life",
     "link": "https://pokopow.com/half-life/",
     "img": "/png/games/half-life.webp",
-    "genre": "Action-Adventure, Story Rich, Exploration",
-    "variants": [
-      {
-        "name": "In your steam account",
-        "price": 299
-      },
-      {
-        "name": "Shared Steam Account",
-        "price": 149
-      },
-      {
-        "name": "Budget Friendly",
-        "price": 69
-      }
-    ]
-  },
-  {
-    "id": "game-half-life-2-1",
-    "name": "Half Life 2",
-    "link": "https://pokopow.com/half-life-2/",
-    "img": "/png/games/half-life-2.webp",
     "genre": "Action-Adventure, Story Rich, Exploration",
     "variants": [
       {
@@ -6867,69 +6825,6 @@ export const games: ProductItem[] = [
     "name": "Marvels Guardians Of The Galaxy",
     "link": "https://pokopow.com/marvels-guardians-of-the-galaxy/",
     "img": "/png/games/marvels-guardians-of-the-galaxy.webp",
-    "genre": "Action-Adventure, Story Rich, Exploration",
-    "variants": [
-      {
-        "name": "In your steam account",
-        "price": 299
-      },
-      {
-        "name": "Shared Steam Account",
-        "price": 149
-      },
-      {
-        "name": "Budget Friendly",
-        "price": 69
-      }
-    ]
-  },
-  {
-    "id": "game-marvels-spider-man-2",
-    "name": "Marvels Spider Man 2",
-    "link": "https://pokopow.com/marvels-spider-man-2/",
-    "img": "/png/games/marvels-spider-man-2.webp",
-    "genre": "Action-Adventure, Story Rich, Exploration",
-    "variants": [
-      {
-        "name": "In your steam account",
-        "price": 299
-      },
-      {
-        "name": "Shared Steam Account",
-        "price": 149
-      },
-      {
-        "name": "Budget Friendly",
-        "price": 69
-      }
-    ]
-  },
-  {
-    "id": "game-marvels-spider-man-miles-morales",
-    "name": "Marvels Spider Man Miles Morales",
-    "link": "https://pokopow.com/marvels-spider-man-miles-morales/",
-    "img": "/png/games/marvels-spider-man-miles-morales.jpg",
-    "genre": "Action-Adventure, Story Rich, Exploration",
-    "variants": [
-      {
-        "name": "In your steam account",
-        "price": 299
-      },
-      {
-        "name": "Shared Steam Account",
-        "price": 149
-      },
-      {
-        "name": "Budget Friendly",
-        "price": 69
-      }
-    ]
-  },
-  {
-    "id": "game-marvels-spider-man-remastered",
-    "name": "Marvels Spider Man Remastered",
-    "link": "https://pokopow.com/marvels-spider-man-remastered/",
-    "img": "/png/games/marvels-spider-man-remastered.webp",
     "genre": "Action-Adventure, Story Rich, Exploration",
     "variants": [
       {
@@ -11812,27 +11707,6 @@ export const games: ProductItem[] = [
     ]
   },
   {
-    "id": "game-watch-dogs-2",
-    "name": "Watch Dogs 2",
-    "link": "https://pokopow.com/watch-dogs-2/",
-    "img": "/png/games/watch-dogs-2.webp",
-    "genre": "Action-Adventure, Story Rich, Exploration",
-    "variants": [
-      {
-        "name": "In your steam account",
-        "price": 299
-      },
-      {
-        "name": "Shared Steam Account",
-        "price": 149
-      },
-      {
-        "name": "Budget Friendly",
-        "price": 69
-      }
-    ]
-  },
-  {
     "id": "game-watch-dogs-legion",
     "name": "Watch Dogs: Legion",
     "link": "https://store.steampowered.com/app/2239550/Watch_Dogs_Legion/",
@@ -11855,7 +11729,7 @@ export const games: ProductItem[] = [
   },
   {
     "id": "game-watchdogs-2",
-    "name": "WatchDogs 2",
+    "name": "Watch Dogs 2",
     "link": "https://store.steampowered.com/app/447040/Watch_Dogs_2/",
     "img": "/png/games/watchdogs-2.jpg",
     "genre": "Hacking, Open World, Stealth Action",

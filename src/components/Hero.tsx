@@ -6,7 +6,7 @@ import Link from "next/link";
 const SLIDES = [
   {
     h: "Games worth getting lost in",
-    p: "Curated PC games and digital passes from ₹169. Pay with UPI, get your login on WhatsApp or email.",
+    p: "Curated PC games and digital passes from ₹69. Pay with UPI, get your login on WhatsApp or email.",
     cta: "Explore games",
     href: "/catalog",
   },
@@ -24,7 +24,7 @@ const SLIDES = [
   },
   {
     h: "Great games, small prices",
-    p: "Budget Friendly access starts at ₹169 for offline single-player.",
+    p: "Budget Friendly access starts at ₹69 for offline single-player.",
     cta: "See budget picks",
     href: "/catalog",
   },

@@ -4,13 +4,16 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { Header } from "@/components/Header";
 import { getSupportWhatsAppUrl } from "@/lib/whatsapp";
+import { RequestGameModal } from "@/components/RequestGameModal";
 
 export default function ContactPage() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [orderId, setOrderId] = useState("");
   const [message, setMessage] = useState("");
+  const [website, setWebsite] = useState("");
   const [isSending, setIsSending] = useState(false);
+  const [isRequestOpen, setIsRequestOpen] = useState(false);
   const [statusMsg, setStatusMsg] = useState<{ type: "success" | "error"; text: string } | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -22,7 +25,7 @@ export default function ContactPage() {
       const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, orderId, message }),
+        body: JSON.stringify({ name, email, orderId, message, website }),
       });
 
       const data = await res.json();
@@ -51,7 +54,7 @@ export default function ContactPage() {
       <Header />
       <main className="container" style={{ padding: "3rem 0 5rem" }}>
         <div style={{ maxWidth: "42rem", margin: "0 auto" }}>
-          <p className="eyebrow">Support & Help Desk</p>
+          <p className="eyebrow">Support &amp; Help Desk</p>
           <h1
             style={{
               fontFamily: "var(--font-heading)",
@@ -74,64 +77,54 @@ export default function ContactPage() {
               justifyContent: "space-between",
               flexWrap: "wrap",
               gap: "1rem",
-              background: "rgba(37, 211, 102, 0.1)",
-              border: "1px solid rgba(37, 211, 102, 0.3)",
-              borderRadius: "var(--radius-md)",
+              background: "var(--card)",
+              border: "1px solid var(--ink)",
               padding: "1.2rem 1.5rem",
-              marginBottom: "2rem",
+              marginBottom: "1.2rem",
             }}
           >
             <div>
-              <h3 style={{ margin: "0 0 0.25rem", fontSize: "1.1rem", color: "#f1f7ff" }}>
+              <h3 style={{ margin: "0 0 0.25rem", fontSize: "1.05rem", color: "var(--ink)" }}>
                 ⚡ Prefer instant chat?
               </h3>
               <p style={{ margin: 0, fontSize: "0.88rem", color: "var(--text-secondary)" }}>
                 Message us directly on WhatsApp (+91 9770493784) for real-time help.
               </p>
             </div>
-            <a
-              href={getSupportWhatsAppUrl()}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn"
-              style={{
-                background: "#25D366",
-                color: "#04101c",
-                fontWeight: 700,
-                textDecoration: "none",
-                boxShadow: "0 0.4rem 1.2rem rgba(37, 211, 102, 0.3)",
-                display: "inline-flex",
-                alignItems: "center",
-                gap: "0.4rem",
-                whiteSpace: "nowrap",
-                fontSize: "0.92rem",
-                padding: "0.5rem 1.3rem",
-              }}
-            >
-              💬 Chat on WhatsApp
-            </a>
+            <div style={{ display: "flex", gap: "0.6rem", flexWrap: "wrap" }}>
+              <a
+                href={getSupportWhatsAppUrl()}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn btn-whatsapp sm"
+              >
+                💬 Chat on WhatsApp
+              </a>
+              <button
+                type="button"
+                className="btn btn-secondary sm"
+                onClick={() => setIsRequestOpen(true)}
+              >
+                🎯 Request Game
+              </button>
+            </div>
           </div>
 
           <div
             style={{
               background: "var(--surface-panel)",
-              border: "1px solid var(--border-soft)",
-              borderRadius: "var(--radius-lg)",
+              border: "1px solid var(--ink)",
               padding: "clamp(1.5rem, 3vw, 2.5rem)",
-              boxShadow: "var(--shadow-strong)",
+              boxShadow: "var(--shadow-soft)",
             }}
           >
             {statusMsg && (
               <div
                 style={{
                   padding: "0.85rem 1.2rem",
-                  borderRadius: "var(--radius-sm)",
                   marginBottom: "1.5rem",
-                  background:
-                    statusMsg.type === "success"
-                      ? "rgba(0, 255, 179, 0.12)"
-                      : "rgba(255, 127, 147, 0.15)",
-                  border: `1px solid ${
+                  background: "var(--paper)",
+                  borderLeft: `3px solid ${
                     statusMsg.type === "success" ? "var(--mint)" : "var(--danger)"
                   }`,
                   color: statusMsg.type === "success" ? "var(--mint)" : "var(--danger)",
@@ -142,103 +135,73 @@ export default function ContactPage() {
               </div>
             )}
 
-            <form onSubmit={handleSubmit} style={{ display: "grid", gap: "1.2rem" }}>
-              <div>
-                <label style={{ display: "block", fontSize: "0.85rem", color: "var(--text-secondary)", marginBottom: "0.3rem" }}>
-                  Your Name
-                </label>
+            <form onSubmit={handleSubmit} className="order-form" style={{ maxWidth: "100%" }}>
+              <div className="sr" aria-hidden="true">
+                <label htmlFor="contactWebsite">Website</label>
                 <input
+                  id="contactWebsite"
+                  type="text"
+                  tabIndex={-1}
+                  autoComplete="off"
+                  value={website}
+                  onChange={(e) => setWebsite(e.target.value)}
+                />
+              </div>
+
+              <div>
+                <label htmlFor="contactName">Your Name</label>
+                <input
+                  id="contactName"
                   type="text"
                   required
                   placeholder="e.g. Ayush Verma"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  style={{
-                    width: "100%",
-                    background: "rgba(25, 18, 48, 0.85)",
-                    border: "1px solid var(--border-soft)",
-                    borderRadius: "var(--radius-sm)",
-                    color: "var(--text-primary)",
-                    padding: "0.65rem 0.9rem",
-                    outline: "none",
-                  }}
                 />
               </div>
 
               <div>
-                <label style={{ display: "block", fontSize: "0.85rem", color: "var(--text-secondary)", marginBottom: "0.3rem" }}>
-                  Your Email
-                </label>
+                <label htmlFor="contactEmail">Your Email</label>
                 <input
+                  id="contactEmail"
                   type="email"
                   required
                   placeholder="ayush@example.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  style={{
-                    width: "100%",
-                    background: "rgba(25, 18, 48, 0.85)",
-                    border: "1px solid var(--border-soft)",
-                    borderRadius: "var(--radius-sm)",
-                    color: "var(--text-primary)",
-                    padding: "0.65rem 0.9rem",
-                    outline: "none",
-                  }}
                 />
               </div>
 
               <div>
-                <label style={{ display: "block", fontSize: "0.85rem", color: "var(--text-secondary)", marginBottom: "0.3rem" }}>
-                  Order ID (Optional)
-                </label>
+                <label htmlFor="contactOrderId">Order ID (Optional)</label>
                 <input
+                  id="contactOrderId"
                   type="text"
-                  placeholder="e.g. ORD-817264"
+                  placeholder="e.g. GH-817264"
                   value={orderId}
                   onChange={(e) => setOrderId(e.target.value)}
-                  style={{
-                    width: "100%",
-                    background: "rgba(25, 18, 48, 0.85)",
-                    border: "1px solid var(--border-soft)",
-                    borderRadius: "var(--radius-sm)",
-                    color: "var(--text-primary)",
-                    padding: "0.65rem 0.9rem",
-                    outline: "none",
-                  }}
                 />
               </div>
 
               <div>
-                <label style={{ display: "block", fontSize: "0.85rem", color: "var(--text-secondary)", marginBottom: "0.3rem" }}>
-                  Message / Issue Description
-                </label>
+                <label htmlFor="contactMessage">Message / Issue Description</label>
                 <textarea
+                  id="contactMessage"
                   required
                   rows={4}
                   placeholder="Describe your inquiry, requested game, or issue..."
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
-                  style={{
-                    width: "100%",
-                    background: "rgba(25, 18, 48, 0.85)",
-                    border: "1px solid var(--border-soft)",
-                    borderRadius: "var(--radius-sm)",
-                    color: "var(--text-primary)",
-                    padding: "0.65rem 0.9rem",
-                    outline: "none",
-                    fontFamily: "inherit",
-                    resize: "vertical",
-                  }}
+                  style={{ resize: "vertical" }}
                 />
               </div>
 
               <button
                 type="submit"
                 disabled={isSending}
-                className="btn btn-block"
-                style={{ minHeight: "3rem", fontSize: "1rem" }}
+                className="btn red btn-block"
               >
-                {isSending ? "Routing to Telegram Support..." : "Send Support Message"}
+                {isSending ? "Routing to Telegram Support..." : "Send Support Message →"}
               </button>
             </form>
           </div>
@@ -250,6 +213,11 @@ export default function ContactPage() {
           </div>
         </div>
       </main>
+
+      <RequestGameModal
+        isOpen={isRequestOpen}
+        onClose={() => setIsRequestOpen(false)}
+      />
     </>
   );
 }

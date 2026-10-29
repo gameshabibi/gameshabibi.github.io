@@ -35,6 +35,9 @@ export default function HomePage() {
             <a href="#/orders" data-nav="orders">
               Orders
             </a>
+            <a href="#/contact" data-nav="contact">
+              Support
+            </a>
           </nav>
           <div className="bar-actions">
             <button
@@ -144,7 +147,7 @@ export default function HomePage() {
             <input
               id="search-input"
               type="search"
-              placeholder="Search 580+ games…"
+              placeholder="Search 575+ games…"
               enterKeyHint="search"
             />
             <button type="button" className="link-btn" id="close-search">
@@ -173,12 +176,14 @@ export default function HomePage() {
             <a href="#/games">All games</a>
             <a href="#/collections">Collections</a>
             <a href="#/games?type=passes">Passes &amp; tools</a>
+            <a href="#/contact?tab=request">Request a game</a>
             <a href="#/cart">Cart</a>
           </div>
           <div>
             <h4>Help</h4>
             <a href="#/guides">Guides &amp; FAQ</a>
             <a href="#/orders">My orders</a>
+            <a href="#/contact">Contact &amp; support</a>
             <a id="foot-wa" href="https://wa.me/919770493784" target="_blank" rel="noopener">
               WhatsApp
             </a>

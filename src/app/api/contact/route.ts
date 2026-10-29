@@ -1,9 +1,50 @@
 import { NextRequest, NextResponse } from "next/server";
 
+function escapeHtml(str: string): string {
+  return String(str ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
+
+function isRateLimited(ip: string): boolean {
+  const now = Date.now();
+  const entry = rateLimitMap.get(ip);
+  if (!entry || now > entry.resetAt) {
+    rateLimitMap.set(ip, { count: 1, resetAt: now + 60_000 });
+    return false;
+  }
+  entry.count += 1;
+  return entry.count > 6;
+}
+
 export async function POST(req: NextRequest) {
   try {
+    const ip =
+      req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+      req.headers.get("x-real-ip") ||
+      "unknown";
+    if (isRateLimited(ip)) {
+      return NextResponse.json(
+        { ok: false, error: "Too many messages sent. Please wait a minute and try again." },
+        { status: 429 }
+      );
+    }
+
     const body = await req.json();
-    const { name, email, orderId, message } = body;
+    const { name, email, orderId, message, website } = body;
+
+    // Honeypot check against automated bots
+    if (website) {
+      return NextResponse.json({
+        ok: true,
+        message: "Your message has been sent to support.",
+      });
+    }
 
     if (!name || !email || !message) {
       return NextResponse.json(
@@ -30,14 +71,14 @@ export async function POST(req: NextRequest) {
     const text = [
       "💬 <b>NEW SUPPORT INQUIRY (Games Habibi)</b>",
       "",
-      `👤 <b>Name:</b> ${name}`,
-      `📧 <b>Email:</b> ${email}`,
-      `🆔 <b>Order ID:</b> ${orderId || "Not specified"}`,
+      `👤 <b>Name:</b> ${escapeHtml(String(name).slice(0, 120))}`,
+      `📧 <b>Email:</b> ${escapeHtml(String(email).slice(0, 160))}`,
+      `🆔 <b>Order ID:</b> <code>${escapeHtml(String(orderId || "Not specified").slice(0, 60))}</code>`,
       "",
       `📝 <b>Message:</b>`,
-      `${message}`,
+      `${escapeHtml(String(message).slice(0, 2500))}`,
       "",
-      `⏰ <i>Received at: ${timestamp}</i>`,
+      `⏰ <i>Received at: ${escapeHtml(timestamp)}</i>`,
     ].join("\n");
 
     const tgRes = await fetch(
